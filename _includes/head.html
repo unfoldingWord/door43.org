@@ -1,12 +1,30 @@
+{% assign canonical_href = page.url | replace: '/index.html', '' | prepend: site.baseurl | prepend: site.url %}
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
+{% strip %}
+{% include meta.html %}
+{% endstrip %}
+  <link rel="stylesheet" type="text/css" href="{{ '/css/main.css' | prepend: site.baseurl }}" media="screen">
+  <link rel="stylesheet" type="text/css" href="{{ '/css/print.css' | prepend: site.baseurl }}" media="print">
 
-  <title>{% if page.title %}{{ page.title | escape }}{% else %}{{ site.title | escape }}{% endif %}</title>
-  <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+  <link rel="canonical" href="{{ canonical_href }}">
+  <!-- <link rel="" href="{{ '/favicon.ico' | prepend: site.baseurl }}" type="image/x-icon"> -->
 
-  <link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl }}">
-  <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
-  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">
+  <script type="text/javascript" src="{{ '/js/jquery.min.js' | prepend: site.baseurl }}"></script>
+  <script type="text/javascript" src="{{ '/js/bootstrap/bootstrap.min.js' | prepend: site.baseurl }}"></script>
+  <script type="text/javascript" src="{{ '/js/parallax.min.js' | prepend: site.baseurl }}"></script>
+  <script type="text/javascript" src="{{ '/js/application.js' | prepend: site.baseurl }}"></script>
+  <script type="text/javascript">
+    // var _gaq = _gaq || [];
+    // _gaq.push(['_setAccount', 'UA-60106521-1']);
+    // _gaq.push(['_trackPageview']);
+    // (function() {
+    //   var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    //   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    //   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    // })();
+  </script>
 </head>
