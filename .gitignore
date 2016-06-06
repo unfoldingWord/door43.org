@@ -1,0 +1,12 @@
+_site
+.sass-cache
+.idea/
+*.pyc
+css/fonts/noto/*.ttf
+css/fonts/noto/*.otf
+*.lock
+assets
+.ruby-gemset
+.ruby-version
+.DS_Store
+*.iml
