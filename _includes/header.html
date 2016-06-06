@@ -12,7 +12,9 @@
       </div>
       <div id="main-navbar" class="navbar-nav navbar-right collapse navbar-collapse">
         <ul id="menu-main-menu" class="nav navbar-nav">
-          {{ site.data.main-menu|build }}
+          {% if site.data.main-menu %}
+            {{ site.data.main-menu|build }}
+          {% endif %}
         </ul>
       </div>
     </div>
