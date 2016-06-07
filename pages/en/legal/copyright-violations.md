@@ -2,7 +2,7 @@
 layout: default
 title: Legal - Copyright Violations
 header_title: Copyright Violations
-permalink: /en/legal/copyright-violations/index.html
+permalink: /en/copyright-violations/index.html
 ---
 ## Copyright Infringement Notification Basics
 
