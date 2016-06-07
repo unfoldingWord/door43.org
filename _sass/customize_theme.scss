@@ -75,6 +75,9 @@ ul > li {
         }
     }
 }
+.landing-page-home .entry-header-title {
+    margin-top: 30px;
+}
 .navbar {
     margin-bottom: 0px;
 }
@@ -227,7 +230,11 @@ a.navbar-brand {
 .parallax-content p {
     color: #ffffff;
     font-size: 28px;
-    margin: 0px;
+    margin: 20px 0px 0px;
+
+    &.dark {
+        color: #000000;
+    }
 }
 .parallax-content h4 {
     color: #ffffff;

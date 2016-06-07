@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+  {% include head.html %}
+
+  <body itemscope="itemscope" itemtype="http://schema.org/WebPage" class="landing-page-home">
+
+    {% include header.html %}
+
+    <div class="site-inner">
+        <main>
+          <div class="parallax-window large-window" data-parallax="scroll" data-image-src="{{ '/assets/img/collaboration.jpg' | prepend: site.baseurl }}">
+            <div class="parallax-content-wrapper">
+              <div class="parallax-content">
+                <img src="/assets/img/icon-large.png" alt="" />
+                <p class="dark">{{ page.tagline }}</p>
+              </div>
+            </div>
+          </div>
+          <article itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+            <header class="text-center">
+              <div class="entry-header-title">
+                {% if page.header_title %}
+                  <h1 itemprop="headline">{{ page.header_title }}</h1>
+                {% else %}
+                  <h1 itemprop="headline">{{ page.title }}</h1>
+                {% endif %}
+              </div>
+            </header>
+            <div class="page-content row">
+              <div class="col-md-8 col-md-offset-2">
+                {{ content }}
+                {% if page.credits != null %}
+                  <div class="page-credits">{{ page.credits | markdownify }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </article>
+        </main>
+    </div>
+
+    {% include footer.html %}
+
+  </body>
+
+</html>
