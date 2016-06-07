@@ -1,5 +1,7 @@
 - title: "Legal"
   href: "/en/legal/"
   subitems:
+    - title: "Copyright & Licensing"
+      href: "/en/copyright-and-licensing/"
     - title: "Copyright Violations"
       href: "/en/copyright-violations/"
