@@ -1,1 +1,5 @@
-
+- title: "Legal"
+  href: "/legal/"
+  subitems:
+    - title: "Copyright Violations"
+      href: "/legal/copyright-violations/"
