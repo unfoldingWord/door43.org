@@ -28,6 +28,6 @@ Discussions should be Christ honoring, non-libelous, and courteous. Posting of s
 Use Slack instead of email if at all possible.
 
 
-[d43-slack]: {{ '/en/slack' | prepend: site.baseurl }} "Door43 Slack"
+[d43-slack]: {{ '/en/slack/' | prepend: site.baseurl }} "Door43 Slack"
 [d43-logs]: https://team.door43.org/logs "Slack Logs"
-[sof]: {{ '/en/statement-of-faith' | prepend: site.baseurl }} "Statement of Faith"
+[sof]: {{ '/en/statement-of-faith/' | prepend: site.baseurl }} "Statement of Faith"
