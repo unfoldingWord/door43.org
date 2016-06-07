@@ -34,8 +34,8 @@ $link-color:                        #f04848;
 $link-hover-color:                  #000000;
 $link-hover-decoration:             none;
 $navbar-height:                     50px;
-$logo-image:                        '{{ "/assets/img/logo.png" | prepend: site.baseurl }}';
-$fa-font-path:                      '{{ "fonts/font-awesome" | prepend: site.baseurl }}';
+$logo-image:                        '{{ "/assets/img/logo@2x.png" | prepend: site.baseurl }}';
+$fa-font-path:                      '{{ "/fonts/font-awesome" | prepend: site.baseurl }}';
 
 // Import partials from `sass_dir` (defaults to `_sass`)
 @import
