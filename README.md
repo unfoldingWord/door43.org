@@ -16,16 +16,28 @@ If you do not have the `bundle` executable, then you'll need to run `sudo gem in
 
     bundle update
 
+#### Publishing Setup ####
+
+There are four branches that are built in a develop environment:
+
+* `develop`
+* `master`
+* `phil`
+* `codemis`
+
+Each of those is available at [branch_name].door43.org (e.g. http://develop.door43.org).
+
+The master branch (at http://master.door43.og) is *exactly* what should show up on production.
+
 #### Pre Production Testing ####
 
-After testing locally, push your changes to master (you can use `make commit`).  They will then be visible at http://[branch_name].door43.org/ within seconds.  Supported branches are `master`, `develop`, `phil`, `codemis`.
+After testing locally, push your changes to one of the development branches.  They will then be visible at http://[branch_name].door43.org/ within seconds.  Supported development branches are `develop`, `phil`, `codemis`.
 
 
 #### Push to Production ####
 
 After pre production testing, merge your branch into the `master` branch.
-Your changes should be visible within 5 minutes on
-http://door43.org.
+Your changes should be visible within 5 minutes on http://door43.org.
 
 
 #### Open source acknowledgements ####
@@ -33,3 +45,4 @@ http://door43.org.
   * http://jekyllrb.com
   * https://github.com/aucor/jekyll-plugins
   * https://github.com/jekyll/jekyll-sitemap
+
