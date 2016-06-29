@@ -12,7 +12,7 @@ SOURCE="/var/www/vhosts/newdoor43.org/master/_site/"
 BKT="s3://door43.org/"
 EXCLUDES="/var/www/vhosts/newdoor43.org/master/s3_excludes"
 
-s3cmd -c /home/webhook/.s3cfg-d43 sync --rr -M \
+s3cmd -c /home/webhook/.s3cfg-d43 sync --rr -M -F \
     --no-mime-magic --delete-removed \
     --exclude-from "$EXCLUDES" \
     --add-header="Cache-Control:max-age=600" \
