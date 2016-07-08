@@ -1283,3 +1283,11 @@ a.list-item-image img {
         color: $brand-primary;
     }
 }
+.break {
+  display: block;
+  clear: both;
+  page-break-before: always;
+}
+.well li {
+  list-style-position: inside;
+}
