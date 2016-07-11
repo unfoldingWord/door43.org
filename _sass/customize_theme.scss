@@ -1291,3 +1291,35 @@ a.list-item-image img {
 .well li {
   list-style-position: inside;
 }
+/**
+ * USFM Converter custom css
+ */
+.indent-0 {
+    margin-left:0em;
+    margin-bottom:0em;
+    margin-top:0em;
+}
+.indent-1 {
+    margin-left:0em;
+    margin-bottom:0em;
+    margin-top:0em;
+}
+.indent-2 {
+    margin-left:1em;
+    margin-bottom:0em;
+    margin-top:0em;
+}
+.indent-3 {
+    margin-left:2em;
+    margin-bottom:0em;
+    margin-top:0em;
+}
+.c-num {
+    color:gray;
+}
+.v-num {
+    color:gray;
+}
+.tetragrammaton {
+    font-variant: small-caps;
+}
