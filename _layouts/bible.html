@@ -20,14 +20,16 @@
             </div>
           </header>
           <div class="page-content row">
-            <div class="col-md-7" role="main">
+            <div class="col-md-3 sidebar" role="complementary">
+                <div id="sidebar-selector-content">
+                  <!--  Javascript adds the selectors -->
+                </div>
+            </div>
+            <div class="col-md-9" role="main">
               {{ content }}
               {% if page.credits != null %}
                 <div class="page-credits">{{ page.credits | markdownify }}</div>
               {% endif %}
-            </div>
-            <div class="col-md-5 sidebar" role="complementary">
-              {{ page.sidebar }}
             </div>
           </div>
         </article>
