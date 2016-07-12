@@ -375,13 +375,13 @@ ul.navbar-nav > li {
 }
 
 @media (min-width: 979px) {
-  #sidebar-content.affix-top {
+  #sidebar-selector-content.affix-top {
     position: static;
   	margin-top:30px;
   	width:228px;
   }
 
-  #sidebar-content.affix {
+  #sidebar-selector-content.affix {
     position: fixed;
     top:70px;
     width:228px;
