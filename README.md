@@ -1,3 +1,7 @@
+master | [![Build Status](https://travis-ci.org/unfoldingWord-dev/door43.org.svg?branch=master)](https://travis-ci.org/unfoldingWord-dev/door43.org)
+
+develop | [![Build Status](https://travis-ci.org/unfoldingWord-dev/door43.org.svg?branch=develop)](https://travis-ci.org/unfoldingWord-dev/door43.org)
+
 # door43.org
 
 This is the source for door43.org website.  Note that it does not include the files that show up at door43.org/u/ as those are created by the conversion app available through http://api.door43.org.
