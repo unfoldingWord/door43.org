@@ -7,12 +7,12 @@
 
 # Site settings
 title: Door43
-email: info@door43.org
-description: Door43 is an open-access translation platform for creating, translating, and distributing legally-unrestricted discipleship resources.
+email: help@door43.org
+description: unrestricted biblical content in every language
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://door43.org" # the base hostname & protocol for your site
-# Build settings
+url: "http://door43.org"
 
+# Build settings
 exclude: [Gemfile*, README.md, LICENSE, s3_excludes, s3_push]
 keep_files: [assets, assets/docs, assets/vid, assets/img, assets/fonts]
 
