@@ -21,9 +21,10 @@ commit:
 publish:
 	git branch
 	echo "Hit Ctrl-C if you are not on `develop`"
-	sleep 3
+	sleep 5
 	git merge master
 	git checkout master
-	git merge development
+	git merge develop
 	git push origin master
 	echo "Check https://master.door43.org/ in a moment"
+	git checkout develop
