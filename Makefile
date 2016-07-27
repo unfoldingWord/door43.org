@@ -3,13 +3,13 @@ stat:
 	git status -s
 
 build:
-	bundle exec jekyll build
+	jekyll build
 
 install:
 	bundle install
 
 serve:
-	bundle exec jekyll serve
+	jekyll serve
 
 commit:
 	git diff >/tmp/git-diff.out 2>&1
