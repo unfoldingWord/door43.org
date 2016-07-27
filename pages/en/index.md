@@ -29,9 +29,7 @@ The fastest way to get answers is to ask the #helpdesk channel in our [Team43 Sl
 Placeholder for navigation.
 
 
-[help]: https://team43.slack.com/messages/helpdesk "#helpdesk"
 [help-mail]: mailto:help@door43.org "help@door43.org"
-[slack]: https://door43.org/en/slack "join our team on Slack"
+[slack]: http://ufw.io/team43 "Team43 Slack"
 [ta]: https://unfoldingword.org/academy "translationAcademy"
 [ts]: https://unfoldingword.org/ts/ "translationStudio"
-[uw]: https://unfoldingword.org/ "unfoldingWord"
