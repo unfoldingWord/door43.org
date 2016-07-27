@@ -16,6 +16,7 @@ commit:
 	git commit -a
 	git pull --no-edit
 	git push
+	echo "Check http://develop.door43.org/ in a moment"
 
 publish:
 	git branch
