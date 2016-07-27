@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang }}">
+  <meta charset="utf-8">
+
+  <title>{{ page.title }}</title>
+
+  <meta name="description" content="an unrestricted visual mini-Bible in any language">
+  <meta name="author"
+        content="Created by Distant Shores Media (http://distantshores.org) and the Door43 world missions community (http://door43.org).">
+
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" type="text/css" href="{{ '/css/reveal/reveal.min.css' | prepend: site.baseurl }}" media="screen">
+  <link rel="stylesheet" type="text/css" href="{{ '/css/reveal/reveal.theme.css' | prepend: site.baseurl }}" media="screen" id="theme">
+  <link rel="stylesheet" type="text/css" href="{{ '/css/reveal/custom.css' | prepend: site.baseurl }}" media="screen">
+  <link rel="stylesheet" type="text/css" href="{{ '/css/reveal/zenburn.css' | prepend: site.baseurl }}" media="screen">
+
+  <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+  <script>
+      if (window.location.search.match(/print-pdf/gi)) {
+          var link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.type = 'text/css';
+          link.href = '/css/reveal/print/pdf.css';
+          document.getElementsByTagName('head')[0].appendChild(link);
+      }
+  </script>
+
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <body itemscope="itemscope" itemtype="http://schema.org/WebPage">
+    <div class="meny">
+        <ul>{{ page.navigation }}</ul>
+        <p><a href="{{ page.home_link_url }}">{{ page.home_link_text }}</a></p>
+    </div>
+    <div class="meny-arrow"></div>
+    <div class="reveal">
+        <div class="slides">{{ content }}</div>
+    </div>
+    <script type="text/javascript" src="{{ '/js/reveal/head.min.js' | prepend: site.baseurl }}"></script>
+    <script type="text/javascript" src="{{ '/js/reveal/reveal.min.js' | prepend: site.baseurl }}"></script>
+    <script type="text/javascript" src="{{ '/js/reveal/meny.js' | prepend: site.baseurl }}"></script>
+    <script type="text/javascript" src="{{ '/js/reveal/custom.js' | prepend: site.baseurl }}"></script>
+  </body>
+</html>

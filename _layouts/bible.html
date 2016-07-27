@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+  {% include head.html %}
+
+  <body itemscope="itemscope" itemtype="http://schema.org/WebPage">
+
+    {% include header.html %}
+
+    <div class="content-container container">
+      <main class="content" role="main" itemprop="mainContentOfPage">
+        <article itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+          <div class="page-content row">
+            <div class="col-md-3 sidebar" role="complementary">
+                <div id="sidebar-selector-content">
+                  <form>
+                    <div class="form-group">
+                      <select class="form-control" id="bible-books"></select>
+                    </div>
+                    <div class="form-group">
+                      <select class="form-control" id="bible-chapters"></select>
+                    </div>
+                  </form>
+                </div>
+            </div>
+            <div class="col-md-9" role="main">
+              {{ content }}
+              {% if page.credits != null %}
+                <div class="page-credits">{{ page.credits | markdownify }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+      </main>
+    </div>
+
+    {% include footer.html %}
+
+  </body>
+
+</html>

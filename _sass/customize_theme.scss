@@ -370,23 +370,24 @@ ul.navbar-nav > li {
 /**
  * Sidebar Nav
  */
-.affix-top, .affix {
+.affix-top, .affix{
  position: static;
 }
 
 @media (min-width: 979px) {
-  ul#sidebar-nav.affix-top {
+  #sidebar-selector-content.affix-top {
     position: static;
-    margin-top: 30px;
-    width: 485px;
+  	margin-top:30px;
+  	width:228px;
   }
 
-  ul#sidebar-nav.affix {
+  #sidebar-selector-content.affix {
     position: fixed;
-    top: 80px;
-    width: 485px;
+    top:70px;
+    width:228px;
   }
 }
+
 
 ul#sidebar-nav {
     font-size: 14px;
@@ -1282,4 +1283,44 @@ a.list-item-image img {
         font-size: 22px;
         color: $brand-primary;
     }
+}
+.break {
+  display: block;
+  clear: both;
+  page-break-before: always;
+}
+.well li {
+  list-style-position: inside;
+}
+/**
+ * USFM Converter custom css
+ */
+.indent-0 {
+    margin-left:0em;
+    margin-bottom:0em;
+    margin-top:0em;
+}
+.indent-1 {
+    margin-left:0em;
+    margin-bottom:0em;
+    margin-top:0em;
+}
+.indent-2 {
+    margin-left:1em;
+    margin-bottom:0em;
+    margin-top:0em;
+}
+.indent-3 {
+    margin-left:2em;
+    margin-bottom:0em;
+    margin-top:0em;
+}
+.c-num {
+    color:gray;
+}
+.v-num {
+    color:gray;
+}
+.tetragrammaton {
+    font-variant: small-caps;
 }
