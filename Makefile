@@ -19,9 +19,8 @@ commit:
 	echo "Check http://develop.door43.org/ in a moment"
 
 publish:
-	git branch
-	echo "Hit Ctrl-C if you are not on `develop`"
-	sleep 5
+	@read -p "Merge develop into master? <Ctrl-C to break>"
+	git checkout develop
 	git merge master
 	git checkout master
 	git merge develop
