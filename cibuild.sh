@@ -2,8 +2,8 @@
 set -e # halt script on error
 
 # build site
-bundle exec jekyll build
+#bundle exec jekyll build
 
 # Run HTML Proofer against built site
-bundle exec htmlproofer ./_site --disable-external
+bundle exec htmlproofer ./_site --disable-external --file-ignore ./_site/templates/reveal.html
 

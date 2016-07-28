@@ -39,8 +39,8 @@ Essential beliefs are what define a follower of Jesus Christ and can never be co
 
 Peripheral beliefs are everything else that is in Scripture but about which sincere followers of Christ may disagree (e.g. Baptism, Lord's Supper, the Rapture, etc.). We choose to agree to disagree agreeably on these topics and press on together toward a common goal of making disciples of every people group (Matthew 28:18-20).
 
-see also: [Translation Guidelines][tg].
+See also: [Translation Guidelines][tg].
 
 [lc]: http://www.lausanne.org/en/documents/lausanne-covenant.html "Lausanne Covenant"
-[tg]: {{ '/en/translation-guidlines/' | prepend: site.baseurl }} "Translation Guidelines"
+[tg]: {{ '/en/translation-guidelines/' | prepend: site.baseurl }} "Translation Guidelines"
 [uw]: https://unfoldingword.org/ "unfoldingWord"
