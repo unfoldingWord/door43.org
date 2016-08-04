@@ -13,6 +13,7 @@ sudo: false
 git:
   depth: 10
 deploy:
+  skip_cleanup: true
   provider: script
   script: s3_dev_push.sh
   on:
