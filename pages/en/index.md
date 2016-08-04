@@ -10,13 +10,13 @@ Door43 is an online repository for open-licensed Biblical content in any languag
 
 ## Get Started
 
-<center><a href="https://unfoldingword.org/ts/" target="_blank"><img src="/assets/img/icons/icon-ts.png" alt="tS Icon"></a></center>
+<center><a href="https://unfoldingword.org/ts/" target="_blank"><img src="https://cdn.door43.org/assets/img/icons/icon-ts.png" alt="tS Icon"></a></center>
 
 If you are a translator, we suggest you start working in [translationStudio][ts].
 
 ## Get Help
 
-<center><a href="https://unfoldingword.org/academy/" target="_blank"><img src="/assets/img/icons/icon-ta.png" alt="tS Icon"></a></center>
+<center><a href="https://unfoldingword.org/academy/" target="_blank"><img src="https://cdn.door43.org/assets/img/icons/icon-ta.png" alt="tA Icon"></a></center>
 
 If you are new to translation or the Door43 platform, check out [translationAcademy][ta] to learn all about the process.
 

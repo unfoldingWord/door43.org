@@ -10,7 +10,7 @@ title: Door43
 email: help@door43.org
 description: unrestricted biblical content in every language
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://door43.org"
+url: "https://live.door43.org"
 
 # Build settings
 exclude: [Gemfile*, README.md, LICENSE, s3_excludes, s3_push, vender]

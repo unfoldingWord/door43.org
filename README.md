@@ -48,16 +48,15 @@ The master branch (at http://master.door43.og) is *exactly* what should show up 
 
 After testing locally, push your changes to one of the development branches.  They will then be visible at http://[branch_name].door43.org/ within seconds.  Supported development branches are `develop`, `phil`, `codemis`.
 
-
 #### Push to Production
 
 After pre production testing, merge your branch into the `master` branch.  You can do this by running `make publish` if your changes are in `develop`.
 Your changes should be visible within 5 minutes on http://door43.org.
 
-
 #### Open source acknowledgements
 
-  * http://jekyllrb.com
-  * https://github.com/aucor/jekyll-plugins
-  * https://github.com/jekyll/jekyll-sitemap
-
+* http://jekyllrb.com
+* https://github.com/aucor/jekyll-plugins
+* https://github.com/jekyll/jekyll-sitemap
+* https://github.com/mivok/markdownlint
+* https://github.com/gjtorikian/html-proofer
