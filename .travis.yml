@@ -15,7 +15,7 @@ git:
 deploy:
   skip_cleanup: true
   provider: script
-  script: s3_dev_push.sh
+  script: ./s3_dev_push.sh
   on:
     branch: develop
 before_install:

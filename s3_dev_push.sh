@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # -*- coding: utf8 -*-
 #
 #  Copyright (c) 2016 unfoldingWord
