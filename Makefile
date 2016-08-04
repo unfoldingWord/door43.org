@@ -5,6 +5,9 @@ stat:
 build:
 	jekyll build
 
+test: stat
+	./cibuild.sh
+
 install:
 	bundle install
 
@@ -18,7 +21,7 @@ commit:
 	git push
 	echo "Check http://develop.door43.org/ in a moment"
 
-publish:
+publish: test
 	@read -p "Merge develop into master? <Ctrl-C to break>"
 	git checkout develop
 	git merge master
