@@ -1,10 +1,7 @@
 language: ruby
 rvm:
 - 2.1
-addons:
-  apt:
-    packages:
-    - s3cmd
+install: pip install --user s3cmd
 script: ./cibuild.sh
 env:
   global:
