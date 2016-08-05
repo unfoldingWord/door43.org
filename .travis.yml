@@ -1,7 +1,6 @@
 language: ruby
 rvm:
 - 2.1
-install: pip install --user s3cmd
 script: ./cibuild.sh
 env:
   global:
@@ -9,6 +8,7 @@ env:
 sudo: false
 git:
   depth: 10
+before_deploy: pip install --user s3cmd
 deploy:
   skip_cleanup: true
   provider: script
