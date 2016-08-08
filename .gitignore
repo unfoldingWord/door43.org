@@ -12,3 +12,4 @@ assets
 *.iml
 s3cfg-dev
 s3cfg-prod
+secrets.tar
