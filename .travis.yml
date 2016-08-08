@@ -10,11 +10,18 @@ git:
   depth: 10
 before_deploy: pip install --user s3cmd
 deploy:
+- provider: script
   skip_cleanup: true
-  provider: script
   script: ./s3_dev_push.sh
   on:
     branch: develop
+- provider: script
+  skip_cleanup: true
+  script: ./s3_prod_push.sh
+  on:
+    branch: master
 before_install:
+- openssl aes-256-cbc -K $encrypted_e2db0eb08244_key -iv $encrypted_e2db0eb08244_iv
+  -in s3cfg-prod.enc -out s3cfg-prod -d
 - openssl aes-256-cbc -K $encrypted_e2db0eb08244_key -iv $encrypted_e2db0eb08244_iv
   -in s3cfg-dev.enc -out s3cfg-dev -d
