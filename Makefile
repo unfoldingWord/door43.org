@@ -19,7 +19,8 @@ commit:
 	git commit -a
 	git pull --no-edit
 	git push
-	echo "Check http://develop.door43.org/ in a moment"
+	echo "Ensure the build completed https://travis-ci.org/unfoldingWord-dev/door43.org"
+	echo "Check http://test-door43.org.s3-website-us-west-2.amazonaws.com in a moment"
 
 publish: test
 	@read -p "Merge develop into master? <Ctrl-C to break>"
@@ -28,5 +29,6 @@ publish: test
 	git checkout master
 	git merge develop
 	git push origin master
-	echo "Check https://master.door43.org/ in a moment"
+	echo "Ensure the build completed https://travis-ci.org/unfoldingWord-dev/door43.org"
+	echo "Check https://live.door43.org/ in a moment"
 	git checkout develop
