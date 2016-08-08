@@ -2,16 +2,15 @@ stat:
 	git branch
 	git status -s
 
-build:
-	jekyll build
-
 test: stat
 	./cibuild.sh
+
+build: test
 
 install:
 	bundle install
 
-serve:
+serve: test
 	jekyll serve
 
 commit:
