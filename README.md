@@ -33,25 +33,22 @@ If you do not have the `bundle` executable, then you'll need to run `sudo gem in
 
 #### Publishing Setup
 
-There are four branches that are built in a develop environment:
+There are two branches that are built and deployed to S3 by Travis CI:
 
 * `develop`
 * `master`
-* `phil`
-* `codemis`
 
-Each of those is available at [branch_name].door43.org (e.g. http://develop.door43.org).
+The develop branch may be seen online at http://test-door43.org.s3-website-us-west-2.amazonaws.com.
 
-The master branch (at http://master.door43.og) is *exactly* what should show up on production.
+The master branch is available at https://live.door43.org (soon to be at https://door43.org).
 
 #### Pre Production Testing
 
-After testing locally, push your changes to one of the development branches.  They will then be visible at http://[branch_name].door43.org/ within seconds.  Supported development branches are `develop`, `phil`, `codemis`.
+You may run `make test`, or `make build`, or `make serve` to test and review your changes locally.  Once the `cibuild.sh` script passes successfully locally, you may commit and push to the `develop` branch.  You can do this by running `make commit`.
 
 #### Push to Production
 
-After pre production testing, merge your branch into the `master` branch.  You can do this by running `make publish` if your changes are in `develop`.
-Your changes should be visible within 5 minutes on http://door43.org.
+If Travis CI has built and deployed the `develop` branch successfully, you may merge it into the `master` branch.  You can do this by running `make publish`.  Your changes should be visible within 5 minutes on https://live.door43.org.
 
 #### Open source acknowledgements
 
