@@ -12,6 +12,9 @@ SOURCE="_site/"
 BKT="s3://test-door43.org/"
 EXCLUDES="s3_excludes"
 
+openssl aes-256-cbc -K $encrypted_e2db0eb08244_key -iv $encrypted_e2db0eb08244_iv -in secrets.tar.enc -out secrets.tar -d
+tar xvf secrets.tar
+
 s3cmd -c s3cfg-dev sync --rr -M -F \
     --no-mime-magic --delete-removed \
     --exclude-from "$EXCLUDES" \
