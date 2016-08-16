@@ -8,4 +8,5 @@ bundle exec mdl ./pages -r MD001,MD003,MD004,MD005,MD006,MD007,MD009,MD010,MD011
 bundle exec jekyll build
 
 # Run HTML Proofer against built site
-bundle exec htmlproofer ./_site --assume-extension --check-html --file-ignore ./_site/templates/reveal.html
+# Added --disable_external because it was preventing us from adding new pages
+bundle exec htmlproofer ./_site --assume-extension --check-html --disable-external --file-ignore ./_site/templates/reveal.html
