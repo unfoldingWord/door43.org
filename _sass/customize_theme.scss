@@ -79,7 +79,7 @@ ul > li {
     margin-top: 30px;
 }
 .navbar {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 a.navbar-brand {
     background: url($logo-image) no-repeat no-repeat center !important;
@@ -88,7 +88,7 @@ a.navbar-brand {
     height: 60px;
     text-indent: -9999px;
     width: 270px;
-    margin-left: 0px !important;
+    margin-left: 0 !important;
 }
 @media (max-width: 991px) {
 
@@ -96,12 +96,12 @@ a.navbar-brand {
         float: left;
         text-align: center;
         width: 100%;
-        margin-left: 0px !important;
-        margin-right: 0px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
 
         a.navbar-brand {
             float:none;
-            margin-left: 0px;
+            margin-left: 0;
             width: 230px;
             display: inline-block;
         }
@@ -145,12 +145,15 @@ a.navbar-brand {
     .navbar-header {
 
         .navbar-toggle {
-            padding: 0px;
-            float: none;
-            width: 100%;
+            padding: 0;
+            float: left;
+            width: auto;
             display: inline-block;
         }
-
+        a.navbar-brand {
+            float: right;
+            padding-right: 0;
+        }
     }
 
 }
@@ -230,7 +233,7 @@ a.navbar-brand {
 .parallax-content p {
     color: #ffffff;
     font-size: 28px;
-    margin: 20px 0px 0px;
+    margin: 20px 0 0;
 
     &.dark {
         color: #000000;
@@ -409,16 +412,16 @@ ul#sidebar-nav > li {
     list-style-type: none;
 
     & > ul {
-        margin: 0px;
-        padding: 0px;
+        margin: 0;
+        padding: 0;
 
         & > li {
             list-style-type: none;
             padding-left: 30px;
 
             & > ul {
-                margin: 0px;
-                padding: 0px;
+                margin: 0;
+                padding: 0;
 
                 & > li {
                     list-style-type: none;
@@ -444,7 +447,7 @@ ul#sidebar-nav > li.active {
             & > a:focus {
                 font-weight: normal;
                 color: #000000;
-                margin: 0px;
+                margin: 0;
             }
             & > ul {
                 display: block;
@@ -457,7 +460,7 @@ ul#sidebar-nav > li.active {
                     & > a:focus {
                         font-weight: normal;
                         color: #000000;
-                        margin: 0px;
+                        margin: 0;
                     }
                 }
             }
@@ -500,7 +503,7 @@ p.apps-buttons img {
 
     h1 {
         font-size: 36px;
-        margin: 12px 0px;
+        margin: 12px 0;
     }
 
     &::after {
@@ -527,11 +530,11 @@ a.list-item-image img {
 .pitch-box {
     text-align: center;
     font-size: 28px;
-    padding: 190px 0px;
+    padding: 190px 0;
 
     &.pitch-footer {
         font-size: 24px;
-        padding: 100px 0px;
+        padding: 100px 0;
 
         .pitch-text {
             font-size: 48px;
@@ -548,11 +551,11 @@ a.list-item-image img {
 
     .pitch-box {
         font-size: 22px;
-        padding: 50px 0px;
+        padding: 50px 0;
 
         &.pitch-footer {
             font-size: 18px;
-            padding: 50px 0px;
+            padding: 50px 0;
 
             .pitch-text {
                 font-size: 36px;
@@ -660,7 +663,7 @@ a.list-item-image img {
  */
 .site-footer {
     background-color: #000000;
-    padding: 30px 0px;
+    padding: 30px 0;
 }
 
 .site-footer p {
@@ -670,7 +673,7 @@ a.list-item-image img {
     font-size: 12px;
     font-style: normal;
     letter-spacing: 1px;
-    margin: 18px 0px 0px 0px;
+    margin: 18px 0 0 0;
 }
 .site-footer p img {
     margin-bottom: 5px;
@@ -756,7 +759,7 @@ a.list-item-image img {
 .obs-tagline {
     padding-right: 40px;
     padding-left: 40px;
-    font-weight: 375;
+    font-weight: 400;
     color: #6a6a6a;
     text-align: center;
     font-size: 18px !important;
@@ -769,7 +772,7 @@ a.list-item-image img {
   */
 .background-layered-layout .site-inner {
     p {
-        font-weight: 375;
+        font-weight: 400;
         color: #6a6a6a;
         font-size: 15px;
         margin: 0;
@@ -802,13 +805,13 @@ a.list-item-image img {
     }
 
     .page-credits p {
-        margin: 32px 0px;
+        margin: 32px 0;
         font-size: 12px;
         color: #888;
     }
 
     li {
-        font-weight: 375;
+        font-weight: 400;
         color: #6a6a6a;
         font-size: 15px;
     }
@@ -857,7 +860,7 @@ a.list-item-image img {
 @media (max-width: 768px) {
 
     #content-layer {
-        top: 0px;
+        top: 0;
     }
 
     #layered-content {
@@ -984,7 +987,7 @@ a.list-item-image img {
   * Language Pages
   */
 .presentations {
-    margin: 30px 0px;
+    margin: 30px 0;
 
     & > .row > div {
         margin-bottom: 10px;
@@ -1107,8 +1110,8 @@ a.list-item-image img {
 }
 .popup-overlay ul {
     list-style: none;
-    padding-left: 0px;
-    padding-right: 0px;
+    padding-left: 0;
+    padding-right: 0;
 }
 .popup-overlay ul li {
     list-style: none;
@@ -1296,24 +1299,24 @@ a.list-item-image img {
  * USFM Converter custom css
  */
 .indent-0 {
-    margin-left:0em;
-    margin-bottom:0em;
-    margin-top:0em;
+    margin-left:0;
+    margin-bottom:0;
+    margin-top:0;
 }
 .indent-1 {
-    margin-left:0em;
-    margin-bottom:0em;
-    margin-top:0em;
+    margin-left:0;
+    margin-bottom:0;
+    margin-top:0;
 }
 .indent-2 {
     margin-left:1em;
-    margin-bottom:0em;
-    margin-top:0em;
+    margin-bottom:0;
+    margin-top:0;
 }
 .indent-3 {
     margin-left:2em;
-    margin-bottom:0em;
-    margin-top:0em;
+    margin-bottom:0;
+    margin-top:0;
 }
 .c-num {
     color:gray;
