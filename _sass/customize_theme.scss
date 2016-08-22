@@ -90,7 +90,7 @@ a.navbar-brand {
     width: 270px;
     margin-left: 0 !important;
 }
-@media (max-width: 991px) {
+@media (max-width: 990px) {
 
     .navbar-header {
         float: left;
@@ -100,14 +100,11 @@ a.navbar-brand {
         margin-right: 0 !important;
 
         a.navbar-brand {
-            float:none;
             margin-left: 0;
             width: 230px;
             display: inline-block;
         }
-
     }
-
 }
 .navbar-toggle {
     border-width:0;
@@ -120,7 +117,6 @@ a.navbar-brand {
       padding-top:    5px;
       padding-bottom: 5px;
     }
-
 }
 /**
  * Set a different width for smaller screens
@@ -128,19 +124,27 @@ a.navbar-brand {
  */
 @media (min-width: 768px) and (max-width: 991px) {
 
+    .navbar-header {
+        position: absolute;
+    }
     .navbar-nav {
-      width: 100%;
-      text-align: center;
 
       > li {
         float: none;
         display: inline-block;
       }
-
     }
-
 }
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 840px) {
+    ul.navbar-nav > li {
+        font-size: 13px;
+
+        a {
+            padding: 5px 16px;
+        }
+    }
+}
+@media (max-width: 767px) {
 
     .navbar-header {
 
@@ -319,7 +323,7 @@ ul.navbar-nav > li {
     }
 
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
 
     li.dropdown {
 
@@ -647,7 +651,7 @@ a.list-item-image img {
 .promo-box .highlight {
     color: #ffffff;
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
 
     .promo-holder {
         min-height: 150px;
@@ -857,7 +861,7 @@ a.list-item-image img {
     margin-bottom: 20px;
     clear: both;
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
 
     #content-layer {
         top: 0;
