@@ -7,7 +7,7 @@ permalink: /en/slack-terms-of-service/index.html
 
 ## Purpose
 
-We use the [Slack](https://slack.com/downloads) messaging app to communicate quickly and efficiently. Our team name is Team43. Sign up at [Team43 Slack](https://door43.org/en/slack).
+We use the [Slack](https://slack.com/downloads) messaging app to communicate quickly and efficiently. Our team name is Team43. Sign up on the [Contact](/en/contact) page.
 
 ## Privacy
 

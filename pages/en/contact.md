@@ -4,7 +4,9 @@ title: Contact
 permalink: /en/contact/index.html
 ---
 
-The fastest way to get answers is to ask the #helpdesk channel in our Team43 Slack Group.
+## Slack
+
+The fastest way to get answers is to ask the [#helpdesk](https://team43.slack.com/messages/helpdesk/) channel in our Team43 Slack Group.  Use the form below to join our Slack team if you are not a member.
 
 <script type="text/javascript">
   function signUp(f) {
@@ -18,7 +20,7 @@ The fastest way to get answers is to ask the #helpdesk channel in our Team43 Sla
         dataType: 'jsonp',
         success: function (data, status) {
             if (data['result'] === 'success') {
-                alert('An invitation has been sent to your email address');
+                alert('An invitation has been sent to your e-mail address');
             }
             else {
                 alert('A problem was encountered: ' + data['message'] + '.');
@@ -34,7 +36,8 @@ The fastest way to get answers is to ask the #helpdesk channel in our Team43 Sla
 </script>
 <form onsubmit="return signUp(this)" action="" method="POST">
     <fieldset id="slack-fields">
-        <legend>TEAM43 Slack Sign Up Form</legend>
+        <legend>Team43 Slack Sign Up Form</legend>
+        <p>By using this service you agree to our <a href="/en/slack-terms-of-service/">Slack Terms of Service</a>.</p>
         <label for="first_name"><span>First Name: </span><input type="text" name="first_name" id="first_name"></label>
         <label for="last_name"><span>Last Name: </span><input type="text" name="last_name" id="last-name"></label>
         <label for="email"><span>E-Mail: </span><input type="email" name="email" id="email"></label>
@@ -43,7 +46,8 @@ The fastest way to get answers is to ask the #helpdesk channel in our Team43 Sla
     </fieldset>
 </form>
 
-You may also email our help desk at [help@door43.org][help-mail].
+## E-Mail
+
+If you prefer, you may also e-mail our help desk at [help@door43.org][help-mail].
 
 [help-mail]: mailto:help@door43.org "help@door43.org"
-[slack]: http://ufw.io/team43 "Team43 Slack"
