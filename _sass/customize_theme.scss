@@ -1333,3 +1333,16 @@ a.list-item-image img {
 .tetragrammaton {
     font-variant: small-caps;
 }
+
+#slack-fields {
+    margin-bottom: 40px;
+
+    label {
+        width: 450px;
+        display: block;
+        text-align: right;
+    }
+
+    input[type="text"], input[type="email"] { margin-left: 6px; font-weight: 400; }
+    button { margin-left: 210px; }
+}
