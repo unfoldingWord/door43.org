@@ -1,0 +1,43 @@
+---
+---
+@charset "utf-8";
+
+/**
+ * Style for OBS pages
+ */
+div.obs-header-title {
+  h1 {
+    margin: 0;
+
+    span.obs-checking-level-icon {
+      font-size: 26px;
+      vertical-align: middle;
+      color: #3ebcfe
+    }
+
+    span.obs-build-status-icon {
+      font-size: 40px;
+      font-weight: 300;
+      vertical-align: middle;
+
+      &:hover {
+        color: #3ebcfe
+      }
+    }
+
+    span#obs-h1 {
+      //something
+    }
+  }
+}
+
+div.obs-last-updated {
+  margin: 0 0 12px 35px;
+  font-size: 16px;
+
+  span#last-updated {
+    font-weight: 400;
+    font-style: italic;
+    margin-right: 30px;
+  }
+}
