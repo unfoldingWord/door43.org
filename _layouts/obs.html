@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+{% include head.html %}
+
+<body itemscope="itemscope" itemtype="http://schema.org/WebPage">
+<link rel="stylesheet" type="text/css" href="{{ '/css/obs.css' | prepend: site.baseurl }}">
+
+{% include header.html %}
+
+<div class="content-container container">
+    <main class="content" role="main" itemprop="mainContentOfPage">
+        <article itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+            <header>
+                <div class="obs-header-title">
+                    <h1 itemprop="headline">
+                        <span class="fa fa-star obs-checking-level-icon"></span>
+                        <span id="obs-h1">Header</span>
+                        <span class="fa fa-check-circle-o obs-build-status-icon"></span>
+                    </h1>
+                </div>
+                <div class="obs-last-updated">
+                    <span id="last-updated">Updated 1 hour ago</span>
+                    <span class="fa fa-eye"></span>
+                    <span id="obs-checking-level">2</span>
+                </div>
+            </header>
+            <div class="page-content row">
+                <div class="col-md-3 sidebar" role="complementary">
+                    <div id="obs-sidebar">
+                        { sidebar }
+                    </div>
+                </div>
+                <div class="col-md-9" role="main" id="obs-content">
+                    { content }
+                </div>
+            </div>
+        </article>
+    </main>
+</div>
+
+{% include footer.html %}
+
+</body>
+
+</html>
