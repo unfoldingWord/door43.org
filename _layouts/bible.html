@@ -1,41 +1,46 @@
 <!DOCTYPE html>
 <html>
 
-  {% include head.html %}
+{% include head.html %}
 
-  <body itemscope="itemscope" itemtype="http://schema.org/WebPage">
+<body itemscope="itemscope" itemtype="http://schema.org/WebPage">
+<link rel="stylesheet" type="text/css" href="{{ '/css/bible.css' | prepend: site.baseurl }}">
 
-    {% include header.html %}
+{% include header.html %}
 
-    <div class="content-container container">
-      <main class="content" role="main" itemprop="mainContentOfPage">
-        <article itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
-          <div class="page-content row">
-            <div class="col-md-3 sidebar" role="complementary">
-                <div id="sidebar-selector-content">
-                  <form>
-                    <div class="form-group">
-                      <select class="form-control" id="bible-books"></select>
-                    </div>
-                    <div class="form-group">
-                      <select class="form-control" id="bible-chapters"></select>
-                    </div>
-                  </form>
-                </div>
-            </div>
-            <div class="col-md-9" role="main">
-              {{ content }}
-              {% if page.credits != null %}
-                <div class="page-credits">{{ page.credits | markdownify }}</div>
-              {% endif %}
-            </div>
+<div class="content-container container">
+  <main class="content" role="main" itemprop="mainContentOfPage">
+    <article itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+      <header>
+        <div class="bible-header-title">
+          <h1 itemprop="headline">
+            <span class="fa fa-star bible-starred-icon"></span>
+            <span id="bible-h1">Header</span>
+            <span class="fa fa-check-circle-o bible-build-status-icon"></span>
+          </h1>
+        </div>
+        <div class="bible-last-updated">
+          <span id="last-updated">Updated 1 hour ago</span>
+          <span class="fa fa-eye"></span>
+          <span id="bible-num-of-views">2</span>
+        </div>
+      </header>
+      <div class="page-content row">
+        <div class="col-md-3 sidebar" role="complementary">
+          <div id="bible-sidebar">
+            { sidebar }
           </div>
-        </article>
-      </main>
-    </div>
+        </div>
+        <div class="col-md-9" role="main" id="bible-content">
+          { content }
+        </div>
+      </div>
+    </article>
+  </main>
+</div>
 
-    {% include footer.html %}
+{% include footer.html %}
 
-  </body>
+</body>
 
 </html>

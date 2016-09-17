@@ -4,4 +4,4 @@ title: '{{ HEADING }}'
 header_title: '{{ HEADING }}'
 permalink: /templates/bible.html
 ---
-\{\{ CONTENTS \}\}
+This is just a placeholder
