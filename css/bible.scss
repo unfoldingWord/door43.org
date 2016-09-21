@@ -3,19 +3,19 @@
 @charset "utf-8";
 
 /**
- * Style for OBS pages
+ * Style for Bible pages
  */
-div.obs-header-title {
+div.bible-header-title {
   h1 {
     margin: 0;
 
-    span.obs-starred-icon {
+    span.bible-starred-icon {
       font-size: 26px;
       vertical-align: middle;
       color: #3ebcfe
     }
 
-    span.obs-build-status-icon {
+    span.bible-build-status-icon {
       font-size: 40px;
       font-weight: 300;
       vertical-align: middle;
@@ -25,13 +25,13 @@ div.obs-header-title {
       }
     }
 
-    span#obs-h1 {
+    span#bible-h1 {
       //something
     }
   }
 }
 
-div.obs-last-updated {
+div.bible-last-updated {
   margin: 0 0 12px 35px;
   font-size: 16px;
 
