@@ -20,8 +20,8 @@ $(document).ready(function(){
 
     $.getJSON("../project.json", function (project) {
       $.each(project.commits.reverse(), function (index, commit) {
-	    request.open('GET', parent_url+"/"+commit.id+"/01.html", false);
-	    request.send();
+        request.open('GET', parent_url+"/"+commit.id+"/01.html", false);
+        request.send();
         if (request.status === 404) {
            return true;
         }
