@@ -40,7 +40,7 @@ $(document).ready(function(){
         statusIcon = getStatusIcon(commit.status)
 
         if(commit.id == myCommitId){
-          $('#last-updated').html(timeSince(date));
+          $('#last-updated').html("Update "+timeSince(date)+" ago");
           $('#build-status-icon i').attr("class", "fa "+statusIcon);
         }
 
