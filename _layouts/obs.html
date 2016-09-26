@@ -4,34 +4,33 @@
 {% include head.html %}
 
 <body itemscope="itemscope" itemtype="http://schema.org/WebPage">
+<link rel="stylesheet" type="text/css" href="{{ '/css/commit-page.css' | prepend: site.baseurl }}">
 <link rel="stylesheet" type="text/css" href="{{ '/css/obs.css' | prepend: site.baseurl }}">
 
 {% include header.html %}
 
-<div class="content-container container">
+<div class="content-container container obs-container">
     <main class="content" role="main" itemprop="mainContentOfPage">
         <article itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
             <header>
-                <div class="obs-header-title">
+                <div id="header-title">
                     <h1 itemprop="headline">
-                        <span class="fa fa-star obs-starred-icon"></span>
-                        <span id="obs-h1">Header</span>
-                        <span class="fa fa-check-circle-o obs-build-status-icon"></span>
+                        <span id="starred-icon"><i class="fa fa-star-o"></i></span>
+                        <span id="h1">Header</span>
+                        <span id="build-status-icon"><i class="fa fa-question-circle"></i></span>
                     </h1>
                 </div>
-                <div class="obs-last-updated">
-                    <span id="last-updated">Updated 1 hour ago</span>
-                    <span class="fa fa-eye"></span>
-                    <span id="obs-num-of-views">2</span>
+                <div id="sub-header">
+                    <span id="last-updated">Updated ? hours ago</span>
+                    <span id="views"><i class="fa fa-eye"></i></span>
+                    <span id="num-of-views">? views</span>
                 </div>
             </header>
             <div class="page-content row">
-                <div class="col-md-3 sidebar" role="complementary">
-                    <div id="obs-sidebar">
-                        { sidebar }
-                    </div>
+                <div id="left-sidebar" class="col-md-3 sidebar" role="complementary">
+                    { sidebar }
                 </div>
-                <div class="col-md-9" role="main" id="obs-content">
+                <div class="col-md-9" role="main" id="content">
                     { content }
                 </div>
             </div>
@@ -40,6 +39,9 @@
 </div>
 
 {% include footer.html %}
+
+<script type="text/javascript" src="{{ '/js/general-tools.js' | prepend: site.baseurl }}"></script>
+<script type="text/javascript" src="{{ '/js/commit-page.js' | prepend: site.baseurl }}"></script>
 
 </body>
 
