@@ -3,14 +3,34 @@
  */
 
 $(document).ready(function(){
+  $('#starred-icon').click(function(){
+    if($(this).hasClass('starred')){
+        $(this).removeClass('starred');
+        $(this).find('i').removeClass('fa-star').addClass('fa-star-o');
+    }
+    else {
+        $(this).addClass('starred');
+        $(this).find('i').removeClass('fa-star-o').addClass('fa-star');
+    }
+  });
+
+  var filename = window.location.href.split('?')[0].split('/').pop();
+  $('#left-sidebar #page-nav option[value="'+filename+'"]').attr('selected','selected');
+
   $.getJSON( "build_log.json", function(myLog) {
     var myCommitId = myLog.commit_id.substring(0, 10);
     $('#last-updated').html("Updated "+timeSince(new Date(myLog.created_at))+" ago");
     $('#build-status-icon i').attr("class", "fa "+getStatusIcon(myLog.status));
+    if(myLog.errors.length > 0)
+        $('#build-status-icon').attr("title", myLog.errors.join("\n"));
+    else if(myLog.warnings.length > 0)
+        $('#build-status-icon').attr("title", myLog.warnings.join("\n"));
+    else if(myLog.message)
+        $('#build-status-icon').attr("title", myLog.message);
 
     console.log("Building sidebar for "+myCommitId);
 
-    $('#left-sidebar #revisions').empty()
+    $('#left-sidebar #revisions').empty();
 
     $.getJSON("../project.json", function (project) {
       $.each(project.commits.reverse(), function (index, commit) {
@@ -25,7 +45,7 @@ $(document).ready(function(){
         };
         dateStr = date.toLocaleString("en-US", options);
 
-        statusIcon = getStatusIcon(commit.status)
+        statusIcon = getStatusIcon(commit.status);
 
         var html = '<tr><td>';
         if(commit.id == myCommitId){

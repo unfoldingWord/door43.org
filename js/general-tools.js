@@ -32,9 +32,9 @@ function getStatusIcon(status) {
     switch(status){
         case 'requested': return 'fa-spinner';
         case 'started': return 'fa-spinner';
-        case 'success': return 'fa-check-circle-o';
-        case 'warnings': return 'fa-exclamation';
-        case 'critical': return 'fa-times-circle-o';
+        case 'success': return 'fa-check-circle';
+        case 'warnings': return 'fa-exclamation-circle';
+        case 'critical': return 'fa-times-circle';
         case 'failed':
         default: return 'fa-chain-broken';
     }
