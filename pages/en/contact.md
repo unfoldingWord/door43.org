@@ -9,9 +9,20 @@ permalink: /en/contact/index.html
 The fastest way to get answers is to ask the [#helpdesk](https://team43.slack.com/messages/helpdesk/) channel in our Team43 Slack Group.  Use the form below to join our Slack team if you are not a member.
 
 <script type="text/javascript">
+  function disable_page() {
+    var cover = document.getElementById('gray_cover');
+    cover.style.display = 'inline-block';
+  }
+
+  function enable_page() {
+    var cover = document.getElementById('gray_cover');
+    cover.style.display = 'none';
+  }
+
   function signUp(f) {
 
     var url = 'https://aj7l129x3e.execute-api.us-west-2.amazonaws.com/prod/slack_invite';
+    disable_page();
 
     $.ajax({
         url: url,
@@ -25,15 +36,19 @@ The fastest way to get answers is to ask the [#helpdesk](https://team43.slack.co
             else {
                 alert('A problem was encountered: ' + data['message'] + '.');
             }
+            enable_page();
         },
-        error: function (xOptions, textStatus) {
-            console.log('Error: ' + textStatus);
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log('Error: ' + textStatus + '\n' +  errorThrown);
+            alert(textStatus);
+            enable_page();
         }
     });
 
     return false;
   }
 </script>
+<div id="gray_cover" style="position:fixed;top:0;left:0;overflow:hidden;display:none;width:100%;height:100%;background-color:#000000;opacity:0.5;MozOpacity:0.5;z-index:150;filter:alpha(opacity=50);cursor: wait;"></div>
 <form onsubmit="return signUp(this)" action="" method="POST">
     <fieldset id="slack-fields">
         <legend>Team43 Slack Sign Up Form</legend>

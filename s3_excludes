@@ -1,4 +1,4 @@
 # These files will be excluded when syncing to S3
-u/
-assets/.sync/
-logs/
+u/*
+assets/.sync/*
+logs/*
