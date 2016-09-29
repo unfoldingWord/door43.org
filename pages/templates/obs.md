@@ -1,7 +1,7 @@
 ---
-layout: bible
+layout: obs
 title: '{{ HEADING }}'
 header_title: '{{ HEADING }}'
-permalink: /templates/bible.html
+permalink: /templates/obs.html
 ---
 This is just a placeholder
