@@ -6,32 +6,36 @@
  * Style for project commit pages
  */
 
-#header-title {
-    h1 {
-        margin: 0;
+header {
+    margin-bottom: 20px;
 
-        #starred-icon {
-            i {
-                font-size: 26px;
-                vertical-align: middle;
-                color: #000000;
+    #header-title {
+        h1 {
+            margin: 0;
+        
+            #starred-icon {
+                i {
+                    font-size: 26px;
+                    vertical-align: middle;
+                    color: #000000;
+                }
             }
-        }
-
-        #starred-icon.starred {
-            i {
-                color: #3ebcfe;
+        
+            #starred-icon.starred {
+                i {
+                    color: #3ebcfe;
+                }
             }
-        }
-
-        #build-status-icon {
-            i {
-                font-size: 40px;
-                font-weight: 300;
-                vertical-align: middle;
-            }
-            i:hover {
-                color: #3ebcfe;
+        
+            #build-status-icon {
+                i {
+                    font-size: 30px;
+                    font-weight: 300;
+                    vertical-align: middle;
+                }
+                i:hover {
+                    color: #3ebcfe;
+                }
             }
         }
     }

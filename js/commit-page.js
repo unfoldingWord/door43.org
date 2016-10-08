@@ -53,7 +53,7 @@ $(document).ready(function(){
         }
         else
           html += '<a href="../' + commit.id + '/index.html">' + dateStr + '</a>';
-        html += '</td><td><i class="fa '+statusIcon+'"></i></td></tr>';
+        html += '</td><td><i class="fa '+statusIcon+'" title="'+commit.status+'"></i></td></tr>';
         $('#left-sidebar #revisions').append(html);
       }); // End each
     })
