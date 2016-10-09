@@ -30,12 +30,12 @@ function timeSince(date) {
 
 function getStatusIcon(status) {
     switch(status){
-        case 'requested': return 'fa-spinner';
-        case 'started': return 'fa-spinner';
+        case 'requested':
+        case 'started': return 'fa-spinner fa-spin';
         case 'success': return 'fa-check-circle';
         case 'warnings': return 'fa-exclamation-circle';
-        case 'critical': return 'fa-times-circle';
+        case 'critical':
         case 'failed':
-        default: return 'fa-chain-broken';
+        default: return 'fa-times-circle';
     }
 }
