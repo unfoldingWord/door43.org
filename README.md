@@ -56,6 +56,25 @@ You may run `make test`, or `make build`, or `make serve` to test and review you
 
 If Travis CI has built and deployed the `develop` branch successfully, you may merge it into the `master` branch.  You can do this by running `make publish`.  Your changes should be visible within 5 minutes on https://live.door43.org.
 
+#### Syncing Assets
+
+Assets (binary things like images) are housed on cdn.door43.org/assets for this site. This assets folder is a Resilio Sync folder shared among the developers (ask if you need access).
+
+##### Setup
+
+Initial setup requires getting the shared folder on your system.  Then you need to symlink the folder into the root of this project as "assets".  On my system I did this:
+
+    cd vcs/door43.org
+    ln -s /Users/jesse/BitTorrent\ Sync/door43.org.assets/ assets
+
+If you need `s3cmd`, then install it from http://s3tools.org/download.  It's as easy as `yum install s3cmd` or `sudo apt-get install s3cmd` for Linux.
+
+You will also need to ensure that you have a configuration file for `s3cmd` available as `s3cfg-prod` at the root of the repo.  Both the assets and s3cfg-prod locations are excluded from git in .gitignore.
+
+##### Syncing
+
+In order to synchronize the assets to the cdn S3 bucket you may now run `make assets`.  This process will **not remove** assets from the /assets folder, only add or update existing files.
+
 #### Open source acknowledgements
 
 * http://jekyllrb.com
