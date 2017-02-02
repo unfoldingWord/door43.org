@@ -2,3 +2,5 @@
 u/*
 assets/.sync/*
 logs/*
+.DS_Store
+.sync/*

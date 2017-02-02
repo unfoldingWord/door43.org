@@ -1,3 +1,5 @@
+.PHONY: assets
+
 stat:
 	git branch
 	git status -s
@@ -6,6 +8,9 @@ test: stat
 	./cibuild.sh
 
 build: test
+
+assets:
+	./assets_sync.sh
 
 install:
 	bundle install
