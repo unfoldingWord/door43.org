@@ -35,8 +35,31 @@ eConvStatus = {
     ERROR: 4
 }
 
+GTimageSizes = {
+    "error-long-large.png" : [101, 37],
+    "success-long-large.png" : [121, 37],
+    "warning-long-large.png" : [129, 37],
+    "error-long-small.png" : [57, 21],
+    "success-long-small.png" : [68, 21],
+    "warning-long-small.png" : [72, 21],
+
+    "error-short-large.png" : [36, 36],
+    "success-short-large.png" : [35, 36],
+    "warning-short-large.png" : [36, 35],
+    "error-short-small.png" : [14, 14],
+    "success-short-small.png" : [14, 14],
+    "warning-short-small.png" : [14, 14]
+}
+
 var faSpinnerClass = 'fa-spinner fa-spin';
 const StatusImagesUrl = "https://cdn.door43.org/assets/img/icons/";
+
+function lookupSizeForImage(imageName) {
+    if(GTimageSizes.hasOwnProperty(imageName)) {
+        return GTimageSizes[imageName];
+    }
+    return null;
+}
 
 function setOverallConversionStatus(status) {
     var iconType = getDisplayIconType(status);
@@ -64,38 +87,45 @@ function getDisplayIconType(status) {
     }
 }
 
-function getConversionStatusIconHtml(iconType, title, longWidth, largeSize) {
-    var url = null;
+function getConversionStatusIconHtml(iconType, title, longWidth, largeHeight) {
     if(iconType == eConvStatus.IN_PROGRESS) {
         return '<i class="fa ' + faSpinnerClass + '" title="' + title + '"></i>';
     }
 
-    url = getNewStatusIcon(status, longWidth,largeSize);
-    if(url) {
-        var html = '<img src="' + url + '" alt="'+title+'" >';
+    var icon = getNewStatusIcon(iconType, longWidth, largeHeight);
+    if(icon) {
+        var sizeStr = getImageDimensions(icon);
+        var html = '<img src="' + StatusImagesUrl + icon + '" alt="' + title + '"' + sizeStr + '>';
         return html;
     }
 
     return "";
 }
 
-function getNewStatusIcon(status, longWidth,largeSize) {
-    var suffix = largeSize ? "-large.png" : "-small.png";
-    var middle = longWidth ? "-long" : "-short";
-    switch(status){
+function getImageDimensions(icon) {
+    var sizeStr = "";
+    var size = lookupSizeForImage(icon);
+    if((size) && (size.length == 2)) {
+        sizeStr = ' height="' + size[1] + '" width="' + size[0] + '"';
+    }
+    return sizeStr;
+}
 
+function getNewStatusIcon(status, longWidth, largeHeight) {
+    switch(status){
         case eConvStatus.SUCCESS:
-            return buildImageUrl('success', middle, suffix);
+            return buildImageUrl('success', longWidth, largeHeight);
         case eConvStatus.WARNING:
-            return buildImageUrl('warning', middle, suffix);
+            return buildImageUrl('warning', longWidth, largeHeight);
         case eConvStatus.ERROR:
         default:
-            return buildImageUrl('error', middle, suffix);
+            return buildImageUrl('error', longWidth, largeHeight);
     }
 }
 
-function buildImageUrl(prefix, middle, suffix) {
-    var path = StatusImagesUrl + prefix + middle + suffix;
+function buildImageUrl(prefix, longWidth, largeHeight) {
+    var suffix = largeHeight ? "-large.png" : "-small.png";
+    var middle = longWidth ? "-long" : "-short";
+    var path = prefix + middle + suffix;
     return path;
 }
-
