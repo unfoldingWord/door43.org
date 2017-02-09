@@ -20,7 +20,8 @@ $(document).ready(function(){
   $.getJSON( "build_log.json", function(myLog) {
     var myCommitId = myLog.commit_id.substring(0, 10);
     $('#last-updated').html("Updated "+timeSince(new Date(myLog.created_at))+" ago");
-    $('#build-status-icon i').attr("class", "fa "+getStatusIcon(myLog.status));
+    $('#build-status-icon i').attr("class", "fa "+ faSpinnerClass); // default to spinner
+    setOverallConversionStatus(myLog.status);
     if(myLog.errors.length > 0)
         $('#build-status-icon').attr("title", myLog.errors.join("\n"));
     else if(myLog.warnings.length > 0)
@@ -45,15 +46,16 @@ $(document).ready(function(){
         };
         dateStr = date.toLocaleString("en-US", options);
 
-        statusIcon = getStatusIcon(commit.status);
-
         var html = '<tr><td>';
         if(commit.id == myCommitId){
           html += '<b>'+dateStr+'</b>';
         }
-        else
+        else {
           html += '<a href="../' + commit.id + '/index.html">' + dateStr + '</a>';
-        html += '</td><td><i class="fa '+statusIcon+'" title="'+commit.status+'"></i></td></tr>';
+        }
+
+        var iconHtml = getCommitConversionStatusIcon(commit.status);
+        html += '</td><td>' + iconHtml + '</td></tr>';
         $('#left-sidebar #revisions').append(html);
       }); // End each
     })

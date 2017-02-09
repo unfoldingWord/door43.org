@@ -28,14 +28,104 @@ function timeSince(date) {
     return Math.floor(seconds) + " seconds";
 }
 
-function getStatusIcon(status) {
+eConvStatus = {
+    IN_PROGRESS : 1,
+    SUCCESS : 2,
+    WARNING : 3,
+    ERROR: 4
+}
+
+GTimageSizes = {
+    "error-long-large.png" : [101, 37],
+    "success-long-large.png" : [121, 37],
+    "warning-long-large.png" : [129, 37],
+    "error-long-small.png" : [57, 21],
+    "success-long-small.png" : [68, 21],
+    "warning-long-small.png" : [72, 21],
+
+    "error-short-large.png" : [36, 36],
+    "success-short-large.png" : [35, 36],
+    "warning-short-large.png" : [36, 35],
+    "error-short-small.png" : [14, 14],
+    "success-short-small.png" : [14, 14],
+    "warning-short-small.png" : [14, 14]
+}
+
+var faSpinnerClass = 'fa-spinner fa-spin';
+const StatusImagesUrl = "https://cdn.door43.org/assets/img/icons/";
+
+function lookupSizeForImage(imageName) {
+    if(GTimageSizes.hasOwnProperty(imageName)) {
+        return GTimageSizes[imageName];
+    }
+    return null;
+}
+
+function setOverallConversionStatus(status) {
+    var iconType = getDisplayIconType(status);
+    if (iconType != eConvStatus.IN_PROGRESS) {
+        iconHtml = getConversionStatusIconHtml(iconType, status, true, true);
+        $('#build-status-icon').html(iconHtml); // replace default spinner
+    }
+}
+
+function getCommitConversionStatusIcon(status) {
+    var iconType = getDisplayIconType(status);
+    var html = getConversionStatusIconHtml(iconType, status, false, false);
+    return html;
+}
+
+function getDisplayIconType(status) {
     switch(status){
         case 'requested':
-        case 'started': return 'fa-spinner fa-spin';
-        case 'success': return 'fa-check-circle';
-        case 'warnings': return 'fa-exclamation-circle';
+        case 'started': return eConvStatus.IN_PROGRESS;
+        case 'success': return eConvStatus.SUCCESS;
+        case 'warnings': return eConvStatus.WARNING;
         case 'critical':
         case 'failed':
-        default: return 'fa-times-circle';
+        default: return eConvStatus.ERROR;
     }
+}
+
+function getConversionStatusIconHtml(iconType, title, longWidth, largeHeight) {
+    if(iconType == eConvStatus.IN_PROGRESS) {
+        return '<i class="fa ' + faSpinnerClass + '" title="' + title + '"></i>';
+    }
+
+    var icon = getNewStatusIcon(iconType, longWidth, largeHeight);
+    if(icon) {
+        var sizeStr = getImageDimensions(icon);
+        var html = '<img src="' + StatusImagesUrl + icon + '" alt="' + title + '"' + sizeStr + '>';
+        return html;
+    }
+
+    return "";
+}
+
+function getImageDimensions(icon) {
+    var sizeStr = "";
+    var size = lookupSizeForImage(icon);
+    if((size) && (size.length == 2)) {
+        sizeStr = ' height="' + size[1] + '" width="' + size[0] + '"';
+    }
+    return sizeStr;
+}
+
+function getNewStatusIcon(status, longWidth, largeHeight) {
+    switch(status){
+        case eConvStatus.SUCCESS:
+            return buildImageUrl('success', longWidth, largeHeight);
+        case eConvStatus.WARNING:
+            return buildImageUrl('warning', longWidth, largeHeight);
+        case eConvStatus.ERROR:
+        default:
+            return buildImageUrl('error', longWidth, largeHeight);
+    }
+}
+
+function buildImageUrl(prefix, longWidth, largeHeight) {
+    var suffix = largeHeight ? "-large.png" : "-small.png";
+    var middle = longWidth ? "-long" : "-short";
+    var path = prefix + middle + suffix;
+    return path;
 }
