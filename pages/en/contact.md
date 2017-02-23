@@ -56,7 +56,7 @@ The fastest way to get answers is to ask the [#helpdesk](https://team43.slack.co
         <label for="first_name"><span>First Name: </span><input type="text" name="first_name" id="first_name"></label>
         <label for="last_name"><span>Last Name: </span><input type="text" name="last_name" id="last-name"></label>
         <label for="email"><span>E-Mail: </span><input type="email" name="email" id="email"></label>
-        <input type="hidden" name="token" value="IByqnIF8ql+jXkKvvTQZCvc32RH2K2jKxRyy3kKHGrjtj+q9XXFfVGyqWS8lzneylw==">
+        <input type="hidden" name="token" value="IByqnIF8ql+jXkKvvTQZCvc32RH2K2jKxRyy2EeLE7rmjui3VHBAQTelUi8vz3Dmw5c9zxV7YL9UupucBADk1RJn+hgg2P+S">
         <button type="submit">Sign Up</button>
     </fieldset>
 </form>
