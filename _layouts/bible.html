@@ -4,7 +4,7 @@
 {% include head.html %}
 
 <body itemscope="itemscope" itemtype="http://schema.org/WebPage">
-<link rel="stylesheet" type="text/css" href="{{ '/css/commit-page.css' | prepend: site.baseurl }}">
+<link rel="stylesheet" type="text/css" href="{{ '/css/project-page.css' | prepend: site.baseurl }}">
 <link rel="stylesheet" type="text/css" href="{{ '/css/bible.css' | prepend: site.baseurl }}">
 
 {% include header.html %}
@@ -28,10 +28,13 @@
             </header>
             <div class="page-content row">
                 <div id="left-sidebar" class="col-md-3 sidebar" role="complementary">
-                    { sidebar }
+                    { left-sidebar }
                 </div>
-                <div class="col-md-9" role="main" id="content">
+                <div class="col-md-6 bible-outer-content" role="main" id="outer-content">
                     { content }
+                </div>
+                <div id="right-sidebar" class="col-md-3 sidebar" role="complementary">
+                    { right-sidebar }
                 </div>
             </div>
         </article>
@@ -41,7 +44,7 @@
 {% include footer.html %}
 
 <script type="text/javascript" src="{{ '/js/general-tools.js' | prepend: site.baseurl }}"></script>
-<script type="text/javascript" src="{{ '/js/commit-page.js' | prepend: site.baseurl }}"></script>
+<script type="text/javascript" src="{{ '/js/project-page.js' | prepend: site.baseurl }}"></script>
 
 </body>
 

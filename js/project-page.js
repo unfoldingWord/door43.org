@@ -72,5 +72,47 @@ $(document).ready(function(){
   .fail(function () {
     console.log("error reading my own build_log.json");
   }); // End getJSON
+
+  /* set up scrollspy */
+  var navHeight = $('.navbar').outerHeight(true);
+  $('body').scrollspy({ target: '#right-sidebar-nav', offset: navHeight});
+
+  /* smooth scrolling to sections with room for navbar */
+  $("#right-sidebar-nav li a[href^='#']").on('click', function (e) {
+        // prevent default anchor click behavior
+        e.preventDefault();
+        // store hash
+        var hash = this.hash;
+        // animate
+        $('html, body').animate({
+            scrollTop: $(hash).offset().top - navHeight
+        }, 300, function () {
+            // when done, add hash to url
+            // (default click behaviour)
+            window.location.hash = hash;
+        });
+  });
+
+  /* Scroll to current section if URL has hash */
+  if(window.location.hash){
+    $("#right-sidebar-nav li a[href='#"+window.location.hash+"']").trigger('click');
+  }
+
+  $(window).on('scroll resize', function(){
+    $('#right-sidebar-nav #sidebar-nav').css('bottom', getVisibleHeight('footer'));
+  });
 });
 
+function getVisibleHeight(selector) {
+    var $el = $(selector),
+        scrollTop = $(this).scrollTop(),
+        scrollBot = scrollTop + $(this).height(),
+        elTop = $el.offset().top,
+        elBottom = elTop + $el.outerHeight(),
+        visibleTop = elTop < scrollTop ? scrollTop : elTop,
+        visibleBottom = elBottom > scrollBot ? scrollBot : elBottom;
+    if((visibleBottom - visibleTop) > 0)
+      return visibleBottom - visibleTop;
+    else
+      return 0;
+}

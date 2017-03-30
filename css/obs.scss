@@ -3,8 +3,23 @@
 @charset "utf-8";
 
 /**
- * Style for OBS pages
+ * Style for OBS project pages
  */
 
 .obs-container {
+  margin-right: 250px;
+}
+
+#content .obs-content {
+  width: 100%;
+}
+
+#page-nav ul {
+  margin: 0;
+  padding: 0;
+}
+
+#page-nav ul li {
+  list-style: none;
+  margin: 0;
 }
