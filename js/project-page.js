@@ -75,8 +75,12 @@ $(document).ready(function(){
 
   /* set up scrollspy */
   var navHeight = $('.navbar').outerHeight(true);
+  $('#sidebar-nav').affix({
+    offset: {
+      top: navHeight
+    }
+  });
   $('body').scrollspy({ target: '#right-sidebar-nav', offset: navHeight});
-
   /* smooth scrolling to sections with room for navbar */
   $("#right-sidebar-nav li a[href^='#']").on('click', function (e) {
         // prevent default anchor click behavior
