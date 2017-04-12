@@ -51,3 +51,29 @@ header {
         margin-right: 30px;
     }
 }
+
+ /**
+ * Sidebar Nav
+ */
+@media (min-width: 979px) {
+  #sidebar-nav {
+    width: 250px;
+  }
+
+  #sidebar-nav.affix {
+    position: fixed;
+    top: 80px;
+    bottom: 0;
+    margin-bottom: 0;
+    overflow-y: auto;
+    width: 250px;
+  }
+}
+
+#sidebar-nav li {
+  margin: 0;
+}
+
+#sidebar-nav li a {
+  padding: 0;
+}
