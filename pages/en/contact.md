@@ -21,7 +21,7 @@ The fastest way to get answers is to ask the [#helpdesk](https://team43.slack.co
 
   function signUp(f) {
 
-    var url = 'https://aj7l129x3e.execute-api.us-west-2.amazonaws.com/prod/slack_invite';
+    var url = 'https://api.door43.org/slack/invite';
     disable_page();
 
     $.ajax({
