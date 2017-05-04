@@ -73,8 +73,28 @@ $(document).ready(function(){
     console.log("error reading my own build_log.json");
   }); // End getJSON
 
+  // pin the header below the menu rather than scroll out of view
+  var $pinned = $('#pinned-header');
+  var $menu = $($('nav.navbar-fixed-top')[0]);
+  var margin_top = parseInt($pinned.css('margin-top'));
+
+  $(document).on('scroll', function () {
+    var scroll_top = $(window).scrollTop();
+
+    if (scroll_top > margin_top - 10) {
+      $pinned.addClass('pin-to-top');
+      $pinned.css('top', $menu.height());
+      $('#sidebar-nav').addClass('pin-to-top');
+
+    }
+    else {
+      $pinned.removeClass('pin-to-top');
+      $('#sidebar-nav').removeClass('pin-to-top');
+    }
+  });
+
   /* set up scrollspy */
-  var navHeight = $('.navbar').outerHeight(true);
+  var navHeight = 122;
   $('#sidebar-nav').affix({
     offset: {
       top: navHeight
