@@ -93,6 +93,7 @@ header {
   &.pin-to-top {
     position: fixed;
     margin-top: 0;
+    top: 65px;
     box-shadow: 0 0 8px 1px #777;
 
     #header-title, #sub-header {
@@ -108,6 +109,53 @@ header {
     .container {
       padding-top: 6px;
       padding-bottom: 12px;
+    }
+  }
+}
+
+@media (max-width: 990px) {
+  #pinned-header {
+    &.pin-to-top {
+      #sub-header {
+        position: static;
+        display: block;
+        margin-bottom: 0;
+      }
+    }
+  }
+
+}
+
+@media (max-width: 840px) {
+  #pinned-header {
+    margin-top: 30px;
+    #header-title {
+      h1 {
+        font-size: 30px;
+        #build-status-icon {
+          i {
+            font-size: 26px;
+          }
+        }
+      }
+    }
+    &.pin-to-top {
+      top: 60px;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  #pinned-header {
+    #header-title {
+      h1 {
+        font-size: 24px;
+        #build-status-icon {
+          i {
+            font-size: 20px;
+          }
+        }
+      }
     }
   }
 }
