@@ -83,7 +83,6 @@ $(document).ready(function(){
 
     if (scroll_top > margin_top - 10) {
       $pinned.addClass('pin-to-top');
-      $pinned.css('top', $menu.height());
       $('#sidebar-nav').addClass('pin-to-top');
 
     }
