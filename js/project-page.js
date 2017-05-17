@@ -33,9 +33,12 @@ $(document).ready(function () {
 
     console.log("Building sidebar for " + myCommitId);
 
-    $('#left-sidebar').find('#revisions').empty();
+    var $revisions = $('#left-sidebar').find('#revisions');
+
+    $revisions.empty();
 
     $.getJSON("../project.json", function (project) {
+      var counter = 1;
       $.each(project.commits.reverse(), function (index, commit) {
         var date = new Date(commit.created_at);
         var options = {
@@ -46,20 +49,20 @@ $(document).ready(function () {
           minute: "numeric",
           timeZone: "UTC"
         };
+
+        var display = (counter++ > 10) ? 'style="display: none"' : '';
+        var iconHtml = getCommitConversionStatusIcon(commit.status);
         var dateStr = date.toLocaleString("en-US", options);
 
-        var html = '<tr><td>';
-        if (commit.id === myCommitId) {
-          html += '<b>' + dateStr + '</b>';
-        }
-        else {
-          html += '<a href="../' + commit.id + '/index.html">' + dateStr + '</a>';
+        if (commit.id !== myCommitId) {
+          dateStr = '<a href="../' + commit.id + '/index.html">' + dateStr + '</a>';
         }
 
-        var iconHtml = getCommitConversionStatusIcon(commit.status);
-        html += '</td><td>' + iconHtml + '</td></tr>';
-        $('#left-sidebar').find('#revisions').append(html);
+        $revisions.append('<tr ' + display + '><td>' + dateStr + '</td><td>' + iconHtml + '</td></tr>');
       }); // End each
+
+      if (counter > 10)
+        $revisions.append('<tr id="view_more_tr"><td colspan="2" class="borderless"><a href="javascript:showTenMore();">View More...</a></tr>');
     })
       .done(function () {
         console.log("processed project.json");
@@ -125,7 +128,7 @@ $(document).ready(function () {
   }
 
   $(window).on('scroll resize', function () {
-    $rightSidebarNav('#sidebar-nav').css('bottom', getVisibleHeight('footer'));
+    $('#sidebar-nav').css('bottom', getVisibleHeight('footer'));
   });
 });
 
@@ -141,4 +144,27 @@ function getVisibleHeight(selector) {
     return visibleBottom - visibleTop;
   else
     return 0;
+}
+
+function showTenMore(){
+
+  var $revisions = $('#left-sidebar').find('#revisions');
+  var counter = 0;
+
+  // get the rows still hidden
+  var hiddenRows = $revisions.find('tr').filter(function() {
+    var $this = $(this);
+    return $this.css('display') === 'none';
+  });
+
+  // show the next batch of rows
+  while (counter < 10 && counter < hiddenRows.length) {
+    hiddenRows[counter].style.display = '';
+    counter++;
+  }
+  
+  // if all rows are now visible, hide the View More link
+  if (counter >= hiddenRows.length) {
+    $revisions.find('#view_more_tr').css('display', 'none');
+  }
 }
