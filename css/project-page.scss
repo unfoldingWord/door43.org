@@ -52,6 +52,27 @@ header {
     }
 }
 
+#revisions {
+
+  font-size: 14px;
+
+  tr {
+    td {
+      border-bottom: thin solid #ccc;
+      padding: 4px 0 2px;
+
+      img {
+        float: right;
+        margin-right: 4px;
+      }
+    }
+  }
+}
+
+.borderless {
+  border: 0 !important;
+}
+
  /**
  * Sidebar Nav
  */
