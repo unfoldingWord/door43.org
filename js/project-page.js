@@ -2,6 +2,7 @@
  * Javascript for project commit pages to update the status and build the left sidebar
  */
 
+const DOWNLOAD_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
 var source_download = null;
 
 $(document).ready(function () {
@@ -173,14 +174,13 @@ function showTenMore(){
   }
 }
 
-function getDownloadUrl() {
+function getDownloadUrl(pageUrl=window.location.href) {
     if(source_download) { // if found in build_log.json
-        return source_download;
+      return source_download;
     }
 
-    var url = window.location.href;
-    var parts = url.split("/");
+    var parts = pageUrl.split("/");
     var commit = parts[6];
-    var download = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/" + commit + ".zip";
+    var download = DOWNLOAD_LOCATION + commit + ".zip";
     return download;
 }
