@@ -174,7 +174,16 @@ function showTenMore(){
   }
 }
 
-function getDownloadUrl(pageUrl=window.location.href) {
+/**
+ * get URL for download
+ * @param [pageUrl] if not set will use page href
+ * @returns {*}
+ */
+function getDownloadUrl(pageUrl) {
+    if(pageUrl == undefined) {
+        pageUrl=window.location.href
+    }
+
     if(source_download) { // if found in build_log.json
       return source_download;
     }
