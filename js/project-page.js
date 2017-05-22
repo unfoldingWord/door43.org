@@ -2,6 +2,8 @@
  * Javascript for project commit pages to update the status and build the left sidebar
  */
 
+var source_download = null;
+
 $(document).ready(function () {
   $('#starred-icon').click(function () {
     if ($(this).hasClass('starred')) {
@@ -20,6 +22,8 @@ $(document).ready(function () {
   $.getJSON("build_log.json", function (myLog) {
     var myCommitId = myLog.commit_id.substring(0, 10);
     $('#last-updated').html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
+
+    source_download = myLog.source;
 
     var $buildStatusIcon = $('#build-status-icon');
     $buildStatusIcon.find('i').attr("class", "fa " + faSpinnerClass); // default to spinner
@@ -167,4 +171,16 @@ function showTenMore(){
   if (counter >= hiddenRows.length) {
     $revisions.find('#view_more_tr').css('display', 'none');
   }
+}
+
+function getDownloadUrl() {
+    if(source_download) { // if found in build_log.json
+        return source_download;
+    }
+
+    var url = window.location.href;
+    var parts = url.split("/");
+    var commit = parts[6];
+    var download = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/" + commit + ".zip";
+    return download;
 }
