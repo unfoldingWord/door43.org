@@ -64,7 +64,7 @@ function lookupSizeForImage(imageName) {
 function setOverallConversionStatus(status) {
     var iconType = getDisplayIconType(status);
     if (iconType != eConvStatus.IN_PROGRESS) {
-        iconHtml = getConversionStatusIconHtml(iconType, status, true, true);
+        var iconHtml = getConversionStatusIconHtml(iconType, status, true, true);
         $('#build-status-icon').html(iconHtml); // replace default spinner
     }
 }
