@@ -1,6 +1,6 @@
 describe('Test Badges', function () {
 
-    it('should generate correct icon type for status string', function () {
+     it('should generate correct icon type for status string', function () {
         for(var statusStr in statusMap) {
             var expectedType = statusMap[statusStr];
 
@@ -25,9 +25,15 @@ describe('Test Badges', function () {
     var tests = generateNormalTestCasesForBadgeHtml();
     tests.forEach(function(test) {
         it('should generate correct badge html for ' + test.status, function () {
-            var html = getCommitConversionStatusIcon(test.status);
+            var setHtml = setOverallConversionStatus(test.status);
+            var getHtml = getCommitConversionStatusIcon(test.status);
 
-            expect(html).toEqual(test.expectedHtml);
+            expect(getHtml).toEqual(test.expectedGetHtml);
+            if(test.expectedSetHtml) {
+                expect(setHtml).toEqual(test.expectedSetHtml);
+            } else {
+                expect(setHtml).toBeUndefined();
+            }
         });
     });
 
@@ -167,16 +173,30 @@ describe('Test Badges', function () {
             var test = {status: statusStr};
 
             if((statusStr == 'requested') || (statusStr == 'started')) {
-                test.expectedHtml = '<i class="fa ' + faSpinnerClass + '" title="' + statusStr + '"></i>';
+                test.expectedGetHtml = '<i class="fa ' + faSpinnerClass + '" title="' + statusStr + '"></i>';
+                test.expectedSetHtml = null;
             } else {
-                var iconType = getDisplayIconType(statusStr);
-                var icon = getNewStatusIcon(iconType, 0, 0);
-                var sizeStr = getImageDimensions(icon);
-                test.expectedHtml = '<img src="' + StatusImagesUrl + icon + '" alt="' + statusStr + '"' + sizeStr + '>';
+               test.expectedGetHtml = getIconHtml(0, 0, statusStr);
+                test.expectedSetHtml = getIconHtml(1, 1, statusStr);
             }
             tests.push(test);
         }
         return tests;
     }
 
+    function getIconHtml(width, height, statusStr) {
+        var iconType = getDisplayIconType(statusStr);
+        var icon = getNewStatusIcon(iconType, width, height);
+        var sizeStr = getImageDimensions(icon);
+        var html = '<img src="' + StatusImagesUrl + icon + '" alt="' + statusStr + '"' + sizeStr + '>';
+        return html;
+    }
+
+    if (window['$'] === undefined) {
+        $ = function (dummy) { // stub out jquery
+            return { html: function (dummy) {
+
+            }}
+        }
+    }
 });
