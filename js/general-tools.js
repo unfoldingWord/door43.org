@@ -33,7 +33,7 @@ eConvStatus = {
     SUCCESS : 2,
     WARNING : 3,
     ERROR: 4
-}
+};
 
 GTimageSizes = {
     "error-long-large.png" : [101, 37],
@@ -49,7 +49,7 @@ GTimageSizes = {
     "error-short-small.png" : [14, 14],
     "success-short-small.png" : [14, 14],
     "warning-short-small.png" : [14, 14]
-}
+};
 
 var faSpinnerClass = 'fa-spinner fa-spin';
 const StatusImagesUrl = "https://cdn.door43.org/assets/img/icons/";

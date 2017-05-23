@@ -24,7 +24,7 @@ $(document).ready(function () {
     var myCommitId = myLog.commit_id.substring(0, 10);
     $('#last-updated').html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
 
-    source_download = myLog.source;
+    saveDownloadLink(myLog);
 
     var $buildStatusIcon = $('#build-status-icon');
     $buildStatusIcon.find('i').attr("class", "fa " + faSpinnerClass); // default to spinner
@@ -180,16 +180,34 @@ function showTenMore(){
  * @returns {*}
  */
 function getDownloadUrl(pageUrl) {
-    if(pageUrl == undefined) {
-        pageUrl=window.location.href
-    }
+  if(pageUrl == undefined) {
+      pageUrl=window.location.href
+  }
 
-    if(source_download) { // if found in build_log.json
-      return source_download;
-    }
+  if(source_download) { // if found in build_log.json
+    return source_download;
+  }
 
-    var parts = pageUrl.split("/");
-    var commit = parts[6];
-    var download = DOWNLOAD_LOCATION + commit + ".zip";
-    return download;
+  var parts = pageUrl.split("/");
+  var commit = parts[6];
+  var download = DOWNLOAD_LOCATION + commit + ".zip";
+  return download;
+}
+
+/**
+ * get download link from build log
+ * @param myLog
+ */
+function saveDownloadLink(myLog) {
+  try {
+    source_download = myLog.source;
+
+    if (myLog.input_format != "usfm") {
+        var commit_url = myLog.commit_url;
+        var repo_zip = commit_url.replace('commit', 'archive') + '.zip';
+        source_download = repo_zip;
+    }
+  } catch (e) {
+      source_download = null;
+  }
 }
