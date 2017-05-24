@@ -77,11 +77,11 @@ header {
  * Sidebar Nav
  */
 @media (min-width: 979px) {
-  #sidebar-nav {
+  #sidebar-nav, #revisions-div {
     width: 250px;
   }
 
-  #sidebar-nav.affix {
+  #sidebar-nav.affix, #revisions-div.affix {
     position: fixed;
     top: 80px;
     bottom: 0;
@@ -131,6 +131,16 @@ header {
       padding-top: 6px;
       padding-bottom: 12px;
     }
+  }
+}
+
+@media (max-width: 1199px) {
+  #sidebar-nav, #revisions-div {
+    width: 212px;
+  }
+
+  #sidebar-nav.affix, #revisions-div.affix {
+    width: 212px;
   }
 }
 
