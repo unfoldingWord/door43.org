@@ -201,13 +201,10 @@ function getDownloadUrl(pageUrl) {
 function saveDownloadLink(myLog) {
   try {
     source_download = myLog.source;
-
-    if (myLog.input_format != "usfm") {
-        var commit_url = myLog.commit_url;
-        var repo_zip = commit_url.replace('commit', 'archive') + '.zip';
-        source_download = repo_zip;
+    if(source_download) {
+      return;
     }
-  } catch (e) {
-      source_download = null;
+  } catch(e) {
   }
+  source_download = null;
 }

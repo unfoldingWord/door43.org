@@ -13,7 +13,7 @@ describe('Test Download', function () {
 
     it('getDownloadUrl() should pick up cached source', function () {
         //given
-        const expectedCommit = "123455678"
+        const expectedCommit = "123455678";
         const expectedURL = DOWNLOAD_LOCATION + expectedCommit + ".zip";
         const dummyPage = 'http://location/u/user/repo/' + expectedCommit + '/01.html';
         source_download = null;
@@ -27,7 +27,7 @@ describe('Test Download', function () {
 
     it('getDownloadUrl() should fail gracefully if no commitID in URL', function () {
         //given
-        const expectedCommit = "undefined"
+        const expectedCommit = "undefined";
         const expectedURL = DOWNLOAD_LOCATION + expectedCommit + ".zip";
         const dummyPage = 'http://location/u/user/repo'; // no commit
         source_download = null;
@@ -56,13 +56,13 @@ describe('Test Download', function () {
         expect(source_download).toEqual(expectedDownload);
     });
 
-    it('saveDownloadLink() should git zip download for other formats', function () {
+    it('saveDownloadLink() should use source download for other formats', function () {
         //given
         const myLog = {
             source: "http://source",
             commit_url: "http://somthing/commit"
         };
-        var expectedDownload = myLog.commit_url.replace('commit', 'archive') + '.zip';
+        var expectedDownload = myLog.source;
         source_download = "something";
 
         //when
@@ -70,20 +70,6 @@ describe('Test Download', function () {
 
         //then
         expect(source_download).toEqual(expectedDownload);
-    });
-
-    it('saveDownloadLink() should fail gracefully on missing commit_url', function () {
-        //given
-        const myLog = {
-            source: "http://source"
-        };
-        source_download = "something";
-
-        //when
-        saveDownloadLink(myLog);
-
-        //then
-        expect(source_download).toBeNull();
     });
 
     it('saveDownloadLink() should fail gracefully if log file is empty', function () {
