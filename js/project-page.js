@@ -5,7 +5,7 @@
 const DOWNLOAD_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
 var source_download = null;
 
-$(document).ready(function () {
+$().ready(function () {
   $('#starred-icon').click(function () {
     if ($(this).hasClass('starred')) {
       $(this).removeClass('starred');
@@ -93,23 +93,23 @@ $(document).ready(function () {
 
     if (scroll_top > margin_top - 10) {
       $pinned.addClass('pin-to-top');
-      $('#sidebar-nav').addClass('pin-to-top');
-
+      $('#sidebar-nav, #revisions-div').addClass('pin-to-top');
     }
     else {
       $pinned.removeClass('pin-to-top');
-      $('#sidebar-nav').removeClass('pin-to-top');
+      $('#sidebar-nav, #revisions-div').removeClass('pin-to-top');
     }
   });
 
   /* set up scrollspy */
   var navHeight = 122;
-  $('#sidebar-nav').affix({
+  $('#sidebar-nav, #revisions-div').affix({
     offset: {
       top: navHeight
     }
   });
   $('body').scrollspy({target: '#right-sidebar-nav', offset: navHeight});
+  $('body').scrollspy({target: '#left-sidebar-nav', offset: navHeight});
   /* smooth scrolling to sections with room for navbar */
   var $rightSidebarNav = $("#right-sidebar-nav");
   $rightSidebarNav.find("li a[href^='#']").on('click', function (e) {
@@ -133,7 +133,7 @@ $(document).ready(function () {
   }
 
   $(window).on('scroll resize', function () {
-    $('#sidebar-nav').css('bottom', getVisibleHeight('footer'));
+    $('#sidebar-nav, #revisions-div').css('bottom', getVisibleHeight('footer'));
   });
 });
 
@@ -167,7 +167,7 @@ function showTenMore(){
     hiddenRows[counter].style.display = '';
     counter++;
   }
-  
+
   // if all rows are now visible, hide the View More link
   if (counter >= hiddenRows.length) {
     $revisions.find('#view_more_tr').css('display', 'none');
