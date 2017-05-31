@@ -2,8 +2,10 @@
  * Javascript for project commit pages to update the status and build the left sidebar
  */
 
-const DOWNLOAD_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
+const DEFAULT_DOWNLOAD_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
 var source_download = null;
+
+var myCommitId, myRepoName, myOwner;
 
 $().ready(function () {
   $('#starred-icon').click(function () {
@@ -21,7 +23,9 @@ $().ready(function () {
   $('#left-sidebar').find('#page-nav option[value="' + filename + '"]').attr('selected', 'selected');
 
   $.getJSON("build_log.json", function (myLog) {
-    var myCommitId = myLog.commit_id.substring(0, 10);
+    myCommitId = myLog.commit_id.substring(0, 10);
+    myOwner = myLog.repo_owner;
+    myRepoName = myLog.repo_name;
     $('#last-updated').html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
 
     saveDownloadLink(myLog);
@@ -190,7 +194,7 @@ function getDownloadUrl(pageUrl) {
 
   var parts = pageUrl.split("/");
   var commit = parts[6];
-  var download = DOWNLOAD_LOCATION + commit + ".zip";
+  var download = DEFAULT_DOWNLOAD_LOCATION + commit + ".zip";
   return download;
 }
 
@@ -207,4 +211,19 @@ function saveDownloadLink(myLog) {
   } catch(e) {
   }
   source_download = null;
+}
+
+function printAll(){
+    var id = myOwner+"/"+myRepoName+"/"+myCommitId;
+    var api_domain = "api.door43.org";
+    var api_prefix = "";
+    switch(window.location.hostname){
+        case "dev.door43.org":
+            api_prefix = "dev-";
+            break;
+        case "test-door43.org.s3-website-us-west-2.amazonaws.com":
+            api_prefix = "test-";
+            break;
+    }
+    window.open("https://"+api_prefix+api_domain+"/tx/print?id="+id,'_blank');
 }
