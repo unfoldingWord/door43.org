@@ -14,7 +14,7 @@ describe('Test Download', function () {
     it('getDownloadUrl() should pick up cached source', function () {
         //given
         const expectedCommit = "123455678";
-        const expectedURL = DOWNLOAD_LOCATION + expectedCommit + ".zip";
+        const expectedURL = DEFAULT_DOWNLOAD_LOCATION + expectedCommit + ".zip";
         const dummyPage = 'http://location/u/user/repo/' + expectedCommit + '/01.html';
         source_download = null;
 
@@ -28,7 +28,7 @@ describe('Test Download', function () {
     it('getDownloadUrl() should fail gracefully if no commitID in URL', function () {
         //given
         const expectedCommit = "undefined";
-        const expectedURL = DOWNLOAD_LOCATION + expectedCommit + ".zip";
+        const expectedURL = DEFAULT_DOWNLOAD_LOCATION + expectedCommit + ".zip";
         const dummyPage = 'http://location/u/user/repo'; // no commit
         source_download = null;
 
