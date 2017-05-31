@@ -2,6 +2,8 @@
  * Javascript for project commit pages to update the status and build the left sidebar
  */
 
+var myCommitId, myRepoName, myOwner;
+
 $().ready(function () {
   $('#starred-icon').click(function () {
     if ($(this).hasClass('starred')) {
@@ -18,7 +20,9 @@ $().ready(function () {
   $('#left-sidebar').find('#page-nav option[value="' + filename + '"]').attr('selected', 'selected');
 
   $.getJSON("build_log.json", function (myLog) {
-    var myCommitId = myLog.commit_id.substring(0, 10);
+    myCommitId = myLog.commit_id.substring(0, 10);
+    myOwner = myLog.repo_owner;
+    myRepoName = myLog.repo_name;
     $('#last-updated').html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
 
     var $buildStatusIcon = $('#build-status-icon');
@@ -167,4 +171,19 @@ function showTenMore(){
   if (counter >= hiddenRows.length) {
     $revisions.find('#view_more_tr').css('display', 'none');
   }
+}
+
+function printAll(){
+    var id = myOwner+"/"+myRepoName+"/"+myCommitId;
+    var api_domain = "api.door43.org";
+    var api_prefix = "";
+    switch(window.location.hostname){
+        case "dev.door43.org":
+            api_prefix = "dev-";
+            break;
+        case "test-door43.org.s3-website-us-west-2.amazonaws.com":
+            api_prefix = "test-";
+            break;
+    }
+    window.open("https://"+api_prefix+api_domain+"/tx/print?id="+id,'_blank');
 }
