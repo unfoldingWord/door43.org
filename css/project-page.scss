@@ -37,6 +37,13 @@ header {
                     color: #3ebcfe;
                 }
             }
+            #print-button {
+              background-color: white;
+              color: #3ebcfe;
+              border: none;
+              -webkit-box-shadow: 1px 3px 6px 1px rgba(0,0,0,0.2);
+              box-shadow: 1px 3px 6px 1px rgba(0,0,0,0.2);
+            }
         }
     }
 }
