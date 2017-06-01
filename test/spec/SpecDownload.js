@@ -11,7 +11,7 @@ describe('Test Download Link', function () {
         expect(downloadUrl).toEqual(expectedURL);
     });
 
-    it('getDownloadUrl() should pick up cached source', function () {
+    it('getDownloadUrl() should generate default URL if no cached source', function () {
         //given
         const expectedCommit = "123455678";
         const expectedURL = DEFAULT_DOWNLOAD_LOCATION + expectedCommit + ".zip";
@@ -25,7 +25,7 @@ describe('Test Download Link', function () {
         expect(downloadUrl).toEqual(expectedURL);
     });
 
-    it('getDownloadUrl() should fail gracefully if no commitID in URL', function () {
+    it('getDownloadUrl() should fail gracefully if no commitID in URL and no cached source', function () {
         //given
         const expectedCommit = "undefined";
         const expectedURL = DEFAULT_DOWNLOAD_LOCATION + expectedCommit + ".zip";
