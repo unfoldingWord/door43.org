@@ -9,4 +9,4 @@ bundle exec jekyll build
 
 # Run HTML Proofer against built site
 # Added --disable_external because it was preventing us from adding new pages
-bundle exec htmlproofer ./_site --assume-extension --check-html --disable-external --file-ignore ./_site/templates/reveal.html --file-ignore ./_site/test/SpecRunner.html
+bundle exec htmlproofer ./_site --assume-extension --check-html --disable-external --file-ignore ./_site/templates/reveal.html,./_site/test/SpecRunner.html
