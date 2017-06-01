@@ -20,7 +20,7 @@ describe('Test Badges', function () {
     };
 
     //
-    // dynamically create normal test cases for badge icon:
+    // dynamically create normal test cases for badge html:
     //
     var tests = generateNormalTestCasesForBadgeHtml();
     tests.forEach(function(test) {
