@@ -1,4 +1,4 @@
-describe('Test Download', function () {
+describe('Test Download Link', function () {
     it('getDownloadUrl() should pick up cached source', function () {
         //given
         const expectedURL = 'http://SOMETHING/SAVED';
