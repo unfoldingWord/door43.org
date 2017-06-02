@@ -2,9 +2,6 @@
  * Javascript for project commit pages to update the status and build the left sidebar
  */
 
-const DEFAULT_DOWNLOAD_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
-var source_download = null;
-
 var myCommitId, myRepoName, myOwner;
 
 $().ready(function () {
@@ -177,42 +174,6 @@ function showTenMore(){
     $revisions.find('#view_more_tr').css('display', 'none');
   }
 }
-
-/**
- * get URL for download
- * @param [pageUrl] if not set will use page href
- * @returns {*}
- */
-function getDownloadUrl(pageUrl) {
-  if(pageUrl == undefined) {
-      pageUrl=window.location.href
-  }
-
-  if(source_download) { // if found in build_log.json
-    return source_download;
-  }
-
-  var parts = pageUrl.split("/");
-  var commit = parts[6];
-  var download = DEFAULT_DOWNLOAD_LOCATION + commit + ".zip";
-  return download;
-}
-
-/**
- * get download link from build log
- * @param myLog
- */
-function saveDownloadLink(myLog) {
-  try {
-    source_download = myLog.source;
-    if(source_download) {
-      return;
-    }
-  } catch(e) {
-  }
-  source_download = null;
-}
-
 function printAll(){
     var id = myOwner+"/"+myRepoName+"/"+myCommitId;
     var api_domain = "api.door43.org";

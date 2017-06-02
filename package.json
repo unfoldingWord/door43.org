@@ -1,0 +1,30 @@
+{
+  "name": "door43.org",
+  "version": "1.0.0",
+  "description": "master | [![Build Status](https://travis-ci.org/unfoldingWord-dev/door43.org.svg?branch=master)](https://travis-ci.org/unfoldingWord-dev/door43.org)",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unfoldingWord-dev/door43.org.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/unfoldingWord-dev/door43.org/issues"
+  },
+  "homepage": "https://github.com/unfoldingWord-dev/door43.org#readme",
+  "dependencies": {
+    "jasmine-core": "^2.6.2",
+    "karma": "^1.7.0",
+    "karma-jasmine": "^1.1.0"
+  },
+  "devDependencies": {
+    "jasmine-core": "^2.6.2"
+  }
+}

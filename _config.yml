@@ -13,7 +13,7 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://live.door43.org"
 
 # Build settings
-exclude: [assets, assets_sync.sh, Gemfile*, README.md, LICENSE, s3*, secrets*, vender, cibuild.sh, Makefile]
+exclude: [assets, assets_sync.sh, Gemfile*, README.md, LICENSE, s3*, secrets*, vender, cibuild.sh, Makefile, node_modules]
 
 gems:
   - jekyll-sitemap
