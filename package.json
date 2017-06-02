@@ -7,7 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/karma start",
+    "test-chrome": "node_modules/.bin/karma start --single-run --browsers Chrome",
+    "test-firefox": "node_modules/.bin/karma start --single-run --browsers Firefox"
   },
   "repository": {
     "type": "git",
@@ -22,9 +24,15 @@
   "dependencies": {
     "jasmine-core": "^2.6.2",
     "karma": "^1.7.0",
+    "karma-chrome-launcher": "^2.1.1",
+    "karma-firefox-launcher": "^1.0.1",
     "karma-jasmine": "^1.1.0"
   },
   "devDependencies": {
-    "jasmine-core": "^2.6.2"
+    "jasmine-core": "^2.6.2",
+    "karma": "^1.7.0",
+    "karma-chrome-launcher": "^2.1.1",
+    "karma-firefox-launcher": "^1.0.1",
+    "karma-jasmine": "^1.1.0"
   }
 }

@@ -75,23 +75,28 @@ You will also need to ensure that you have a configuration file for `s3cmd` avai
 
 In order to synchronize the assets to the cdn S3 bucket you may now run `make assets`.  This process will **not remove** assets from the /assets folder, only add or update existing files.
 
-### Running Unit Tests [Local Preliminary]
+### Running Unit Tests
 
-#### First Time:
+#### Running Tests Locally using Jasmine
+Note: useful for debugging unit tests
 
-- Unzip jasmine into location ./jasmine
-
-#### Running Tests:
-
+- to make sure we have dependencies do `npm install`
 - edit ./cibuild.sh temporarily (don't commit changes) adding a # before the lines `bundle exec mdl...` and  `bundle exec htmlproofer...`. Save the modified file.
 - launch Jekyll server: `make serve`
 - open browser to: `http://127.0.0.1:4000/test/SpecRunner.html`.  Can do refresh to rerun tests after changes to files (just make sure to do a force save of files since some tools don't write changes to files immediately)
 - to debug tests you can use Chrome browser. Then open "Developer Tools", set breakpoints and then do refresh.
 
-#### Adding Tests:
+#### Adding Tests
+
 - tests are js files in ./test/spec
 - will also need to add new test files to ./test/SpecRunner.html
 
+
+#### Running Tests Locally using Karma
+Note: useful for ensuring tests will run on Karma test runner which is more restricted than using Jasmine standalone
+
+- to make sure we have dependencies do `npm install`
+- to run the tests in Chrome do `npm run-script test-chrome`
 
 #### Open source acknowledgements
 

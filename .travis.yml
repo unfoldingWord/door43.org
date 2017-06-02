@@ -1,7 +1,7 @@
 language: ruby
 rvm:
 - 2.2.2
-script: ./cibuild.sh
+script: ./cibuild.sh && npm install && npm run-script test-chrome
 env:
   global:
   - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
