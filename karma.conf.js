@@ -6,6 +6,7 @@ module.exports = function(config) {
         files: [
             './js/jquery.min.js',
             './js/general-tools.js',
+            './js/project-page-functions.js',
             './test/spec/*.js'
         ],
 
@@ -17,7 +18,7 @@ module.exports = function(config) {
             // do not include tests or libraries
             // (these files will be instrumented by Istanbul)
             './js/general-tools.js': 'coverage',
-            './js/project-page.js': 'coverage',
+            './js/project-page-functions.js': 'coverage',
             './js/application.js': 'coverage'
         },
 
@@ -28,4 +29,4 @@ module.exports = function(config) {
             dir : 'coverage/'
         }
     })
-}
+};

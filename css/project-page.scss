@@ -68,7 +68,10 @@ header {
     #last-updated {
         font-weight: 400;
         font-style: italic;
-        margin-right: 30px;
+    }
+
+    #last-updated, #num-of-views {
+      margin-right: 30px;
     }
 }
 
