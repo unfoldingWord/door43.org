@@ -7,6 +7,23 @@ module.exports = function(config) {
             './js/jquery.min.js',
             './js/general-tools.js',
             './test/spec/*.js'
-        ]
+        ],
+
+        // coverage reporter generates the coverage
+        reporters: ['coverage', 'coveralls'],
+
+        preprocessors: {
+            // source files, that you wanna generate coverage for
+            // do not include tests or libraries
+            // (these files will be instrumented by Istanbul)
+            './js/general-tools.js': 'coverage'
+        },
+
+        // optionally, configure the reporter
+        coverageReporter: {
+            // type : 'html', // use this to see the code coverage
+            type : 'lcov', // needed by coveralls
+            dir : 'coverage/'
+        }
     })
 }
