@@ -2,6 +2,9 @@
  * General functions for generating icons, dates, etc.
  */
 
+const DEFAULT_DOWNLOAD_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
+var source_download = null;
+
 function timeSince(date) {
     var seconds = Math.floor((new Date() - date) / 1000);
     var interval = Math.floor(seconds / 31536000);
@@ -33,7 +36,7 @@ eConvStatus = {
     SUCCESS : 2,
     WARNING : 3,
     ERROR: 4
-}
+};
 
 GTimageSizes = {
     "error-long-large.png" : [101, 37],
@@ -49,7 +52,7 @@ GTimageSizes = {
     "error-short-small.png" : [14, 14],
     "success-short-small.png" : [14, 14],
     "warning-short-small.png" : [14, 14]
-}
+};
 
 var faSpinnerClass = 'fa-spinner fa-spin';
 const StatusImagesUrl = "https://cdn.door43.org/assets/img/icons/";
@@ -63,10 +66,12 @@ function lookupSizeForImage(imageName) {
 
 function setOverallConversionStatus(status) {
     var iconType = getDisplayIconType(status);
+    var iconHtml;
     if (iconType != eConvStatus.IN_PROGRESS) {
         iconHtml = getConversionStatusIconHtml(iconType, status, true, true);
         $('#build-status-icon').html(iconHtml); // replace default spinner
     }
+    return iconHtml;
 }
 
 function getCommitConversionStatusIcon(status) {
@@ -128,4 +133,40 @@ function buildImageUrl(prefix, longWidth, largeHeight) {
     var middle = longWidth ? "-long" : "-short";
     var path = prefix + middle + suffix;
     return path;
+}
+
+
+/**
+ * get URL for download
+ * @param [pageUrl] if not set will use page href
+ * @returns {*}
+ */
+function getDownloadUrl(pageUrl) {
+    if(pageUrl == undefined) {
+        pageUrl=window.location.href
+    }
+
+    if(source_download) { // if found in build_log.json
+        return source_download;
+    }
+
+    var parts = pageUrl.split("/");
+    var commit = parts[6];
+    var download = DEFAULT_DOWNLOAD_LOCATION + commit + ".zip";
+    return download;
+}
+
+/**
+ * get download link from build log
+ * @param myLog
+ */
+function saveDownloadLink(myLog) {
+    try {
+        source_download = myLog.source;
+        if(source_download) {
+            return;
+        }
+    } catch(e) {
+    }
+    source_download = null;
 }

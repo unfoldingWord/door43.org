@@ -25,6 +25,8 @@ $().ready(function () {
     myRepoName = myLog.repo_name;
     $('#last-updated').html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
 
+    saveDownloadLink(myLog);
+
     var $buildStatusIcon = $('#build-status-icon');
     $buildStatusIcon.find('i').attr("class", "fa " + faSpinnerClass); // default to spinner
     setOverallConversionStatus(myLog.status);
@@ -172,7 +174,6 @@ function showTenMore(){
     $revisions.find('#view_more_tr').css('display', 'none');
   }
 }
-
 function printAll(){
     var id = myOwner+"/"+myRepoName+"/"+myCommitId;
     var api_domain = "api.door43.org";
