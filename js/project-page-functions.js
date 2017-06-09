@@ -105,7 +105,7 @@ function onProjectPageLoaded() {
   });
 
   /* set up scrollspy */
-  var navHeight = 122;
+  var navHeight = $('.navbar').outerHeight(true);
   $('#sidebar-nav, #revisions-div').affix({
     offset: {
       top: navHeight
@@ -232,4 +232,42 @@ function setDcsHref(location) {
     href = getDcsLink(location.pathname);
 
   $('#see-on-dcs').attr('href', href);
+}
+
+const DEFAULT_DOWNLOAD_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
+var source_download = null;
+
+/**
+ * get URL for download
+ * @param [pageUrl] if not set will use page href
+ * @returns {*}
+ */
+function getDownloadUrl(pageUrl) {
+    if(pageUrl == undefined) {
+        pageUrl=window.location.href
+    }
+
+    if(source_download) { // if found in build_log.json
+        return source_download;
+    }
+
+    var parts = pageUrl.split("/");
+    var commit = parts[6];
+    var download = DEFAULT_DOWNLOAD_LOCATION + commit + ".zip";
+    return download;
+}
+
+/**
+ * get download link from build log
+ * @param myLog
+ */
+function saveDownloadLink(myLog) {
+    try {
+        source_download = myLog.source;
+        if(source_download) {
+            return;
+        }
+    } catch(e) {
+    }
+    source_download = null;
 }

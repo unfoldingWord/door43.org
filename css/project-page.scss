@@ -213,3 +213,84 @@ header {
     }
   }
 }
+
+/**
+ * Style for Bible navigation
+ */
+body.bible {
+  #sidebar-nav {
+    ul.chapters {
+      li.chapter {
+        list-style-type: none;
+        display: inline-block;
+        padding: 0;
+        margin: 3px;
+        width: 40px;
+        height: 40px;
+
+        a {
+          display: inline-block;
+          padding: 10px 0;
+          margin: 0;
+          background-color: #4e4e4e;
+          color: white;
+          height: 40px;
+          text-align: center;
+          vertical-align: middle;
+          width: 40px;
+        }
+
+        a:hover {
+          background-color: #949494;
+        }
+      }
+
+      li.chapter.active {
+        a {
+          background-color: #44ace8 !important;
+        }
+      }
+    }
+
+    .panel-heading {
+      .accordion-toggle:after {
+        font-family: 'Glyphicons Halflings';
+        content: "\e114";
+        float: right;
+        color: grey;
+      }
+      .accordion-toggle.collapsed:after {
+        /* symbol for "collapsed" panels */
+        content: "\e080"; /* adjust as needed, taken from bootstrap.css */
+      }
+    }
+  }
+}
+
+/**
+ * Style for tA project pages
+ */
+body.ta {
+  .page-title {
+    font-size: 18px;
+  }
+
+  .section-header {
+    padding-top: 80px;
+  }
+
+  #right-sidebar-nav {
+    ul li {
+      list-style-type: none;
+      margin-bottom: 5px;
+    }
+
+    h4 {
+      font-size: 18px;
+    }
+  }
+
+  #right-sidebar-nav > ul > li {
+    margin-left: 10px;
+  }
+}

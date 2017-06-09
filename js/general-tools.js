@@ -1,10 +1,6 @@
 /**
  * General functions for generating icons, dates, etc.
  */
-
-const DEFAULT_DOWNLOAD_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
-var source_download = null;
-
 function timeSince(date) {
     var seconds = Math.floor((new Date() - date) / 1000);
     var interval = Math.floor(seconds / 31536000);
@@ -133,40 +129,4 @@ function buildImageUrl(prefix, longWidth, largeHeight) {
     var middle = longWidth ? "-long" : "-short";
     var path = prefix + middle + suffix;
     return path;
-}
-
-
-/**
- * get URL for download
- * @param [pageUrl] if not set will use page href
- * @returns {*}
- */
-function getDownloadUrl(pageUrl) {
-    if(pageUrl == undefined) {
-        pageUrl=window.location.href
-    }
-
-    if(source_download) { // if found in build_log.json
-        return source_download;
-    }
-
-    var parts = pageUrl.split("/");
-    var commit = parts[6];
-    var download = DEFAULT_DOWNLOAD_LOCATION + commit + ".zip";
-    return download;
-}
-
-/**
- * get download link from build log
- * @param myLog
- */
-function saveDownloadLink(myLog) {
-    try {
-        source_download = myLog.source;
-        if(source_download) {
-            return;
-        }
-    } catch(e) {
-    }
-    source_download = null;
 }

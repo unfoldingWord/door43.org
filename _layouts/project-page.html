@@ -1,12 +1,23 @@
 <!DOCTYPE html>
 <html>
-<!-- OBSOLETE! Please edit _layouts/project_page.html -->
 
-{% include head.html %}
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
+{% strip %}
+{% include meta.html %}
+{% endstrip %}
+  <link rel="stylesheet" type="text/css" href="{{ '/css/main.css' | prepend: site.baseurl }}" media="screen">
+  <link rel="stylesheet" type="text/css" href="{{ '/css/print.css' | prepend: site.baseurl }}" media="print">
+
+  <!-- <link rel="" href="{{ '/favicon.ico' | prepend: site.baseurl }}" type="image/x-icon"> -->
+
+  <link rel="stylesheet" type="text/css" href="{{ '/css/project-page.css' | prepend: site.baseurl }}">
+</head>
 
 <body itemscope="itemscope" itemtype="http://schema.org/WebPage">
-<link rel="stylesheet" type="text/css" href="{{ '/css/project-page.css' | prepend: site.baseurl }}">
-<link rel="stylesheet" type="text/css" href="{{ '/css/obs.css' | prepend: site.baseurl }}">
 
 {% include header.html %}
 
@@ -37,14 +48,14 @@
         </div>
     </div>
 </header>
-<div class="content-container container obs-container">
+<div class="container">
     <main class="content" role="main" itemprop="mainContentOfPage">
         <article itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
             <div class="page-content row">
                 <div id="left-sidebar" class="col-md-3 sidebar" role="complementary">
                     { left-sidebar }
                 </div>
-                <div class="col-md-6 obs-outer-content" role="main" id="outer-content">
+                <div class="col-md-6" role="main" id="outer-content">
                     { content }
                 </div>
                 <div id="right-sidebar" class="col-md-3 sidebar" role="complementary">
