@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
-<!-- OBSOLETE! Please edit _layouts/project_page.html -->
 
 {% include head.html %}
 
 <body itemscope="itemscope" itemtype="http://schema.org/WebPage">
+
 <link rel="stylesheet" type="text/css" href="{{ '/css/project-page.css' | prepend: site.baseurl }}">
-<link rel="stylesheet" type="text/css" href="{{ '/css/obs.css' | prepend: site.baseurl }}">
 
 {% include header.html %}
 
@@ -37,14 +36,14 @@
         </div>
     </div>
 </header>
-<div class="content-container container obs-container">
+<div class="container">
     <main class="content" role="main" itemprop="mainContentOfPage">
         <article itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
             <div class="page-content row">
                 <div id="left-sidebar" class="col-md-3 sidebar" role="complementary">
                     { left-sidebar }
                 </div>
-                <div class="col-md-6 obs-outer-content" role="main" id="outer-content">
+                <div class="col-md-6" role="main" id="outer-content">
                     { content }
                 </div>
                 <div id="right-sidebar" class="col-md-3 sidebar" role="complementary">
