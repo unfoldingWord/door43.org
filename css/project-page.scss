@@ -129,6 +129,7 @@ header {
 // pin the header below the menu rather than scroll out of view
 #pinned-header {
   width: 100%;
+  margin-top: 130px;
   z-index: 100;
   background-color: #fff;
 
@@ -137,10 +138,6 @@ header {
     margin-top: 0;
     top: 65px;
     box-shadow: 0 0 8px 1px #777;
-
-    #header-title, #sub-header {
-      display: inline-block;
-    }
 
     .container {
       padding-top: 6px;

@@ -108,7 +108,7 @@ function onProjectPageLoaded() {
   var navHeight = $('.navbar').outerHeight(true);
   $('#sidebar-nav, #revisions-div').affix({
     offset: {
-      top: navHeight
+      top: navHeight + margin_top
     }
   });
   var $body = $('body');
