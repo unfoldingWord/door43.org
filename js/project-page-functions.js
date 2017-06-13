@@ -112,8 +112,14 @@ function onProjectPageLoaded() {
     }
   });
   var $body = $('body');
-  $body.scrollspy({target: '#right-sidebar-nav', offset: navHeight});
-  $body.scrollspy({target: '#left-sidebar-nav', offset: navHeight});
+  $body.scrollspy({'target': '#right-sidebar-nav', 'offset':navHeight});
+  // Offset in the above for some reason doesn't work, so we fix it this way with a little hack:
+  var data = $body.data('bs.scrollspy');
+  if (data) {
+      data.options.offset = navHeight+100;
+      $body.data('bs.scrollspy', data);
+      $body.scrollspy('refresh');
+  }
   /* smooth scrolling to sections with room for navbar */
   var $rightSidebarNav = $("#right-sidebar-nav");
   $rightSidebarNav.find("li a[href^='#']").on('click', function (e) {
@@ -123,7 +129,7 @@ function onProjectPageLoaded() {
     var hash = this.hash;
     // animate
     $('html, body').animate({
-      scrollTop: $(hash).offset().top - navHeight
+      scrollTop: $(hash).offset().top - navHeight - 5
     }, 300, function () {
       // when done, add hash to url
       // (default click behaviour)

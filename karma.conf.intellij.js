@@ -6,6 +6,7 @@ module.exports = function(config) {
 
         files: [
             './js/jquery.min.js',
+          './js/bootstrap/bootstrap.min.js',
             './js/general-tools.js',
             './js/project-page-functions.js',
             './test/spec/*.js'
