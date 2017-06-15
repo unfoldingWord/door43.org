@@ -28,6 +28,8 @@ header {
             }
 
             #build-status-icon {
+                display: inline-block;
+                vertical-align: middle;
                 i {
                     font-size: 30px;
                     font-weight: 300;
@@ -138,7 +140,21 @@ header {
     margin-top: 0;
     top: 65px;
     box-shadow: 0 0 8px 1px #777;
-
+    #build-status-icon {
+      max-width: 35px;
+      overflow: hidden;
+    }
+    .hide-on-pinned {
+      display: none;
+    }
+    #header-title, #sub-header {
+      display: inline-block;
+    }
+    #sub-header {
+      position: fixed;
+      right: 20px;
+      top: 80px
+    }
     .container {
       padding-top: 6px;
       padding-bottom: 12px;
