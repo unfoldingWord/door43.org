@@ -1,0 +1,27 @@
+---
+---
+@charset "utf-8";
+
+/**
+ * Style for i18n template
+ */
+
+div.search-results-category {
+  margin: 10px 20px 20px;
+
+  div.search-results-header {
+    display: table;
+    border-bottom: 1px solid #777;
+    min-width: 280px;
+    padding-bottom: 4px;
+  }
+
+  div.search-listing {
+    margin: 10px;
+    background-color: silver;
+  }
+}
+
+#popular-div {
+  margin-top: 100px;
+}

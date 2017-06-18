@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="{{ page.language_code }}" dir="{% if page.language_direction %}{{ page.languge_direction }}{% else %}ltr{% endif %}">
+
+{% include i18n-head.html %}
+
+<body itemscope="itemscope" itemtype="http://schema.org/WebPage">
+
+{% include i18n-header.html %}
+
+<div id="popular-div" class="search-results-category">
+  <div class="search-results-header">{{ site.data[page.language_code].l10n.popular }}</div>
+  <div class="search-listing">&nbsp;</div>
+</div>
+
+<div id="recent-div" class="search-results-category">
+  <div class="search-results-header">{{ site.data[page.language_code].l10n.recently_updated }}</div>
+  <div class="search-listing">&nbsp;</div>
+</div>
+
+{% include i18n-footer.html %}
+
+</body>
+</html>
