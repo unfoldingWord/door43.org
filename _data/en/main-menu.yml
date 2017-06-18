@@ -1,0 +1,11 @@
+- title: "About"
+  href: "/en/about/"
+  subitems:
+    - title: "Statement of Faith"
+      href: "/en/statement-of-faith/"
+    - title: "Translation Guidelines"
+      href: "/en/translation-guidelines/"
+    - title: "Legal Information"
+      href: "/en/legal/"
+- title: "Contact"
+  href: "/en/contact/"
