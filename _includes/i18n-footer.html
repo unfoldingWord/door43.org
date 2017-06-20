@@ -25,6 +25,7 @@
 <script type="text/javascript" src="{{ '/js/application.js' | prepend: site.baseurl }}"></script>
 <script type="text/javascript">
   var locale = {{ page.language_code | js_locale }};
+  var l10n = {{ page.language_code | js_l10n }};
 </script>
 <script type="text/javascript">
   var _gaq = _gaq || [];

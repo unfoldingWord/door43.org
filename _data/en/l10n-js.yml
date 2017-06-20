@@ -1,0 +1,13 @@
+# Format of plural words:  ["zero", "one", "two", "more-than-two"]
+day: ["days", "day", "days", "days"]
+week: ["weeks", "week", "weeks", "weeks"]
+month: ["months", "month", "months", "months"]
+
+updated_today: "Updated today"
+updated_days: "Updated {0} {1} ago"
+updated_weeks: "Updated {0} {1} ago"
+updated_months: "Updated {0} {1} ago"
+
+author: "Author {0}"
+language: "Language"
+view_more: "View more..."
