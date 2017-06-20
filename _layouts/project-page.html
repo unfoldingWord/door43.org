@@ -28,10 +28,10 @@
                 <span id="starred-icon"><i class="fa fa-star-o"></i></span>
                 <span id="h1">Header</span>
                 <span id="build-status-icon"><i class="fa fa-question-circle"></i></span>
-                <button id="print-button" class="btn btn-secondary hidden-print" onclick="printAll()"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Print</button>
+                <button id="print-button" class="btn btn-secondary hidden-print" onclick="printAll()"><span class="glyphicon glyphicon-print" aria-hidden="true"></span><span class="hide-on-pinned"> Print</span></button>
                 <span id="download_menu">
                     <span class="dropdown" >
-                        <button id="download_menu_button" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-cloud-download"></span> Download
+                        <button id="download_menu_button" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-cloud-download"></span><span class="hide-on-pinned"> Download</span>
                             <span class="caret"></span></button>
                         <ul class="dropdown-menu">
                             <li><a type="submit" onclick="window.open(getDownloadUrl())"><span class="glyphicon glyphicon-compressed"> MD</span></a></li>
@@ -41,7 +41,7 @@
             </h1>
         </div>
         <div id="sub-header">
-            <span id="last-updated">Updated ? hours ago</span>
+            <span id="last-updated" class="hide-on-pinned">Updated ? hours ago</span>
             <span id="views"><i class="fa fa-eye"></i></span>
             <span id="num-of-views"># views</span>
             <a id="see-on-dcs" href="" target="_blank">See on DCS</a>

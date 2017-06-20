@@ -1,5 +1,4 @@
-var myCommitId, myRepoName, myOwner;
-
+var myCommitId, myRepoName, myOwner, margin_top;
 /**
  * Called to initialize the project page
  */
@@ -88,27 +87,17 @@ function onProjectPageLoaded() {
     }); // End getJSON
 
   // pin the header below the menu rather than scroll out of view
-  var $pinned = $('#pinned-header');
-  var margin_top = parseInt($pinned.css('margin-top'));
+  margin_top = parseInt($('#pinned-header').css('margin-top'));
 
   $(document).on('scroll', function () {
-    var scroll_top = $(window).scrollTop();
-
-    if (scroll_top > margin_top - 10) {
-      $pinned.addClass('pin-to-top');
-      $('#sidebar-nav, #revisions-div').addClass('pin-to-top');
-    }
-    else {
-      $pinned.removeClass('pin-to-top');
-      $('#sidebar-nav, #revisions-div').removeClass('pin-to-top');
-    }
+    onDocumentScroll(window);
   });
 
   /* set up scrollspy */
   var navHeight = $('.navbar').outerHeight(true);
   $('#sidebar-nav, #revisions-div').affix({
     offset: {
-      top: navHeight
+      top: navHeight + margin_top
     }
   });
   var $body = $('body');
@@ -145,6 +134,37 @@ function onProjectPageLoaded() {
   $(window).on('scroll resize', function () {
     $('#sidebar-nav, #revisions-div').css('bottom', getVisibleHeight('footer'));
   });
+}
+
+/**
+ * Called when the document scroll event fires.
+ *
+ * NOTE: the window object is passed as a parameter so the function is testable. Because of the
+ *       asynchronous nature of javascript, the unit test finishes before the onScroll event fires.
+ *
+ * @param theWindow
+ */
+function onDocumentScroll(theWindow) {
+
+  var $document = $(theWindow.document);
+  var scroll_top = theWindow.scrollY;
+  var $outer = $document.find('#outer-content');
+  var $pinned = $document.find('#pinned-header');
+
+  if (scroll_top > margin_top - 10) {
+    $pinned.addClass('pin-to-top');
+    $('#sidebar-nav, #revisions-div').addClass('pin-to-top');
+
+    if ($outer.css('marginTop') !== '240px')
+      $outer.css('marginTop', '240px');
+  }
+  else {
+    $pinned.removeClass('pin-to-top');
+    $('#sidebar-nav, #revisions-div').removeClass('pin-to-top');
+
+    if ($outer.css('marginTop') !== '0px')
+      $outer.css('marginTop', '0px');
+  }
 }
 
 function getVisibleHeight(selector) {
