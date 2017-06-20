@@ -20,3 +20,6 @@ gems:
   - jekyll-sitemap
 
 markdown: kramdown
+
+sass:
+  style: compact
