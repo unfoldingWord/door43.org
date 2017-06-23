@@ -22,11 +22,13 @@
 <script type="text/javascript" src="{{ '/js/jquery.min.js' | prepend: site.baseurl }}"></script>
 <script type="text/javascript" src="{{ '/js/bootstrap/bootstrap.min.js' | prepend: site.baseurl }}"></script>
 <script type="text/javascript" src="{{ '/js/moment.min.js' | prepend: site.baseurl }}"></script>
+<script type="text/javascript" src="{{ '/js/underscore.min.js' | prepend: site.baseurl }}"></script>
 <script type="text/javascript" src="{{ '/js/application.js' | prepend: site.baseurl }}"></script>
 <script type="text/javascript">
   var locale = {{ page.language_code | js_locale }};
   var l10n = {{ page.language_code | js_l10n }};
 </script>
+<script type="text/javascript" src="{{ '/js/i18n.js' | prepend: site.baseurl }}"></script>
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-60106521-4']);

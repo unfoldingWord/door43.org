@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ page.language_code }}" dir="{% if page.language_direction %}{{ page.languge_direction }}{% else %}ltr{% endif %}">
+<html lang="{{ page.language_code }}" dir="{% if page.language_direction %}{{ page.language_direction }}{% else %}ltr{% endif %}">
 
 {% include i18n-head.html %}
 
@@ -7,14 +7,26 @@
 
 {% include i18n-header.html %}
 
+<script type="html/template" id="listing-template">
+<div class="listing-container">
+  <a href="">
+    <h3><i class="fa fa-star-o"></i> <span class="title-span"></span></h3>
+    <div class="updated-views-div"><span class="updated-span"></span> <i class="fa fa-eye"></i><span class="views-span"></span></div>
+    <div class="author-div"></div>
+    <h3><span class="language-title-span"></span></h3>
+    <div class="language-code-div"></div>
+  </a>
+</div>
+</script>
+
 <div id="popular-div" class="search-results-category">
   <div class="search-results-header">{{ site.data[page.language_code].l10n.popular }}</div>
-  <div class="search-listing">&nbsp;</div>
+  <div class="search-listing"></div>
 </div>
 
 <div id="recent-div" class="search-results-category">
   <div class="search-results-header">{{ site.data[page.language_code].l10n.recently_updated }}</div>
-  <div class="search-listing">&nbsp;</div>
+  <div class="search-listing"></div>
 </div>
 
 {% include i18n-footer.html %}
