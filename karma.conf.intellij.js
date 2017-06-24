@@ -6,9 +6,12 @@ module.exports = function(config) {
 
         files: [
             './js/jquery.min.js',
-          './js/bootstrap/bootstrap.min.js',
+            './js/bootstrap/bootstrap.min.js',
+            './js/underscore.min.js',
+            './js/moment.min.js',
             './js/general-tools.js',
             './js/project-page-functions.js',
+            './js/i18n.js',
             './test/spec/*.js'
         ],
 
@@ -21,7 +24,8 @@ module.exports = function(config) {
             // (these files will be instrumented by Istanbul)
             './js/general-tools.js': 'coverage',
             './js/project-page-functions.js': 'coverage',
-            './js/application.js': 'coverage'
+            './js/application.js': 'coverage',
+            './js/i18n.js': 'coverage'
         },
 
         // enable / disable colors in the output (reporters and logs)
