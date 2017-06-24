@@ -1,26 +1,153 @@
 ---
 ---
+
+//noinspection CssInvalidCharsetRule
 @charset "utf-8";
+
+// Import partials from `sass_dir` (defaults to `_sass`)
+//noinspection CssUnknownTarget
+@import
+  "custom_bootstrap",
+  "pinned_header"
+;
 
 /**
  * Style for i18n template
  */
 
 div.search-results-category {
-  margin: 10px 20px 20px;
+  margin: 10px 40px 20px;
 
   div.search-results-header {
     display: table;
-    border-bottom: 1px solid #777;
+    border-bottom: 2px solid #777;
     min-width: 280px;
     padding-bottom: 4px;
   }
 
   div.search-listing {
-    margin: 6px;
+
+    .updated-views-div, .author-div, .language-code-div {
+      color: #555;
+    }
+
+    .updated-span, .author-div, .language-code-div {
+      font-style: italic;
+    }
+
+    div.listing-container {
+      display: inline-block;
+      float: left;
+      border: 2px solid #eee;
+      border-radius: 8px;
+      margin: 8px;
+      position: relative;
+
+      table {
+        width: 360px;
+        height: 200px;
+
+        td {
+          vertical-align: top;
+
+          &.column-1 {
+            padding: 10px 8px 0 10px;
+          }
+
+          &.column-2 {
+            padding: 2px 10px 10px 0;
+            width: 100%
+          }
+
+          .pinned-to-bottom {
+            position: absolute;
+            bottom: 0;
+            margin-bottom: 10px;
+          }
+        }
+      }
+
+      h3 {
+        margin: 0 0 4px;
+
+        span {
+          font-size: 20px;
+          font-weight: 700;
+        }
+
+      }
+
+      .fa-star-o { font-size: 22px; }
+
+      //noinspection SassScssResolvedByNameOnly
+      &:hover, a:hover  {
+        background-color: $navbar-inverse-link-active-color;
+        color: $navbar-inverse-link-color;
+
+        .updated-views-div, .author-div, .language-code-div { color: $navbar-inverse-link-color; }
+      }
+    }
+  }
+
+  div.more-container {
+    display: inline-block;
+    float: left;
+    margin: 8px;
+    width: 360px;
+    height: 200px;
+    line-height: 200px;
+    text-align: center;
+
+    span {
+      vertical-align: middle;
+      line-height: normal;
+    }
   }
 }
 
 #popular-div {
   margin-top: 100px;
+}
+
+div.clear {
+  clear: both;
+  margin-bottom: 40px;
+}
+
+.bold { font-weight: 700; }
+
+#pinned-header.pin-to-top {
+  .container {
+    padding: 12px 15px !important;
+
+    .float-left {
+      display: inline-block;
+      float: left;
+    }
+
+    .float-right {
+      display: inline-block;
+      float: right;
+    }
+
+    table { height: 32px; }
+
+    #search-td {
+      padding: 0 8px;
+      background-color: $navbar-inverse-link-active-color;
+      color: $navbar-inverse-link-color;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    #browse-td {
+      background-color: $navbar-inverse-link-active-color;
+      color: $navbar-inverse-link-color;
+      text-align: center;
+      cursor: pointer;
+      padding: 0 8px;
+      border-left: 3px solid #fff;
+      white-space: nowrap;
+    }
+  }
 }

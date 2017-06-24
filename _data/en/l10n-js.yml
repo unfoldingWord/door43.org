@@ -8,7 +8,6 @@ updated_days: "Updated {0} {1} ago"
 updated_weeks: "Updated {0} {1} ago"
 updated_months: "Updated {0} {1} ago"
 
-author: "Author {0}"
+author: "Author: {0}"
 language: "Language"
 language_with_code: "{0} &mdash; {1}"
-view_more: "View more..."

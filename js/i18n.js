@@ -69,12 +69,14 @@ function showSearchResults(results) {
   for (i = 0, len = popular.length; i < len; i++) {
     showThisItem(popular[i], $div, template);
   }
+  showMoreLink($div);
 
   // display popular
   $div = $('#recent-div').find('.search-listing');
   for (i = 0, len = recent.length; i < len; i++) {
     showThisItem(recent[i], $div, template);
   }
+  showMoreLink($div);
 }
 
 /**
@@ -94,6 +96,9 @@ function showThisItem(item, $div, template) {
   $template.find('.language-code-div').html(simpleFormat(l10n['language_with_code'], [item['lang_name'], item['lang_code']]));
   $template.find('.views-span').html(item['num_views']);
   $template.find('.updated-span').html(getDateDiff(item['last_updated'], today));
+
+  // TODO: set anchor href to the correct value
+  $template.find('a').attr('href', 'put_the_url_here');
 
   $div.append($template);
 }
@@ -134,6 +139,29 @@ function getDateDiff(published_date, today) {
   return simpleFormat(l10n['updated_months'], [months, l10n['month'][idx]]);
 }
 
+function showMoreLink($div) {
+
+  var $template = $($('#more-template').html());
+
+  // TODO: set anchor href to the correct value
+  $template.find('a').attr('href', 'put_the_url_here');
+
+  $div.append($template);
+}
+
 $().ready(function () {
   window.setTimeout(searchForResources(''), 300);
+
+  $('#search-td').on('click', function (){
+    var search_for = document.getElementById('search-for').value;
+
+    // TODO: put actual search code here.
+    alert('Search for "' + search_for + '".');
+  });
+
+  $('#browse-td').on('click', function (){
+
+    // TODO: put actual browse code here.
+    alert('Browse code goes here.');
+  });
 });
