@@ -1,0 +1,33 @@
+// pin the header below the menu rather than scroll out of view
+#pinned-header {
+  width: 100%;
+  margin-top: 130px;
+  z-index: 100;
+  background-color: #fff;
+
+  &.pin-to-top {
+    position: fixed;
+    margin-top: 0;
+    top: 65px;
+    box-shadow: 0 0 8px 1px #777;
+    #build-status-icon {
+      max-width: 35px;
+      overflow: hidden;
+    }
+    .hide-on-pinned {
+      display: none;
+    }
+    #header-title, #sub-header {
+      display: inline-block;
+    }
+    #sub-header {
+      position: fixed;
+      right: 20px;
+      top: 80px
+    }
+    .container {
+      padding-top: 6px;
+      padding-bottom: 12px;
+    }
+  }
+}

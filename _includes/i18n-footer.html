@@ -1,0 +1,41 @@
+<footer class="site-footer" role="contentinfo" itemscope="itemscope" itemtype="http://schema.org/WPFooter">
+  <div class="container">
+    <p style="margin-top:18px">
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        <img alt="CC BY-SA License" style="border-width:0" src="https://cdn.door43.org/assets/img/icons/CC-BY-SA-icon-88x31.png" /></a>
+      <br />
+      {{ site.data[page.language_code].l10n.license }}
+    </p>
+  </div>
+</footer>
+<footer class="print-footer" style="display: none;">
+  <div class="row">
+    <div class="one-half first">
+      <img src="https://cdn.door43.org/assets/img/icons/icon-d43.png" alt="Door43"/>
+    </div>
+    <div class="one-half last">
+      <p>{{ site.data[page.language_code].l10n.source }} {{ page.url | prepend: site.url }}</p>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</footer>
+<script type="text/javascript" src="{{ '/js/jquery.min.js' | prepend: site.baseurl }}"></script>
+<script type="text/javascript" src="{{ '/js/bootstrap/bootstrap.min.js' | prepend: site.baseurl }}"></script>
+<script type="text/javascript" src="{{ '/js/moment.min.js' | prepend: site.baseurl }}"></script>
+<script type="text/javascript" src="{{ '/js/underscore.min.js' | prepend: site.baseurl }}"></script>
+<script type="text/javascript" src="{{ '/js/application.js' | prepend: site.baseurl }}"></script>
+<script type="text/javascript">
+  var locale = {{ page.language_code | js_locale }};
+  var l10n = {{ page.language_code | js_l10n }};
+</script>
+<script type="text/javascript" src="{{ '/js/i18n.js' | prepend: site.baseurl }}"></script>
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-60106521-4']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>

@@ -1,0 +1,28 @@
+<header class="site-header" role="banner" itemscope="itemscope" itemtype="http://schema.org/WPHeader">
+  <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">
+          Door43
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">{{ site.data[page.language_code].l10n.toggle_nav }}</span>
+          <span class="fa fa-align-justify"></span>
+        </button>
+      </div>
+      <div id="main-navbar" class="navbar-nav navbar-right collapse navbar-collapse">
+        <ul id="menu-main-menu" class="nav navbar-nav">
+          {% if site.data[page.language_code].main-menu %}
+            {{ site.data[page.language_code].main-menu|build }}
+          {% elsif site.data.main-menu %}
+            {{ site.data.main-menu|build }}
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="print-header" style="display: none;">
+  <img src="https://cdn.door43.org/assets/img/logo.png" class="print-logo" alt="{{ site.data[page.language_code].l10n.door43_logo }}">
+  <h2 class="site-description">{{ site.data[page.language_code].l10n.sub_header }}</h2>
+</div>

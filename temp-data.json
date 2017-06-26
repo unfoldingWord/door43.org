@@ -1,0 +1,86 @@
+{
+  "popular": [
+    {
+      "lang_name": "English",
+      "lang_code": "en",
+      "resource_name": "Open Bible Stories",
+      "author": "john_smith",
+      "last_updated": "2017-06-22 11:02:21",
+      "num_views": 123
+    },
+    {
+      "lang_name": "English",
+      "lang_code": "en",
+      "resource_name": "Unlocked Literal Bible",
+      "author": "john_smith",
+      "last_updated": "2017-03-22 11:02:21",
+      "num_views": 0
+    },
+    {
+      "lang_name": "French",
+      "lang_code": "fr",
+      "resource_name": "Open Bible Stories",
+      "author": "john_smith",
+      "last_updated": "2017-06-16 11:02:21",
+      "num_views": 10
+    },
+    {
+      "lang_name": "Spanish",
+      "lang_code": "es",
+      "resource_name": "Open Bible Stories",
+      "author": "john_smith",
+      "last_updated": "2017-05-22 11:02:21",
+      "num_views": 97
+    },
+    {
+      "lang_name": "Hindi",
+      "lang_code": "hi",
+      "resource_name": "Open Bible Stories",
+      "author": "john_smith",
+      "last_updated": "2017-04-22 11:02:21",
+      "num_views": 2
+    }
+  ],
+  "recent": [
+    {
+      "lang_name": "English",
+      "lang_code": "en",
+      "resource_name": "Open Bible Stories",
+      "author": "john_smith",
+      "last_updated": "2017-06-22 11:02:21",
+      "num_views": 123
+    },
+    {
+      "lang_name": "French",
+      "lang_code": "fr",
+      "resource_name": "Open Bible Stories",
+      "author": "john_smith",
+      "last_updated": "2017-06-16 11:02:21",
+      "num_views": 10
+    },
+    {
+      "lang_name": "Spanish",
+      "lang_code": "es",
+      "resource_name": "Open Bible Stories",
+      "author": "john_smith",
+      "last_updated": "2017-05-22 11:02:21",
+      "num_views": 97
+    },
+    {
+      "lang_name": "Hindi",
+      "lang_code": "hi",
+      "resource_name": "Open Bible Stories",
+      "author": "john_smith",
+      "last_updated": "2017-04-22 11:02:21",
+      "num_views": 2
+    },
+    {
+      "lang_name": "English",
+      "lang_code": "en",
+      "resource_name": "Unlocked Literal Bible",
+      "author": "john_smith",
+      "last_updated": "2017-03-22 11:02:21",
+      "num_views": 0
+    }
+  ]
+}
