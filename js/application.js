@@ -47,13 +47,13 @@ jQuery(document).ready(function($) {
     $bookSelector.on('change', function(event) {
       event.preventDefault();
       var selectedBook = $(this).find(":selected").val();
-      scrollTo('#'+selectedBook);
+      scrollToPosition('#'+selectedBook);
       addChapters(selectedBook);
     });
     $('select#bible-chapters').on('change', function(event) {
       event.preventDefault();
       var selectedChapter = $(this).find(":selected").val();
-      scrollTo('#'+selectedChapter);
+      scrollToPosition('#'+selectedChapter);
     });
     addChapters(bookData[0].val);
   }
@@ -87,7 +87,7 @@ function addChapters(selectedBook) {
  * @return {Void}
  * @access public
  */
-function scrollTo(hash) {
+function scrollToPosition(hash) {
   $('html, body').animate({
     scrollTop: $(hash).offset().top - 60
   }, 300,
