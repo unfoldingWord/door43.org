@@ -134,6 +134,39 @@ function onProjectPageLoaded() {
   $(window).on('scroll resize', function () {
     $('#sidebar-nav, #revisions-div').css('bottom', getVisibleHeight('footer'));
   });
+
+  function setPageViews(span, increment) {
+      pageUrl=window.location.href;
+
+      var url = 'https://test-api.door43.org/page_view_count';
+      params = {
+          'path': pageUrl,
+          'increment': increment
+      };
+
+      $.ajax({
+          url: url,
+          type: 'GET',
+          data: params,
+          dataType: 'jsonp',
+          success: function (data, status) {
+              if (data['result'] === 'success') {
+                  alert('An invitation has been sent to your e-mail address');
+              }
+              else {
+                  alert('A problem was encountered: ' + data['message'] + '.');
+              }
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+              console.log('Error: ' + textStatus + '\n' +  errorThrown);
+              alert(textStatus);
+          }
+      });
+
+      return false;
+  }
+  setPageViews($('#num-of-views'),1)
+
 }
 
 /**
