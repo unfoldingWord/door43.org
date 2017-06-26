@@ -16,7 +16,7 @@
  */
 
 div.search-results-category {
-  margin: 10px 40px 20px;
+  margin: 10px 0 20px;
 
   div.search-results-header {
     display: table;
@@ -148,6 +148,74 @@ div.clear {
       padding: 0 8px;
       border-left: 3px solid #fff;
       white-space: nowrap;
+    }
+
+    #search-td:hover, #browse-td:hover {
+      background-color: $navbar-inverse-bg;
+    }
+  }
+}
+
+@media (max-width: 1199px) {
+  div.search-results-category {
+    div.search-listing {
+      div.listing-container {
+        table {
+          width: 450px;
+          height: 160px;
+        }
+      }
+    }
+
+    div.more-container {
+      width: 450px;
+      height: 160px;
+      line-height: 160px;
+    }
+  }
+}
+
+@media (max-width: 991px) {
+  div.search-results-category {
+    div.search-listing {
+      div.listing-container {
+        table {
+          width: 340px;
+          height: 160px;
+        }
+
+        h3 span { font-size: 16px; }
+        .updated-views-div, .author-div, .language-code-div { font-size: 15px; }
+      }
+    }
+
+    div.more-container {
+      width: 340px;
+      height: 160px;
+      line-height: 160px;
+    }
+  }
+}
+
+@media (max-width: 840px) {
+  #pinned-header.pin-to-top { top: 60px !important; }
+}
+
+@media (max-width: 764px) {
+  div.search-results-category {
+    div.search-listing {
+      div.listing-container {
+        table {
+          width: 100%;
+          height: 160px;
+        }
+      }
+    }
+
+    div.more-container {
+      width: 100%;
+      height: 60px;
+      line-height: 60px;
     }
   }
 }

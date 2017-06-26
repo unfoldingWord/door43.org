@@ -39,7 +39,7 @@
     <div class="float-left">
       <table>
         <tr>
-          <td><span class="bold">{{ site.data[page.language_code].l10n.popular }}</span>&emsp;<span class="bold">{{ site.data[page.language_code].l10n.recent }}</span></td>
+          <td><a class="bold" href="#" onclick="return scrollToResults('popular-div');">{{ site.data[page.language_code].l10n.popular }}</a>&emsp;<a class="bold" href="#" onclick="return scrollToResults('recent-div');">{{ site.data[page.language_code].l10n.recent }}</a></td>
         </tr>
       </table>
     </div>
@@ -55,20 +55,21 @@
   </div>
 </header>
 
-<div id="popular-div" class="search-results-category">
-  <div class="search-results-header">{{ site.data[page.language_code].l10n.popular }}</div>
-  <div class="search-listing"></div>
+<div class="container">
+  <div id="popular-div" class="search-results-category">
+    <div class="search-results-header">{{ site.data[page.language_code].l10n.popular }}</div>
+    <div class="search-listing"></div>
+  </div>
+
+  <div class="clear"></div>
+
+  <div id="recent-div" class="search-results-category">
+    <div class="search-results-header">{{ site.data[page.language_code].l10n.recently_updated }}</div>
+    <div class="search-listing"></div>
+  </div>
+
+  <div class="clear"></div>
 </div>
-
-<div class="clear"></div>
-
-<div id="recent-div" class="search-results-category">
-  <div class="search-results-header">{{ site.data[page.language_code].l10n.recently_updated }}</div>
-  <div class="search-listing"></div>
-</div>
-
-<div class="clear"></div>
-
 {% include i18n-footer.html %}
 
 </body>

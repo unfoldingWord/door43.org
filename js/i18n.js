@@ -149,6 +149,15 @@ function showMoreLink($div) {
   $div.append($template);
 }
 
+function scrollToResults(scroll_to_id) {
+
+  var item_top = $('#' + scroll_to_id).offset().top;
+  window.scrollTo(0, item_top - 130);
+
+  // prevent default
+  return false;
+}
+
 $().ready(function () {
   window.setTimeout(searchForResources(''), 300);
 
