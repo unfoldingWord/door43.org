@@ -135,64 +135,6 @@ function onProjectPageLoaded() {
     $('#sidebar-nav, #revisions-div').css('bottom', getVisibleHeight('footer'));
   });
 
-    function beginsWith(pageUrl, match) {
-        const pos = pageUrl.indexOf(match);
-        return pos == 0;
-    }
-
-    function getPageViewUrl(pageUrl) {
-    var prefix = '';
-    var parts = pageUrl.split('//');
-    if (parts.length > 1) {
-      var netloc = parts[1];
-      if (beginsWith(netloc, 'dev')) {
-        prefix = 'dev-';
-      } else if (beginsWith(netloc, 'test') || beginsWith(netloc, 'localhost') || beginsWith(netloc, '127.0.0.1')) {
-        prefix = 'test-';
-      }
-    }
-    return 'https://' + prefix + 'api.door43.org/page_view_count';
-  }
-
-  function updatePageViews($, span, url, pageUrl, increment) {
-    var params = {
-      path: pageUrl,
-      increment: increment
-    };
-
-    $.ajax({
-      url: url,
-      type: 'GET',
-      cache: "false",
-      data: params,
-      dataType: 'jsonp',
-      success: function (data, status) {
-        if (data.hasOwnProperty('ErrorMessage')) {
-          console.log('Error: ' + data['ErrorMessage']);
-        }
-        else if (data.hasOwnProperty('view_count')) {
-          var viewCount = data['view_count'];
-          var message = viewCount + ' view';
-          if (viewCount > 1) {
-            message += 's';
-          }
-          span.html(message);
-        } else {
-          console.log('Error: missing view_count: ', data);
-        }
-      },
-      error: function (jqXHR, textStatus, errorThrown) {
-        console.log('Error: ' + textStatus + '\n' + errorThrown);
-      }
-    });
-
-    return false;
-  }
-
-  function setPageViews($, span, pageUrl, increment) {
-    var url = getPageViewUrl(pageUrl);
-    return updatePageViews($, span, url, pageUrl, increment);
-  }
   setPageViews($, $('#num-of-views'),window.location.href,1);
 }
 
@@ -356,4 +298,79 @@ function saveDownloadLink(myLog) {
     } catch(e) {
     }
     source_download = null;
+}
+
+function beginsWith(pageUrl, match) {
+    const pos = pageUrl.indexOf(match);
+    return pos == 0;
+}
+
+function getPageViewUrl(pageUrl) {
+    var prefix = '';
+    try {
+        var parts = pageUrl.split('//');
+        if (parts.length > 1) {
+            var netloc = parts[1];
+            if (beginsWith(netloc, 'dev')) {
+                prefix = 'dev-';
+            } else if (beginsWith(netloc, 'test') || beginsWith(netloc, 'localhost') || beginsWith(netloc, '127.0.0.1')) {
+                prefix = 'test-';
+            }
+        }
+    } catch (e) {
+        console.log("Exception on page URL '" + pageUrl +"': " + e);
+    }
+
+    return 'https://' + prefix + 'api.door43.org/page_view_count';
+}
+
+function processPageViewSuccessResponse(data) {
+    var response = { };
+    if (data.hasOwnProperty('ErrorMessage')) {
+        response['error'] = 'Error: ' + data['ErrorMessage'];
+    }
+    else if (data.hasOwnProperty('view_count')) {
+        var viewCount = data['view_count'];
+        var message = viewCount + ' view';
+        if (viewCount > 1) {
+            message += 's';
+        }
+        response['message'] = message;
+    } else {
+        response['error'] = 'Error: illegal response';
+    }
+    return response;
+}
+
+function setPageViews(span, pageUrl, increment) {
+    var url = getPageViewUrl(pageUrl);
+    var params = {
+        path: pageUrl,
+        increment: increment
+    };
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        cache: "false",
+        data: params,
+        dataType: 'jsonp',
+        success: function (data, status) {
+            var response = processPageViewSuccessResponse(data);
+            if (span && response.hasOwnProperty('message')) {
+                span.html(response['message']);
+            }
+            if (response.hasOwnProperty('error')) {
+                console.log(response['error'], data);
+            }
+            return response;
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            const error = 'Error: ' + textStatus + '\n' + errorThrown;
+            console.log(error);
+            return error;
+        }
+    });
+
+    return false;
 }

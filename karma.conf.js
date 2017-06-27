@@ -7,11 +7,11 @@ function isDebug(argument) {
 }
 if (process.argv.some(isDebug)) {
     sourcePreprocessors = [];
-};
+}
 
 module.exports = function(config) {
     config.set({
-        frameworks: ['jasmine-ajax', 'jasmine'],
+        frameworks: ['jasmine'],
 
         files: [
             './js/jquery.min.js',
