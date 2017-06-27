@@ -135,38 +135,65 @@ function onProjectPageLoaded() {
     $('#sidebar-nav, #revisions-div').css('bottom', getVisibleHeight('footer'));
   });
 
-  function setPageViews(span, increment) {
-      pageUrl=window.location.href;
+    function beginsWith(pageUrl, match) {
+        const pos = pageUrl.indexOf(match);
+        return pos == 0;
+    }
 
-      var url = 'https://test-api.door43.org/page_view_count';
-      params = {
-          'path': pageUrl,
-          'increment': increment
-      };
-
-      $.ajax({
-          url: url,
-          type: 'GET',
-          data: params,
-          dataType: 'jsonp',
-          success: function (data, status) {
-              if (data['result'] === 'success') {
-                  alert('An invitation has been sent to your e-mail address');
-              }
-              else {
-                  alert('A problem was encountered: ' + data['message'] + '.');
-              }
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-              console.log('Error: ' + textStatus + '\n' +  errorThrown);
-              alert(textStatus);
-          }
-      });
-
-      return false;
+    function getPageViewUrl(pageUrl) {
+    var prefix = '';
+    var parts = pageUrl.split('//');
+    if (parts.length > 1) {
+      var netloc = parts[1];
+      if (beginsWith(netloc, 'dev')) {
+        prefix = 'dev-';
+      } else if (beginsWith(netloc, 'test') || beginsWith(netloc, 'localhost') || beginsWith(netloc, '127.0.0.1')) {
+        prefix = 'test-';
+      }
+    }
+    return 'https://' + prefix + 'api.door43.org/page_view_count';
   }
-  setPageViews($('#num-of-views'),1)
 
+  function updatePageViews($, span, url, pageUrl, increment) {
+    var params = {
+      path: pageUrl,
+      increment: increment
+    };
+
+    $.ajax({
+      url: url,
+      type: 'GET',
+      cache: "false",
+      data: params,
+      dataType: 'jsonp',
+      success: function (data, status) {
+        if (data.hasOwnProperty('ErrorMessage')) {
+          console.log('Error: ' + data['ErrorMessage']);
+        }
+        else if (data.hasOwnProperty('view_count')) {
+          var viewCount = data['view_count'];
+          var message = viewCount + ' view';
+          if (viewCount > 1) {
+            message += 's';
+          }
+          span.html(message);
+        } else {
+          console.log('Error: missing view_count: ', data);
+        }
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log('Error: ' + textStatus + '\n' + errorThrown);
+      }
+    });
+
+    return false;
+  }
+
+  function setPageViews($, span, pageUrl, increment) {
+    var url = getPageViewUrl(pageUrl);
+    return updatePageViews($, span, url, pageUrl, increment);
+  }
+  setPageViews($, $('#num-of-views'),window.location.href,1);
 }
 
 /**
