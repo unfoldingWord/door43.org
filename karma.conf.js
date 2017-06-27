@@ -1,7 +1,17 @@
 // karma.conf.js
+
+// if debugging, disable instrumentation for coverage
+var sourcePreprocessors = 'coverage';
+function isDebug(argument) {
+    return argument === '--debug';
+}
+if (process.argv.some(isDebug)) {
+    sourcePreprocessors = [];
+};
+
 module.exports = function(config) {
     config.set({
-        frameworks: ['jasmine'],
+        frameworks: ['jasmine-ajax', 'jasmine'],
 
         files: [
             './js/jquery.min.js',
@@ -22,10 +32,10 @@ module.exports = function(config) {
             // source files, that you wanna generate coverage for
             // do not include tests or libraries
             // (these files will be instrumented by Istanbul)
-            './js/general-tools.js': 'coverage',
-            './js/project-page-functions.js': 'coverage',
-            './js/application.js': 'coverage',
-            './js/i18n.js': 'coverage'
+            './js/general-tools.js': sourcePreprocessors,
+            './js/project-page-functions.js': sourcePreprocessors,
+            './js/application.js': sourcePreprocessors,
+            './js/i18n.js': sourcePreprocessors
         },
 
         // optionally, configure the reporter

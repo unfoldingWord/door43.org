@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/unfoldingWord-dev/door43.org#readme",
   "dependencies": {
+    "jasmine-ajax": "^3.3.1",
     "jasmine-core": "^2.6.2",
     "jasmine-jquery": "^2.1.1",
     "karma": "^1.7.0",
@@ -31,6 +32,7 @@
     "karma-coveralls": "^1.1.2",
     "karma-firefox-launcher": "^1.0.1",
     "karma-jasmine": "^1.1.0",
+    "karma-jasmine-ajax": "^0.1.13",
     "karma-phantomjs-launcher": "^1.0.4",
     "phantomjs-prebuilt": "^2.1.14"
   }
