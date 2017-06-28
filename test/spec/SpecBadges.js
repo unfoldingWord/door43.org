@@ -1,10 +1,18 @@
 describe('Test Badges', function () {
 
-     it('should generate correct icon type for status string', function () {
+    const MINUTE = 60;
+    const HOUR = 60 * MINUTE;
+    const DAY = 24 * HOUR;
+
+    it('getDisplayIconType() should generate correct icon type for status string', function () {
         for(var statusStr in statusMap) {
+            //given
             var expectedType = statusMap[statusStr];
 
+            //when
             var iconTYpe = getDisplayIconType(statusStr);
+
+            //then
             expect(iconTYpe).toEqual(expectedType);
         }
     });
@@ -24,10 +32,14 @@ describe('Test Badges', function () {
     //
     var tests = generateNormalTestCasesForBadgeHtml();
     tests.forEach(function(test) {
-        it('should generate correct badge html for ' + test.status, function () {
+        it('getCommitConversionStatusIcon() should generate correct badge html for ' + test.status, function () {
+            //given
             var setHtml = setOverallConversionStatus(test.status);
+
+            //when
             var getHtml = getCommitConversionStatusIcon(test.status);
 
+            //then
             expect(getHtml).toEqual(test.expectedGetHtml);
             if(test.expectedSetHtml) {
                 expect(setHtml).toEqual(test.expectedSetHtml);
@@ -42,14 +54,17 @@ describe('Test Badges', function () {
     //
     var tests = generateNormalTestCasesForBadgeIcon();
     tests.forEach(function(test) {
-        it('should generate correct badge icon for ' + test.expectedIconStr, function () {
+        it('getNewStatusIcon() should generate correct badge icon for ' + test.expectedIconStr, function () {
+            //when
             var icon = getNewStatusIcon(test.type, test.width, test.height);
 
+            //then
             validateIcon(icon, test.expectedTypeStr, test.expectedWidthStr, test.expectedHeightStr);
         });
     });
 
-    it('invalid eConvStatus should generate error badge', function () {
+    it('getNewStatusIcon() invalid eConvStatus should generate error badge', function () {
+        //given
         var type = 10; // illegal
         var expectedType = eConvStatus.ERROR;
         var width = 0;
@@ -58,12 +73,15 @@ describe('Test Badges', function () {
         var expectedWidthStr = getWidthStrFromInt(width);
         var expectedHeightStr = getHeightStrFromInt(height);
 
+        //when
         var icon = getNewStatusIcon(type, width, height);
 
+        //then
         validateIcon(icon, expectedTypeStr, expectedWidthStr, expectedHeightStr);
     });
 
-    it('invalid width should generate long badge', function () {
+    it('getNewStatusIcon() invalid width should generate long badge', function () {
+        //given
         var type = eConvStatus.WARNING;
         var width = -1; // illegal
         var expectedWidthStr = "long";
@@ -71,12 +89,15 @@ describe('Test Badges', function () {
         var expectedTypeStr = getStatusStrTypeFromInt(type);
         var expectedHeightStr = getHeightStrFromInt(height);
 
+        //when
         var icon = getNewStatusIcon(type, width, height);
 
+        //then
         validateIcon(icon, expectedTypeStr, expectedWidthStr, expectedHeightStr);
     });
 
-    it('invalid height should generate large badge', function () {
+    it('getNewStatusIcon() invalid height should generate large badge', function () {
+        //given
         var type = eConvStatus.WARNING;
         var width = 0;
         var height = -1; // illegal
@@ -84,12 +105,111 @@ describe('Test Badges', function () {
         var expectedTypeStr = getStatusStrTypeFromInt(type);
         var expectedWidthStr = getWidthStrFromInt(width);
 
+        //when
         var icon = getNewStatusIcon(type, width, height);
 
+        //then
         validateIcon(icon, expectedTypeStr, expectedWidthStr, expectedHeightStr);
     });
 
+    it('lookupSizeForImage() invalid image name should generate error', function () {
+        //given
+        const imageName = "";
+
+        //when
+        var size = lookupSizeForImage(imageName);
+
+        //then
+        expect(size).toBeNull();
+    });
+
+    it('timeSince() for 2 years should be valid', function () {
+        //given
+        const current = new Date();
+        const previous = new Date(current.getFullYear() - 2, current.getMonth(), current.getDate(), current.getHours(),
+            current.getMinutes(), current.getSeconds(), current.getMilliseconds());
+        const expectedResults = "2 years";
+
+        //when
+        var timeDifference = timeSince(previous);
+
+        //then
+        expect(timeDifference).toEqual(expectedResults);
+    });
+
+    it('timeSince() for 3 months should be valid', function () {
+        //given
+        const current = new Date();
+        const previousMs = current.getTime() - (3.1 * 30 * DAY) * 1000;
+        const previous = new Date(previousMs);
+        const expectedResults = "3 months";
+
+        //when
+        var timeDifference = timeSince(previous);
+
+        //then
+        expect(timeDifference).toEqual(expectedResults);
+    });
+
+    it('timeSince() for 4 days should be valid', function () {
+        //given
+        const current = new Date();
+        const previousMs = current.getTime() - (4 * DAY) * 1000;
+        const previous = new Date(previousMs);
+        const expectedResults = "4 days";
+
+        //when
+        var timeDifference = timeSince(previous);
+
+        //then
+        expect(timeDifference).toEqual(expectedResults);
+    });
+
+    it('timeSince() for 5 hours should be valid', function () {
+        //given
+        const current = new Date();
+        const previousMs = current.getTime() - (5 * HOUR) * 1000;
+        const previous = new Date(previousMs);
+        const expectedResults = "5 hours";
+
+        //when
+        var timeDifference = timeSince(previous);
+
+        //then
+        expect(timeDifference).toEqual(expectedResults);
+    });
+
+    it('timeSince() for 6 minutes should be valid', function () {
+        //given
+        const current = new Date();
+        const previousMs = current.getTime() - (6 * MINUTE) * 1000;
+        const previous = new Date(previousMs);
+        const expectedResults = "6 minutes";
+
+        //when
+        var timeDifference = timeSince(previous);
+
+        //then
+        expect(timeDifference).toEqual(expectedResults);
+    });
+
+    it('timeSince() for 7 seconds should be valid', function () {
+        //given
+        const current = new Date();
+        const previousMs = current.getTime() - 7 * 1000;
+        const previous = new Date(previousMs);
+        const expectedResults = "7 seconds";
+
+        //when
+        var timeDifference = timeSince(previous);
+
+        //then
+        expect(timeDifference).toEqual(expectedResults);
+    });
+
+    //
     // helpers
+    //
 
     function getStatusStrTypeFromInt(typeInt) {
         var type = null;
@@ -176,7 +296,7 @@ describe('Test Badges', function () {
                 test.expectedGetHtml = '<i class="fa ' + faSpinnerClass + '" title="' + statusStr + '"></i>';
                 test.expectedSetHtml = null;
             } else {
-               test.expectedGetHtml = getIconHtml(0, 0, statusStr);
+                test.expectedGetHtml = getIconHtml(0, 0, statusStr);
                 test.expectedSetHtml = getIconHtml(1, 1, statusStr);
             }
             tests.push(test);
