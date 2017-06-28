@@ -135,7 +135,7 @@ function onProjectPageLoaded() {
     $('#sidebar-nav, #revisions-div').css('bottom', getVisibleHeight('footer'));
   });
 
-  setPageViews($, $('#num-of-views'),window.location.href,1);
+  setPageViews($('#num-of-views'),window.location.href,1);
 }
 
 /**
