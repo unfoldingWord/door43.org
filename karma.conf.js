@@ -11,10 +11,11 @@ if (process.argv.some(isDebug)) {
 
 module.exports = function(config) {
     config.set({
-        frameworks: ['jasmine'],
+        frameworks: ['jasmine-jquery', 'jasmine'],
 
         files: [
             './js/jquery.min.js',
+            './js/jquery-ui.min.js',
             './js/bootstrap/bootstrap.min.js',
             './js/underscore.min.js',
             './js/moment.min.js',
@@ -22,6 +23,10 @@ module.exports = function(config) {
             './js/general-tools.js',
             './js/project-page-functions.js',
             './js/i18n.js',
+
+            // served fixtures
+            { pattern: 'test/fixtures/**/*.html', included: false, served: true },
+
             './test/spec/*.js'
         ],
 
