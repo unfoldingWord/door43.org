@@ -153,6 +153,37 @@ div.clear {
     #search-td:hover, #browse-td:hover {
       background-color: $navbar-inverse-bg;
     }
+
+    #search-for {
+      height: 32px;
+      font-size: 16px;
+      width: 300px;
+    }
+  }
+}
+
+.ui-front { z-index: 100; }
+
+.ui-autocomplete {
+  background-color: #fff;
+  border: 1px solid #999;
+  padding: 0;
+  width: 300px;
+
+  li {
+    list-style: none;
+    margin: 0;
+    padding: 6px 0 6px 12px;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    cursor: pointer;
+
+    &:hover {
+      border-top: 1px solid $navbar-inverse-link-active-color;
+      border-bottom: 1px solid $navbar-inverse-link-active-color;
+      background-color: $navbar-inverse-link-active-color;
+      color: $navbar-inverse-link-color;
+    }
   }
 }
 
