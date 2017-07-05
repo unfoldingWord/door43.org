@@ -378,6 +378,46 @@ function setPageViews(span, pageUrl, increment) {
     return false;
 }
 
+var test = "test-";
+var dev = "dev-";
+var prod = "prod-";
+
+var searchTables = { };
+searchTables[test] = {
+    table: "test-tx-manifest",
+    region: "us-west-2",
+    readonly: "AKIAINJQUA3IZ7KJ2N3Q",
+    access: "LzP42hUB6ygp6qU1Pk7EtvkiQ49YjHr6g4EbUSM5"
+};
+searchTables[dev] = {
+    table: "dev-tx-manifest",
+    region: "us-west-2",
+    readonly: "todo",
+    access: "todo"
+};
+searchTables[prod] = {
+    table: "tx-manifest",
+    region: "us-west-2",
+    readonly: "todo",
+    access: "todo"
+};
+
+function getTable(pageUrl) {
+    var prefix = getSiteFromPage(pageUrl);
+    if (!(prefix in searchTables)) {
+        prefix = prod;
+    }
+    var tableAccess = searchTables[prefix];
+
+    AWS.config.update({
+        region: tableAccess.region,
+        accessKeyId: tableAccess.readonly,
+        secretAccessKey: tableAccess.access
+    });
+
+    return tableAccess.table;
+}
+
 function searchContinue(docClient, params, retData, matchLimit, onFinished) {
     docClient.scan(params, onScan);
 
@@ -399,7 +439,7 @@ function searchContinue(docClient, params, retData, matchLimit, onFinished) {
 
 /***
  * kicks off a search for language
- * @param pageUrl - origination page (window.location.href)
+ * @param pageUrl - origination page string (window.location.href)
  * @param language - either string of language code or array of language code strings
  * @param matchLimit - limit the number of matches to return. This is not an exact limit, but has to do with responses
  *                          being returned a page at a time.  Once number of entries gets to or is above this count
@@ -408,6 +448,7 @@ function searchContinue(docClient, params, retData, matchLimit, onFinished) {
  *                                              err - an error message string
  *                                              entries - an array of table entry objects that match the language(s)
  *                                                where each object contains: repo_name, user_name, title, lang_code
+ * @return boolean - true if search initiated, if false then search error
  */
 function searchLanguages(pageUrl, language, matchLimit, onFinished) {
     var tableName = getTable(pageUrl);
@@ -424,19 +465,20 @@ function searchLanguages(pageUrl, language, matchLimit, onFinished) {
         params.ExpressionAttributeValues = {
             ':match': language
         };
-    } else if(language instanceof Array) {
+    } else if(language instanceof Array) { // searching for matches of a list of languages
         params.FilterExpression = "contains(:matches, #lc)";
-        languages = "[" + language.join(",") + "]"; // convert array to set
+        languages = "[" + language.join(",") + "]"; // convert array to set string
         params.ExpressionAttributeValues = {
             ':matches': languages
         };
     } else {
         var err = "Unsupported type '" + (typeof language) + "' for language: " + language;
         onFinished(err, null);
-        return;
+        return false;
     }
 
     var docClient = new AWS.DynamoDB.DocumentClient();
     searchContinue(docClient, params, [], matchLimit, onFinished);
+    return true;
 }
 
