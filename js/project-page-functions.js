@@ -305,7 +305,7 @@ function beginsWith(pageUrl, match) {
     return pos == 0;
 }
 
-function getPageViewUrl(pageUrl) {
+function getSiteFromPage(pageUrl) {
     var prefix = '';
     try {
         var parts = pageUrl.split('//');
@@ -318,9 +318,12 @@ function getPageViewUrl(pageUrl) {
             }
         }
     } catch (e) {
-        console.log("Exception on page URL '" + pageUrl +"': " + e);
+        console.log("Exception on page URL '" + pageUrl + "': " + e);
     }
-
+    return prefix;
+}
+function getPageViewUrl(pageUrl) {
+    var prefix = getSiteFromPage(pageUrl);
     return 'https://' + prefix + 'api.door43.org/page_view_count';
 }
 
@@ -373,4 +376,28 @@ function setPageViews(span, pageUrl, increment) {
     });
 
     return false;
+}
+
+/***
+ * kicks off a search for language
+ * @param pageUrl - origination page (window.location.href)
+ * @param language - either string of language code or list of language codes
+ * @param onFinished - call back function onScan(err, data)
+ */
+function searchLanguages(pageUrl, language, onFinished) {
+    var tableName = getTable(pageUrl);
+    var params = {
+        TableName: tableName,
+        ProjectionExpression: "repo_name, user_name, title, lang_code",
+        FilterExpression: "#lc = :match",
+        ExpressionAttributeNames: {
+            "#lc": "lang_code"
+        },
+        ExpressionAttributeValues: {
+            ':match': language
+        }
+    };
+
+    var docClient = new AWS.DynamoDB.DocumentClient();
+    docClient.scan(params, onFinished);
 }
