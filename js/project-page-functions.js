@@ -378,26 +378,65 @@ function setPageViews(span, pageUrl, increment) {
     return false;
 }
 
+function searchContinue(docClient, params, retData, matchLimit, onFinished) {
+    docClient.scan(params, onScan);
+
+    function onScan(err, data) {
+        if (err) {
+            onFinished(err, retData);
+        } else {
+            retData = retData.concat(data.Items);
+            var itemCount = retData.length;
+            if((itemCount >= matchLimit) || !('LastEvaluatedKey' in data)) {
+                onFinished(err, retData);
+            } else { // more in list that we need to get
+                params.ExclusiveStartKey = data.LastEvaluatedKey;
+                searchContinue(docClient, params, retData, matchLimit, onFinished);
+            }
+        }
+    }
+}
+
 /***
  * kicks off a search for language
  * @param pageUrl - origination page (window.location.href)
- * @param language - either string of language code or list of language codes
- * @param onFinished - call back function onScan(err, data)
+ * @param language - either string of language code or array of language code strings
+ * @param matchLimit - limit the number of matches to return. This is not an exact limit, but has to do with responses
+ *                          being returned a page at a time.  Once number of entries gets to or is above this count
+ *                          then no more pages will be fetched.
+ * @param onFinished - call back function onScan(err, entries) - where:
+ *                                              err - an error message string
+ *                                              entries - an array of table entry objects that match the language(s)
+ *                                                where each object contains: repo_name, user_name, title, lang_code
  */
-function searchLanguages(pageUrl, language, onFinished) {
+function searchLanguages(pageUrl, language, matchLimit, onFinished) {
     var tableName = getTable(pageUrl);
     var params = {
         TableName: tableName,
         ProjectionExpression: "repo_name, user_name, title, lang_code",
-        FilterExpression: "#lc = :match",
         ExpressionAttributeNames: {
             "#lc": "lang_code"
         },
-        ExpressionAttributeValues: {
-            ':match': language
-        }
+        Limit: 3000 // number of records to check at a time
     };
+    if($.type(language) === "string") { // if single language to match
+        params.FilterExpression = "#lc = :match";
+        params.ExpressionAttributeValues = {
+            ':match': language
+        };
+    } else if(language instanceof Array) {
+        params.FilterExpression = "contains(:matches, #lc)";
+        languages = "[" + language.join(",") + "]"; // convert array to set
+        params.ExpressionAttributeValues = {
+            ':matches': languages
+        };
+    } else {
+        var err = "Unsupported type '" + (typeof language) + "' for language: " + language;
+        onFinished(err, null);
+        return;
+    }
 
     var docClient = new AWS.DynamoDB.DocumentClient();
-    docClient.scan(params, onFinished);
+    searchContinue(docClient, params, [], matchLimit, onFinished);
 }
+
