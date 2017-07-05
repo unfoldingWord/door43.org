@@ -382,46 +382,6 @@ $().ready(function () {
   });
 });
 
-var test = "test-";
-var dev = "dev-";
-var prod = "prod-";
-
-var searchTables = { };
-searchTables[test] = {
-    table: "test-tx-manifest",
-    region: "us-west-2",
-    readonly: "AKIAINJQUA3IZ7KJ2N3Q",
-    access: "LzP42hUB6ygp6qU1Pk7EtvkiQ49YjHr6g4EbUSM5"
-};
-searchTables[dev] = {
-    table: "dev-tx-manifest",
-    region: "us-west-2",
-    readonly: "todo",
-    access: "todo"
-};
-searchTables[prod] = {
-    table: "tx-manifest",
-    region: "us-west-2",
-    readonly: "todo",
-    access: "todo"
-};
-
-function getTable(pageUrl) {
-    var prefix = getSiteFromPage(pageUrl);
-    if (!(prefix in searchTables)) {
-        prefix = prod;
-    }
-    var tableAccess = searchTables[prefix];
-
-    AWS.config.update({
-        region: tableAccess.region,
-        accessKeyId: tableAccess.readonly,
-        secretAccessKey: tableAccess.access
-    });
-
-    return tableAccess.table;
-}
-
 function searchContinue(docClient, params, retData, matchLimit, onFinished) {
     docClient.scan(params, onScan);
 
@@ -455,28 +415,34 @@ function searchContinue(docClient, params, retData, matchLimit, onFinished) {
  * @return boolean - true if search initiated, if false then search error
  */
 function searchLanguages(pageUrl, language, matchLimit, onFinished) {
-    var tableName = getTable(pageUrl);
-    var params = {
-        TableName: tableName,
-        ProjectionExpression: "repo_name, user_name, title, lang_code",
-        ExpressionAttributeNames: {
-            "#lc": "lang_code"
-        },
-        Limit: 3000 // number of records to check at a time
-    };
-    if($.type(language) === "string") { // if single language to match
-        params.FilterExpression = "#lc = :match";
-        params.ExpressionAttributeValues = {
-            ':match': language
+    try {
+        var tableName = getTable(pageUrl);
+        var params = {
+            TableName: tableName,
+            ProjectionExpression: "repo_name, user_name, title, lang_code",
+            ExpressionAttributeNames: {
+                "#lc": "lang_code"
+            },
+            Limit: 3000 // number of records to check at a time
         };
-    } else if(language instanceof Array) { // searching for matches of a list of languages
-        params.FilterExpression = "contains(:matches, #lc)";
-        languages = "[" + language.join(",") + "]"; // convert array to set string
-        params.ExpressionAttributeValues = {
-            ':matches': languages
-        };
-    } else {
-        var err = "Unsupported type '" + (typeof language) + "' for language: " + language;
+        if ($.type(language) === "string") { // if single language to match
+            params.FilterExpression = "#lc = :match";
+            params.ExpressionAttributeValues = {
+                ':match': language
+            };
+        } else if (language instanceof Array) { // searching for matches of a list of languages
+            params.FilterExpression = "contains(:matches, #lc)";
+            languages = "[" + language.join(",") + "]"; // convert array to set string
+            params.ExpressionAttributeValues = {
+                ':matches': languages
+            };
+        } else {
+            var err = "Unsupported type '" + (typeof language) + "' for language: " + language;
+            onFinished(err, null);
+            return false;
+        }
+    } catch(e) {
+        var err = "Could not search languages: " + e.message;
         onFinished(err, null);
         return false;
     }
