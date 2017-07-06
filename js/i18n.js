@@ -389,7 +389,9 @@ function searchContinue(docClient, params, retData, matchLimit, onFinished) {
         if (err) {
             onFinished(err, retData);
         } else {
-            retData = retData.concat(data.Items);
+            if('Items' in data) {
+                retData = retData.concat(data.Items);
+            }
             var itemCount = retData.length;
             if((itemCount >= matchLimit) || !('LastEvaluatedKey' in data)) {
                 onFinished(err, retData);
