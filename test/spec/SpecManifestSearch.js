@@ -6,49 +6,29 @@ describe('Test Manifest Search', function () {
   var returnedError;
   var returnedEntries;
 
-    it('valid language string should return success', function () {
-        //given
-        var expectedReturn = true;
-        var expectedItemCount = 0;
-        setupDynamoDbMocks(expectedReturn);
-        var pageUrl = "https://test-dummy.com";
-        var language = 'ceb';
-        var matchLimit = 20;
-        expectedErr = null;
-        expectedData = { Items:[] };
-
-        //when
-        var results = searchManifest(pageUrl, language, matchLimit, onFinished);
-
-        //then
-        validateResults(results, expectedReturn, expectedItemCount);
-    });
-
     it('valid language array should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
         setupDynamoDbMocks(expectedReturn);
-        var pageUrl = "https://test-dummy.com";
         var language = ['es', 'ceb'];
         var matchLimit = 20;
         expectedErr = null;
         expectedData = { Items:[] };
 
         //when
-        var results = searchManifest(pageUrl, language, matchLimit, onFinished);
+        var results = searchManifest(matchLimit, language, null, null, null, null, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
     });
 
-    it('valid language string with continue should return success', function () {
+    it('valid language array with continue should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 2;
         setupDynamoDbMocks(expectedReturn);
-        var pageUrl = "https://test-dummy.com";
-        var language = 'ceb';
+        var language = ['es'];
         var matchLimit = 2;
         expectedErr = null;
         expectedData = {
@@ -57,7 +37,44 @@ describe('Test Manifest Search', function () {
         };
 
         //when
-        var results = searchManifest(pageUrl, language, matchLimit, onFinished);
+        var results = searchManifest(matchLimit, language, null, null, null, null, onFinished);
+
+        //then
+        validateResults(results, expectedReturn, expectedItemCount);
+    });
+
+    it('valid language array and user name should return success', function () {
+        //given
+        var expectedReturn = true;
+        var expectedItemCount = 0;
+        setupDynamoDbMocks(expectedReturn);
+        var language = ['es', 'ceb'];
+        var user = "dummy";
+        var matchLimit = 20;
+        expectedErr = null;
+        expectedData = { Items:[] };
+
+        //when
+        var results = searchManifest(matchLimit, language, user, null, null, null, onFinished);
+
+        //then
+        validateResults(results, expectedReturn, expectedItemCount);
+    });
+
+    it('valid repo name and resource should return success', function () {
+        //given
+        var expectedReturn = true;
+        var expectedItemCount = 0;
+        setupDynamoDbMocks(expectedReturn);
+        var repo = "dummy_repo";
+        var resource = "dummy_res";
+        var returnFields = "user_name, repo_name";
+        var matchLimit = 20;
+        expectedErr = null;
+        expectedData = { Items:[] };
+
+        //when
+        var results = searchManifest(matchLimit, null, null, repo, resource, returnFields, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -68,8 +85,7 @@ describe('Test Manifest Search', function () {
         var expectedReturn = true;
         var expectedItemCount = 0;
         setupDynamoDbMocks(expectedReturn);
-        var pageUrl = "https://test-dummy.com";
-        var language = 'ceb';
+        var language = ['ceb'];
         var matchLimit = 2;
         var expectedError = "search Failure";
         expectedErr = expectedError;
@@ -79,25 +95,7 @@ describe('Test Manifest Search', function () {
         };
 
         //when
-        var results = searchManifest(pageUrl, language, matchLimit, onFinished);
-
-        //then
-        validateResults(results, expectedReturn, expectedItemCount);
-    });
-
-    it('invalid language should return error', function () {
-        //given
-        var expectedReturn = false;
-        var expectedItemCount = 0;
-        setupDynamoDbMocks(expectedReturn);
-        var pageUrl = "https://test-dummy.com";
-        var language = null;
-        var matchLimit = 20;
-        expectedErr = "dummy error";
-        expectedData = {};
-
-        //when
-        var results = searchManifest(pageUrl, language, matchLimit, onFinished);
+        var results = searchManifest(matchLimit, language, null, null, null, null, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -105,17 +103,16 @@ describe('Test Manifest Search', function () {
 
     it('undefined getTable() should return error', function () {
         //given
-        getTable = null;
+        getManifestTable = null;
         var expectedReturn = false;
         var expectedItemCount = 0;
-        var pageUrl = "https://test-dummy.com";
         var language = null;
         var matchLimit = 20;
         expectedErr = "dummy error";
         expectedData = {};
 
         //when
-        var results = searchManifest(pageUrl, language, matchLimit, onFinished);
+        var results = searchManifest(matchLimit, language, null, null, null, null, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -148,7 +145,7 @@ describe('Test Manifest Search', function () {
         };
         AWS.DynamoDB.DocumentClient = DocumentClientClassMock;
 
-        getTable = jasmine.createSpy().and.returnValue("dummy-table");
+        getManifestTable = jasmine.createSpy().and.returnValue("dummy-table");
         scanMock = jasmine.createSpy().and.callFake(mockOnScan);
         function mockOnScan(params, onScan) { // mock the table scan operation
             if(onScan) {

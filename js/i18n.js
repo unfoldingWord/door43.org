@@ -353,7 +353,7 @@ $().ready(function () {
   $('#search-td').on('click', function (){
     var search_for = document.getElementById('search-for').value;
     const matchLimit = 50;
-    searchManifest([ search_for ], matchLimit, null, null, "repo_name, user_name, title, lang_code",
+    searchManifest(matchLimit, [ search_for ], null, null, null, null,
       function (err, entries) {
         var message = "Search error";
         if (err) {
@@ -415,14 +415,14 @@ function appendFilter(filterExpression, rule) {
 }
 
 /***
- * kicks off a search for language
- * @param pageUrl - origination page string (window.location.href)
+ * kicks off a search for entries in the manifest
  * @param languages - array of language code strings or null for any language
  * @param matchLimit - limit the number of matches to return. This is not an exact limit, but has to do with responses
  *                          being returned a page at a time.  Once number of entries gets to or is above this count
  *                          then no more pages will be fetched.
  * @param user_name - user name to match or null for any user
  * @param repo_name - repo name to match or null for any repo
+ * @param resource - resource type to find in resource_idString or resource_typeString
  * @param returnedFields - comma delimited list of fields to return.  If null it will default to
  *                              all fields
  * @param onFinished - call back function onScan(err, entries) - where:
@@ -431,7 +431,7 @@ function appendFilter(filterExpression, rule) {
  *                                                where each object contains returnedFields
  * @return boolean - true if search initiated, if false then search error
  */
-function searchManifest(languages, matchLimit, user_name, repo_name, returnedFields, onFinished) {
+function searchManifest(matchLimit, languages, user_name, repo_name, resource, returnedFields, onFinished) {
     try {
         var tableName = getManifestTable();
         var expressionAttributeValues = {};
@@ -455,6 +455,13 @@ function searchManifest(languages, matchLimit, user_name, repo_name, returnedFie
             expressionAttributeValues[":repo"] = repo_name;
             filterExpression = appendFilter(filterExpression, "#r = :repo");
             expressionAttributeNames["#r"] = "repo_name";
+        }
+
+        if(resource) {
+            expressionAttributeValues[":res"] = resource;
+            filterExpression = appendFilter(filterExpression, "(#id = :res OR #t = :res)");
+            expressionAttributeNames["#id"] = "resource_id";
+            expressionAttributeNames["#t"] = "resource_type";
         }
 
         var params = {
