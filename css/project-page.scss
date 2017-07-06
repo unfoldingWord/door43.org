@@ -297,7 +297,8 @@ body.ta {
       }
       p {
         margin-top: 0;
-      }
+        margin-bottom: 10px;
+      } 
     }
 
     .top-box {
@@ -403,13 +404,13 @@ body.ta {
         }
       }
     }
-    div > ul > li:first-child, ol > li > ul > li:first-child {
+    div:not(.box) > ul > li:first-child, div:not(.box) ol > li > ul > li:first-child {
       margin-top: 1em;
     }
-    div > ul > li:last-child, ol > li > ul > li:last-child {
+    div:not(.box) > ul > li:last-child, div:not(.box) ol > li > ul > li:last-child {
       margin-bottom: 1em;
     }
-    ul li li:last-child {
+    div:not(.box) ul li li:last-child {
       margin-bottom: .5em;
     }
 
