@@ -353,7 +353,7 @@ $().ready(function () {
   $('#search-td').on('click', function (){
     var search_for = document.getElementById('search-for').value;
     const matchLimit = 50;
-    searchLanguages(window.location.href, [ search_for ], matchLimit, null,
+    searchManifest([ search_for ], matchLimit, null, null, "repo_name, user_name, title, lang_code",
       function (err, entries) {
         var message = "Search error";
         if (err) {
@@ -403,42 +403,71 @@ function searchContinue(docClient, params, retData, matchLimit, onFinished) {
     }
 }
 
+function appendFilter(filterExpression, rule) {
+    if(!filterExpression) {
+        filterExpression = "";
+    }
+    if(filterExpression.length > 0) {
+        filterExpression += " AND ";
+    }
+    filterExpression += rule;
+    return filterExpression;
+}
+
 /***
  * kicks off a search for language
  * @param pageUrl - origination page string (window.location.href)
- * @param languages - array of language code strings
+ * @param languages - array of language code strings or null for any language
  * @param matchLimit - limit the number of matches to return. This is not an exact limit, but has to do with responses
  *                          being returned a page at a time.  Once number of entries gets to or is above this count
  *                          then no more pages will be fetched.
+ * @param user_name - user name to match or null for any user
+ * @param repo_name - repo name to match or null for any repo
+ * @param returnedFields - comma delimited list of fields to return.  If null it will default to
+ *                              all fields
  * @param onFinished - call back function onScan(err, entries) - where:
  *                                              err - an error message string
- *                                              entries - an array of table entry objects that match the language(s)
- *                                                where each object contains: repo_name, user_name, title, lang_code
+ *                                              entries - an array of table entry objects that match the search params.
+ *                                                where each object contains returnedFields
  * @return boolean - true if search initiated, if false then search error
  */
-function searchLanguages(pageUrl, languages, matchLimit, returnedFields, onFinished) {
+function searchManifest(languages, matchLimit, user_name, repo_name, returnedFields, onFinished) {
     try {
-        var tableName = getManifestTable(pageUrl);
+        var tableName = getManifestTable();
+        var expressionAttributeValues = {};
+        var filterExpression = "";
+        var expressionAttributeNames = {  };
 
-        if (!(languages instanceof Array)) {
-            var err = "Unsupported type '" + (typeof languages) + "' for language: " + languages;
-            onFinished(err, null);
-            return false;
+        if (languages) {
+            var languageStr = "[" + languages.join(",") + "]"; // convert array to set string
+            expressionAttributeValues[":langs"] = languageStr;
+            filterExpression = appendFilter(filterExpression, "contains(:langs, #lc)");
+            expressionAttributeNames["#lc"] = "lang_code";
         }
 
-        if (!returnedFields) {
-            returnedFields = "repo_name, user_name, title, lang_code";
+        if(user_name) {
+            expressionAttributeValues[":user"] = user_name;
+            filterExpression = appendFilter(filterExpression, "#u = :user");
+            expressionAttributeNames["#u"] = "user_name";
         }
 
-        var languageStr = "[" + languages.join(",") + "]"; // convert array to set string
+        if(repo_name) {
+            expressionAttributeValues[":repo"] = repo_name;
+            filterExpression = appendFilter(filterExpression, "#r = :repo");
+            expressionAttributeNames["#r"] = "repo_name";
+        }
+
         var params = {
             TableName: tableName,
-            ProjectionExpression: returnedFields,
-            ExpressionAttributeNames: { "#lc": "lang_code" },
-            FilterExpression: "contains(:matches, #lc)",
-            ExpressionAttributeValues: { ':matches': languageStr },
+            ExpressionAttributeNames: expressionAttributeNames,
+            FilterExpression: filterExpression,
+            ExpressionAttributeValues: expressionAttributeValues,
             Limit: 3000 // number of records to check at a time
         };
+
+        if (returnedFields) {
+            params.ProjectionExpression = returnedFields;
+        }
 
     } catch(e) {
         var err = "Could not search languages: " + e.message;

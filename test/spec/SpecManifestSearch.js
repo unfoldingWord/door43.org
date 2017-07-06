@@ -1,4 +1,4 @@
-describe('Test Language Search', function () {
+describe('Test Manifest Search', function () {
 
   var expectedErr;
   var expectedData;
@@ -18,7 +18,7 @@ describe('Test Language Search', function () {
         expectedData = { Items:[] };
 
         //when
-        var results = searchLanguages(pageUrl, language, matchLimit, onFinished);
+        var results = searchManifest(pageUrl, language, matchLimit, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -36,7 +36,7 @@ describe('Test Language Search', function () {
         expectedData = { Items:[] };
 
         //when
-        var results = searchLanguages(pageUrl, language, matchLimit, onFinished);
+        var results = searchManifest(pageUrl, language, matchLimit, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -57,7 +57,7 @@ describe('Test Language Search', function () {
         };
 
         //when
-        var results = searchLanguages(pageUrl, language, matchLimit, onFinished);
+        var results = searchManifest(pageUrl, language, matchLimit, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -79,7 +79,7 @@ describe('Test Language Search', function () {
         };
 
         //when
-        var results = searchLanguages(pageUrl, language, matchLimit, onFinished);
+        var results = searchManifest(pageUrl, language, matchLimit, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -97,7 +97,7 @@ describe('Test Language Search', function () {
         expectedData = {};
 
         //when
-        var results = searchLanguages(pageUrl, language, matchLimit, onFinished);
+        var results = searchManifest(pageUrl, language, matchLimit, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -115,7 +115,7 @@ describe('Test Language Search', function () {
         expectedData = {};
 
         //when
-        var results = searchLanguages(pageUrl, language, matchLimit, onFinished);
+        var results = searchManifest(pageUrl, language, matchLimit, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
