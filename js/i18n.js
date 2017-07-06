@@ -345,6 +345,33 @@ function getLanguageListItems($textBox, callback) {
   });
 }
 
+function getMessageString(err, entries, search_for) {
+    var message = "Search error";
+    if (err) {
+        console.log("Error: " + err);
+    } else {
+        if (entries.length == 0) {
+            message = "No matches found for: '" + search_for + "'";
+        } else {
+            var summary = "";
+            var count = 0;
+            entries.forEach(function (entry) {
+                summary += "entry " + (++count) + ": '" + entry.title + "', " + entry.repo_name + "/" + entry.user_name + ", lang=" + entry.lang_code + "\n";
+            });
+            message = count + " Matches found for '" + search_for + "':\n" + summary;
+        }
+    }
+    return message;
+}
+
+function searchAndDisplayResults(search_for) {
+    searchManifest(50, [search_for], null, null, null, null,
+        function (err, entries) {
+            var message = getMessageString(err, entries, search_for);
+            alert(message);
+        }
+    );
+}
 
 $().ready(function () {
   window.setTimeout(searchForResources(''), 300);
@@ -352,27 +379,7 @@ $().ready(function () {
 
   $('#search-td').on('click', function (){
     var search_for = document.getElementById('search-for').value;
-    const matchLimit = 50;
-    searchManifest(matchLimit, [ search_for ], null, null, null, null,
-      function (err, entries) {
-        var message = "Search error";
-        if (err) {
-            console.log("Error: " + err);
-        } else {
-            if(entries.length == 0) {
-              message = "No matches found for: '" + search_for + "'";
-            } else {
-              var summary = "";
-              var count = 0;
-              entries.forEach(function (entry) {
-                summary += "entry " + (++count) + ": '" + entry.title + "', " + entry.repo_name + "/" + entry.user_name + ", lang=" + entry.lang_code + "\n";
-              });
-              message = count + " Matches found for '" + search_for + "':\n" + summary;
-            }
-        }
-        alert(message);
-      }
-    );
+      searchAndDisplayResults(search_for);
   });
 
   $('#browse-td').on('click', function (){
