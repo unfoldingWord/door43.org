@@ -418,7 +418,7 @@ function searchContinue(docClient, params, retData, matchLimit, onFinished) {
  */
 function searchLanguages(pageUrl, language, matchLimit, onFinished) {
     try {
-        var tableName = getTable(pageUrl);
+        var tableName = getManifestTable(pageUrl);
         var params = {
             TableName: tableName,
             ProjectionExpression: "repo_name, user_name, title, lang_code",
