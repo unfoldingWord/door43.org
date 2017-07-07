@@ -37,6 +37,13 @@ If you do not have the `bundle` executable, then you'll need to run `sudo gem in
 
     bundle update
 
+##### Setup
+
+If you need `s3cmd`, then install it from http://s3tools.org/download.  It's as easy as `sudo pip install s3cmd`, `yum install s3cmd` or `sudo apt-get install s3cmd` for Linux.
+
+You will also need to ensure that you have a configuration file for `s3cmd` available as `s3cfg-prod` at the root of the repo.  Both the assets and s3cfg-prod locations are excluded from git in .gitignore.
+
+
 #### Publishing Setup
 
 There are two branches that are built and deployed to S3 by Travis CI:
@@ -50,7 +57,7 @@ The master branch is available at https://live.door43.org (soon to be at https:/
 
 #### Pre Production Testing
 
-You may run `make test`, or `make build`, or `make serve` to test and review your changes locally.  Once the `cibuild.sh` script passes successfully locally, you may commit and push to the `develop` branch.  You can do this by running `make commit`.
+You may run `make test`, or `make build`, or `make serve` to test and review your changes locally.  Once the `cibuild.sh` script passes successfully locally, push `test` branch.  Follow setup instructions in `s3_test_push.sh` and then run the script  `s3_test_push.sh`.
 
 #### Push to Production
 
@@ -59,17 +66,6 @@ If Travis CI has built and deployed the `develop` branch successfully, you may m
 #### Syncing Assets
 
 Assets (binary things like images) are housed on cdn.door43.org/assets for this site. This assets folder is a Resilio Sync folder shared among the developers (ask if you need access).
-
-##### Setup
-
-Initial setup requires getting the shared folder on your system.  Then you need to symlink the folder into the root of this project as "assets".  On my system I did this:
-
-    cd vcs/door43.org
-    ln -s /Users/jesse/BitTorrent\ Sync/door43.org.assets/ assets
-
-If you need `s3cmd`, then install it from http://s3tools.org/download.  It's as easy as `yum install s3cmd` or `sudo apt-get install s3cmd` for Linux.
-
-You will also need to ensure that you have a configuration file for `s3cmd` available as `s3cfg-prod` at the root of the repo.  Both the assets and s3cfg-prod locations are excluded from git in .gitignore.
 
 ##### Syncing
 
