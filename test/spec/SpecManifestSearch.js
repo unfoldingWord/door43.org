@@ -78,7 +78,7 @@ describe('Test Manifest Search', function () {
         expectedData = { Items:[] };
 
         //when
-        var results = searchManifest(matchLimit, language, null, null, null, null, onFinished);
+        var results = searchManifest(matchLimit, language, null, null, null, null, null, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -98,7 +98,7 @@ describe('Test Manifest Search', function () {
         };
 
         //when
-        var results = searchManifest(matchLimit, language, null, null, null, null, onFinished);
+        var results = searchManifest(matchLimit, language, null, null, null, null, null, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -116,7 +116,7 @@ describe('Test Manifest Search', function () {
         expectedData = { Items:[] };
 
         //when
-        var results = searchManifest(matchLimit, language, user, null, null, null, onFinished);
+        var results = searchManifest(matchLimit, language, user, null, null, null, null, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -135,7 +135,25 @@ describe('Test Manifest Search', function () {
         expectedData = { Items:[] };
 
         //when
-        var results = searchManifest(matchLimit, null, null, repo, resource, returnFields, onFinished);
+        var results = searchManifest(matchLimit, null, null, repo, resource, null, returnFields, onFinished);
+
+        //then
+        validateResults(results, expectedReturn, expectedItemCount);
+    });
+
+    it('searchManifest: valid repo name and resource should return success', function () {
+        //given
+        var expectedReturn = true;
+        var expectedItemCount = 0;
+        setupDynamoDbMocks(expectedReturn);
+        var full_text = "dummy_text";
+        var returnFields = "user_name, repo_name";
+        var matchLimit = 20;
+        expectedErr = null;
+        expectedData = { Items:[] };
+
+        //when
+        var results = searchManifest(matchLimit, null, null, null, null, full_text, returnFields, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -155,7 +173,7 @@ describe('Test Manifest Search', function () {
         };
 
         //when
-        var results = searchManifest(matchLimit, language, null, null, null, null, onFinished);
+        var results = searchManifest(matchLimit, language, null, null, null, null, null, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -172,7 +190,7 @@ describe('Test Manifest Search', function () {
         expectedData = {};
 
         //when
-        var results = searchManifest(matchLimit, language, null, null, null, null, onFinished);
+        var results = searchManifest(matchLimit, language, null, null, null, null, null, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);

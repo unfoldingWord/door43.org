@@ -365,7 +365,7 @@ function getMessageString(err, entries, search_for) {
 }
 
 function searchAndDisplayResults(search_for) {
-    searchManifest(50, [search_for], null, null, null, null,
+    searchManifest(50, [search_for], null, null, null, null, null,
         function (err, entries) {
             var message = getMessageString(err, entries, search_for);
             alert(message);
@@ -422,13 +422,14 @@ function appendFilter(filterExpression, rule) {
 }
 
 /***
- * kicks off a search for entries in the manifest
+ * kicks off a search for entries in the manifest (case insensitive)
  * @param languages - array of language code strings or null for any language
  * @param matchLimit - limit the number of matches to return. This is not an exact limit, but has to do with responses
  *                          being returned a page at a time.  Once number of entries gets to or is above this count
  *                          then no more pages will be fetched.
  * @param user_name - user name to match or null for any user
  * @param repo_name - repo name to match or null for any repo
+ * @param full_text - text to find in any field
  * @param resource - resource type to find in resource_idString or resource_typeString
  * @param returnedFields - comma delimited list of fields to return.  If null it will default to
  *                              all fields
@@ -438,7 +439,7 @@ function appendFilter(filterExpression, rule) {
  *                                                where each object contains returnedFields
  * @return boolean - true if search initiated, if false then search error
  */
-function searchManifest(matchLimit, languages, user_name, repo_name, resource, returnedFields, onFinished) {
+function searchManifest(matchLimit, languages, user_name, repo_name, resource, full_text, returnedFields, onFinished) {
     try {
         var tableName = getManifestTable();
         var expressionAttributeValues = {};
@@ -447,28 +448,41 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resource, r
 
         if (languages) {
             var languageStr = "[" + languages.join(",") + "]"; // convert array to set string
-            expressionAttributeValues[":langs"] = languageStr;
+            expressionAttributeValues[":langs"] = languageStr.toLowerCase();
             filterExpression = appendFilter(filterExpression, "contains(:langs, #lc)");
             expressionAttributeNames["#lc"] = "lang_code";
         }
 
         if(user_name) {
-            expressionAttributeValues[":user"] = user_name;
+            expressionAttributeValues[":user"] = user_name.toLowerCase();
             filterExpression = appendFilter(filterExpression, "#u = :user");
+            // expressionAttributeNames["#u"] = "user_name_lower";
             expressionAttributeNames["#u"] = "user_name";
         }
 
         if(repo_name) {
-            expressionAttributeValues[":repo"] = repo_name;
+            expressionAttributeValues[":repo"] = repo_name.toLowerCase();
             filterExpression = appendFilter(filterExpression, "#r = :repo");
+            // expressionAttributeNames["#r"] = "repo_name_lower";
             expressionAttributeNames["#r"] = "repo_name";
         }
 
         if(resource) {
-            expressionAttributeValues[":res"] = resource;
+            expressionAttributeValues[":res"] = resource.toLowerCase();
             filterExpression = appendFilter(filterExpression, "(#id = :res OR #t = :res)");
             expressionAttributeNames["#id"] = "resource_id";
             expressionAttributeNames["#t"] = "resource_type";
+        }
+
+        if(full_text) {
+            expressionAttributeValues[":match"] = full_text.toLowerCase();
+            filterExpression = appendFilter(filterExpression, "(contains(#m, :match) OR contains(#r, :match) OR contains(#u, :match))");
+            // expressionAttributeNames["#m"] = "manifest_lower";
+            expressionAttributeNames["#m"] = "manifest";
+            // expressionAttributeNames["#r"] = "repo_name_lower";
+            expressionAttributeNames["#r"] = "repo_name";
+            // expressionAttributeNames["#u"] = "user_name_lower";
+            expressionAttributeNames["#u"] = "user_name";
         }
 
         var params = {
