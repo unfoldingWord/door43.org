@@ -456,15 +456,13 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resource, f
         if(user_name) {
             expressionAttributeValues[":user"] = user_name.toLowerCase();
             filterExpression = appendFilter(filterExpression, "#u = :user");
-            // expressionAttributeNames["#u"] = "user_name_lower";
-            expressionAttributeNames["#u"] = "user_name";
+            expressionAttributeNames["#u"] = "user_name_lower";
         }
 
         if(repo_name) {
             expressionAttributeValues[":repo"] = repo_name.toLowerCase();
             filterExpression = appendFilter(filterExpression, "#r = :repo");
-            // expressionAttributeNames["#r"] = "repo_name_lower";
-            expressionAttributeNames["#r"] = "repo_name";
+            expressionAttributeNames["#r"] = "repo_name_lower";
         }
 
         if(resource) {
@@ -477,12 +475,9 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resource, f
         if(full_text) {
             expressionAttributeValues[":match"] = full_text.toLowerCase();
             filterExpression = appendFilter(filterExpression, "(contains(#m, :match) OR contains(#r, :match) OR contains(#u, :match))");
-            // expressionAttributeNames["#m"] = "manifest_lower";
-            expressionAttributeNames["#m"] = "manifest";
-            // expressionAttributeNames["#r"] = "repo_name_lower";
-            expressionAttributeNames["#r"] = "repo_name";
-            // expressionAttributeNames["#u"] = "user_name_lower";
-            expressionAttributeNames["#u"] = "user_name";
+            expressionAttributeNames["#m"] = "manifest_lower";
+            expressionAttributeNames["#r"] = "repo_name_lower";
+            expressionAttributeNames["#u"] = "user_name_lower";
         }
 
         var params = {
