@@ -236,7 +236,7 @@ describe('Test Manifest Search', function () {
     function setupSearchManifestMocks(retVal) {
         spyOn(window, 'alert').and.returnValue("dummy-table");
         spyOn(window, 'searchManifest').and.callFake(mockSearchManifest);
-        function mockSearchManifest(matchLimit, languages, user_name, repo_name, resource, returnedFields, onFinished) { // mock the table scan operation
+        function mockSearchManifest(matchLimit, languages, user_name, repo_name, resource, full_text, returnedFields, onFinished) { // mock the table scan operation
             if(onFinished) {
                 onFinished(expectedErr, expectedData); // call onScan handler with mock data
             }
