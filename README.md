@@ -37,6 +37,13 @@ If you do not have the `bundle` executable, then you'll need to run `sudo gem in
 
     bundle update
 
+##### Setup
+
+If you need `s3cmd`, then install it from http://s3tools.org/download.  It's as easy as `sudo pip install s3cmd`, `yum install s3cmd` or `sudo apt-get install s3cmd` for Linux.
+
+You will also need to ensure that you have a configuration file for `s3cmd` available as `s3cfg-prod` at the root of the repo.  Both the assets and s3cfg-prod locations are excluded from git in .gitignore.
+
+
 #### Publishing Setup
 
 There are two branches that are built and deployed to S3 by Travis CI:
@@ -50,26 +57,19 @@ The master branch is available at https://live.door43.org (soon to be at https:/
 
 #### Pre Production Testing
 
-You may run `make test`, or `make build`, or `make serve` to test and review your changes locally.  Once the `cibuild.sh` script passes successfully locally, you may commit and push to the `develop` branch.  You can do this by running `make commit`.
+You may run `make test`, or `make build`, or `make serve` to test and review your changes locally.  Once the `cibuild.sh` script passes successfully locally, push `test` branch.  Follow setup instructions in `s3_test_push.sh` and then run the script  `s3_test_push.sh`.  Your changes will then be uploaded to `http://test-door43.org.s3-website-us-west-2.amazonaws.com`
+
+#### Develop Testing
+
+After Pre-production Testing you commit your changes and make a pull request against develop branch.  After it has been merged Travis will automatically deploy to dev site for further testing before deploying to production.  Your changes will then be uploaded to `http://dev-door43.org.s3-website-us-west-2.amazonaws.com`
 
 #### Push to Production
 
-If Travis CI has built and deployed the `develop` branch successfully, you may merge it into the `master` branch.  You can do this by running `make publish`.  Your changes should be visible within 5 minutes on https://live.door43.org.
+If Travis CI has built and deployed the `develop` branch successfully, you create a pull request to merge it into the `master` branch.  When this has been merged, Travis will automatically deploy yours changes to production.  Your changes should be visible within 5 minutes on `https://live.door43.org`
 
 #### Syncing Assets
 
 Assets (binary things like images) are housed on cdn.door43.org/assets for this site. This assets folder is a Resilio Sync folder shared among the developers (ask if you need access).
-
-##### Setup
-
-Initial setup requires getting the shared folder on your system.  Then you need to symlink the folder into the root of this project as "assets".  On my system I did this:
-
-    cd vcs/door43.org
-    ln -s /Users/jesse/BitTorrent\ Sync/door43.org.assets/ assets
-
-If you need `s3cmd`, then install it from http://s3tools.org/download.  It's as easy as `yum install s3cmd` or `sudo apt-get install s3cmd` for Linux.
-
-You will also need to ensure that you have a configuration file for `s3cmd` available as `s3cfg-prod` at the root of the repo.  Both the assets and s3cfg-prod locations are excluded from git in .gitignore.
 
 ##### Syncing
 
@@ -85,7 +85,7 @@ In order to synchronize the assets to the cdn S3 bucket you may now run `make as
 #### Running Tests Locally using Karma
 - to make sure we have dependencies do `npm install`
 - to run the tests do `npm run-script test-phantom`
-- coverage reports will be in coverage folder - open coverage/index.html in browser to view.
+- coverage reports will be in coverage folder - open coverage/PhantomJS*/lcov-report/index.html in browser to view.
 
 #### Debugging Tests Locally using Karma
 - to make sure we have dependencies do `npm install`

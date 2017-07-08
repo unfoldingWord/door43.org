@@ -305,7 +305,7 @@ function beginsWith(pageUrl, match) {
     return pos == 0;
 }
 
-function getPageViewUrl(pageUrl) {
+function getSiteFromPage(pageUrl) {
     var prefix = '';
     try {
         var parts = pageUrl.split('//');
@@ -318,9 +318,12 @@ function getPageViewUrl(pageUrl) {
             }
         }
     } catch (e) {
-        console.log("Exception on page URL '" + pageUrl +"': " + e);
+        console.log("Exception on page URL '" + pageUrl + "': " + e);
     }
-
+    return prefix;
+}
+function getPageViewUrl(pageUrl) {
+    var prefix = getSiteFromPage(pageUrl);
     return 'https://' + prefix + 'api.door43.org/page_view_count';
 }
 

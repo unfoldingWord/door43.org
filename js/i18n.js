@@ -160,33 +160,39 @@ function scrollToResults(scroll_to_id) {
 
 /**************************** language selector ****************************/
 var languageSelectorTimer;
+var languageCode;
+var languagePrompt;
 
 /**
  * Initialize the language selector
  */
 function setupLanguageSelector() {
-
   var $searchFor = $('body').find('#search-for');
 
-  $searchFor.on('keyup', function(event) {
+  $searchFor.on('keyup', function (event) {
     languageSelectorKeyUp(event);
   });
 
-  $searchFor.on('autocompleteclose', function() {
+  $searchFor.on('autocompleteclose', function () {
+    parseLanguagePrompt(jQuery(this).val());
+  });
+}
 
-    var langText = jQuery(this).val();
+function parseLanguagePrompt(langText) {
+    languageCode = languagePrompt = null;
     if (!langText) return;
 
     // if closed without picking from the list, do nothing
-    if (langText.indexOf(')') < 3) return;
+    var endOfLang = langText.indexOf(')');
+    if (endOfLang < 3) return;
 
     var langCodes = langText.match(/\(([a-z0-9-]+)\)$/i);
 
     if ((!langCodes) || (langCodes.length !== 2)) return;
 
-    // TODO: Replace 'alert' with code to handle selection of a language
-    alert('Selected language code "' + langCodes[1] + '"');
-  });
+    //save language code and readable string
+    languagePrompt = langText.substr(0, endOfLang+1);
+    languageCode = langCodes[1];
 }
 
 /**
@@ -345,16 +351,60 @@ function getLanguageListItems($textBox, callback) {
   });
 }
 
+function getMessageString(err, entries, search_for) {
+    var message = "Search error";
+    if (err) {
+        console.log("Error: " + err);
+    } else {
+        if (entries.length == 0) {
+            message = "No matches found for: '" + search_for + "'";
+        } else {
+            var summary = "";
+            var count = 0;
+            entries.forEach(function (entry) {
+                summary += "entry " + (++count) + ": '" + entry.title + "', " + entry.repo_name + "/" + entry.user_name + ", lang=" + entry.lang_code + "\n";
+            });
+            message = count + " Matches found for '" + search_for + "':\n" + summary;
+        }
+    }
+    return message;
+}
+
+function searchAndDisplayResults(searchStr, languagePrompt, languageCode) {
+    var langSearch = null;
+    var fullTextSearch = searchStr; // default to fulltext search
+    var searchPrompt = searchStr;
+
+    // if language was selected, separate it out
+    if(languageCode) {
+        searchPrompt = languagePrompt;
+        langSearch = [languageCode];
+        if(searchStr.indexOf(languagePrompt) == 0) { // if searchStr starts with languagePrompt, remove it
+            var q = searchStr.substr(languagePrompt.length).trim();
+            if(q.length) { // if there was more text to search, extract it out
+                fullTextSearch = q;
+                searchPrompt += " " + q;
+            } else {
+                fullTextSearch = null;
+            }
+        }
+    }
+
+    searchManifest(50, langSearch, null, null, null, fullTextSearch, null,
+        function (err, entries) {
+            var message = getMessageString(err, entries, searchPrompt);
+            alert(message);
+        }
+    );
+}
 
 $().ready(function () {
   window.setTimeout(searchForResources(''), 300);
   window.setTimeout(setupLanguageSelector(), 500);
 
   $('#search-td').on('click', function (){
-    var search_for = document.getElementById('search-for').value;
-
-    // TODO: put actual search code here.
-    alert('Search for "' + search_for + '".');
+    var search_for = $('#search-for').val();
+    searchAndDisplayResults(search_for, languagePrompt, languageCode);
   });
 
   $('#browse-td').on('click', function (){
@@ -363,3 +413,117 @@ $().ready(function () {
     alert('Browse code goes here.');
   });
 });
+
+function searchContinue(docClient, params, retData, matchLimit, onFinished) {
+    docClient.scan(params, onScan);
+
+    function onScan(err, data) {
+        if (err) {
+            onFinished(err, retData);
+        } else {
+            if('Items' in data) {
+                retData = retData.concat(data.Items);
+            }
+            var itemCount = retData.length;
+            if((itemCount >= matchLimit) || !('LastEvaluatedKey' in data)) {
+                onFinished(err, retData);
+            } else { // more in list that we need to get
+                params.ExclusiveStartKey = data.LastEvaluatedKey;
+                searchContinue(docClient, params, retData, matchLimit, onFinished);
+            }
+        }
+    }
+}
+
+function appendFilter(filterExpression, rule) {
+    if(!filterExpression) {
+        filterExpression = "";
+    }
+    if(filterExpression.length > 0) {
+        filterExpression += " AND ";
+    }
+    filterExpression += rule;
+    return filterExpression;
+}
+
+/***
+ * kicks off a search for entries in the manifest (case insensitive)
+ * @param languages - array of language code strings or null for any language
+ * @param matchLimit - limit the number of matches to return. This is not an exact limit, but has to do with responses
+ *                          being returned a page at a time.  Once number of entries gets to or is above this count
+ *                          then no more pages will be fetched.
+ * @param user_name - user name to match or null for any user
+ * @param repo_name - repo name to match or null for any repo
+ * @param full_text - text to find in any field
+ * @param resource - resource type to find in resource_idString or resource_typeString
+ * @param returnedFields - comma delimited list of fields to return.  If null it will default to
+ *                              all fields
+ * @param onFinished - call back function onScan(err, entries) - where:
+ *                                              err - an error message string
+ *                                              entries - an array of table entry objects that match the search params.
+ *                                                where each object contains returnedFields
+ * @return boolean - true if search initiated, if false then search error
+ */
+function searchManifest(matchLimit, languages, user_name, repo_name, resource, full_text, returnedFields, onFinished) {
+    try {
+        var tableName = getManifestTable();
+        var expressionAttributeValues = {};
+        var filterExpression = "";
+        var expressionAttributeNames = {  };
+
+        if (languages) {
+            var languageStr = "[" + languages.join(",") + "]"; // convert array to set string
+            expressionAttributeValues[":langs"] = languageStr.toLowerCase();
+            filterExpression = appendFilter(filterExpression, "contains(:langs, #lc)");
+            expressionAttributeNames["#lc"] = "lang_code";
+        }
+
+        if(user_name) {
+            expressionAttributeValues[":user"] = user_name.toLowerCase();
+            filterExpression = appendFilter(filterExpression, "#u = :user");
+            expressionAttributeNames["#u"] = "user_name_lower";
+        }
+
+        if(repo_name) {
+            expressionAttributeValues[":repo"] = repo_name.toLowerCase();
+            filterExpression = appendFilter(filterExpression, "#r = :repo");
+            expressionAttributeNames["#r"] = "repo_name_lower";
+        }
+
+        if(resource) {
+            expressionAttributeValues[":res"] = resource.toLowerCase();
+            filterExpression = appendFilter(filterExpression, "(#id = :res OR #t = :res)");
+            expressionAttributeNames["#id"] = "resource_id";
+            expressionAttributeNames["#t"] = "resource_type";
+        }
+
+        if(full_text) {
+            expressionAttributeValues[":match"] = full_text.toLowerCase();
+            filterExpression = appendFilter(filterExpression, "(contains(#m, :match) OR contains(#r, :match) OR contains(#u, :match))");
+            expressionAttributeNames["#m"] = "manifest_lower";
+            expressionAttributeNames["#r"] = "repo_name_lower";
+            expressionAttributeNames["#u"] = "user_name_lower";
+        }
+
+        var params = {
+            TableName: tableName,
+            ExpressionAttributeNames: expressionAttributeNames,
+            FilterExpression: filterExpression,
+            ExpressionAttributeValues: expressionAttributeValues,
+            Limit: 3000 // number of records to check at a time
+        };
+
+        if (returnedFields) {
+            params.ProjectionExpression = returnedFields;
+        }
+
+    } catch(e) {
+        var err = "Could not search languages: " + e.message;
+        onFinished(err, null);
+        return false;
+    }
+
+    var docClient = new AWS.DynamoDB.DocumentClient();
+    searchContinue(docClient, params, [], matchLimit, onFinished);
+    return true;
+}
