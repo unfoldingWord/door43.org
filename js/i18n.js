@@ -378,8 +378,8 @@ $().ready(function () {
   window.setTimeout(setupLanguageSelector(), 500);
 
   $('#search-td').on('click', function (){
-    var search_for = document.getElementById('search-for').value;
-      searchAndDisplayResults(search_for);
+    var search_for = $('#search-for').val();
+    searchAndDisplayResults(search_for);
   });
 
   $('#browse-td').on('click', function (){
