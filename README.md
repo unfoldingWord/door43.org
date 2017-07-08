@@ -57,11 +57,15 @@ The master branch is available at https://live.door43.org (soon to be at https:/
 
 #### Pre Production Testing
 
-You may run `make test`, or `make build`, or `make serve` to test and review your changes locally.  Once the `cibuild.sh` script passes successfully locally, push `test` branch.  Follow setup instructions in `s3_test_push.sh` and then run the script  `s3_test_push.sh`.
+You may run `make test`, or `make build`, or `make serve` to test and review your changes locally.  Once the `cibuild.sh` script passes successfully locally, push `test` branch.  Follow setup instructions in `s3_test_push.sh` and then run the script  `s3_test_push.sh`.  Your changes will then be uploaded to `http://test-door43.org.s3-website-us-west-2.amazonaws.com`
+
+#### Develop Testing
+
+After Pre-production Testing you commit your changes and make a pull request against develop branch.  After it has been merged Travis will automatically deploy to dev site for further testing before deploying to production.  Your changes will then be uploaded to `http://dev-door43.org.s3-website-us-west-2.amazonaws.com`
 
 #### Push to Production
 
-If Travis CI has built and deployed the `develop` branch successfully, you may merge it into the `master` branch.  You can do this by running `make publish`.  Your changes should be visible within 5 minutes on https://live.door43.org.
+If Travis CI has built and deployed the `develop` branch successfully, you create a pull request to merge it into the `master` branch.  When this has been merged, Travis will automatically deploy yours changes to production.  Your changes should be visible within 5 minutes on `https://live.door43.org`
 
 #### Syncing Assets
 
