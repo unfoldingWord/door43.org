@@ -52,16 +52,52 @@ describe('Test Manifest Search', function () {
         expect(message).toContain("Matches found");
     });
 
-    it('searchAndDisplayResults: search should show message', function () {
+    it('searchAndDisplayResults: full text search should show message', function () {
         //given
         var expectedReturn = true;
         setupSearchManifestMocks(expectedReturn);
         var search_for = 'es';
         expectedErr = 'error';
         expectedData = null;
+        var languageStr = null;
+        var languageCode = null;
 
         //when
-        searchAndDisplayResults(search_for);
+        searchAndDisplayResults(search_for, languageStr, languageCode);
+
+        //then
+        expect(window.alert).toHaveBeenCalled();
+    });
+
+    it('searchAndDisplayResults: language search should show message', function () {
+        //given
+        var expectedReturn = true;
+        setupSearchManifestMocks(expectedReturn);
+        var languageCode = 'es';
+        var languageStr = 'Espanol (es)';
+        var search_for = languageStr;
+        expectedErr = 'error';
+        expectedData = null;
+
+        //when
+        searchAndDisplayResults(search_for, languageStr, languageCode);
+
+        //then
+        expect(window.alert).toHaveBeenCalled();
+    });
+
+    it('searchAndDisplayResults: language search with extra text should show message', function () {
+        //given
+        var expectedReturn = true;
+        setupSearchManifestMocks(expectedReturn);
+        var languageCode = 'es';
+        var languageStr = 'Espanol (es)';
+        var search_for = languageStr + " extra";
+        expectedErr = 'error';
+        expectedData = null;
+
+        //when
+        searchAndDisplayResults(search_for, languageStr, languageCode);
 
         //then
         expect(window.alert).toHaveBeenCalled();

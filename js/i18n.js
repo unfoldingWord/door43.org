@@ -160,6 +160,8 @@ function scrollToResults(scroll_to_id) {
 
 /**************************** language selector ****************************/
 var languageSelectorTimer;
+var languageCode;
+var languagePrompt;
 
 /**
  * Initialize the language selector
@@ -173,19 +175,21 @@ function setupLanguageSelector() {
   });
 
   $searchFor.on('autocompleteclose', function() {
-
     var langText = jQuery(this).val();
+    languagePrompt = languagePrompt = null;
     if (!langText) return;
 
     // if closed without picking from the list, do nothing
-    if (langText.indexOf(')') < 3) return;
+      var endOfLang = langText.indexOf(')');
+      if (endOfLang < 3) return;
 
     var langCodes = langText.match(/\(([a-z0-9-]+)\)$/i);
 
     if ((!langCodes) || (langCodes.length !== 2)) return;
 
-    // TODO: Replace 'alert' with code to handle selection of a language
-    alert('Selected language code "' + langCodes[1] + '"');
+    //save language code and readable string
+    languagePrompt = langText.substr(0, endOfLang+1);
+    languageCode = langCodes[1];
   });
 }
 
@@ -364,10 +368,29 @@ function getMessageString(err, entries, search_for) {
     return message;
 }
 
-function searchAndDisplayResults(search_for) {
-    searchManifest(50, [search_for], null, null, null, null, null,
+function searchAndDisplayResults(searchStr, languagePrompt, languageCode) {
+    var langSearch = null;
+    var fullTextSearch = searchStr; // default to fulltext search
+    var searchPrompt = searchStr;
+
+    // if language was selected, separate it out
+    if(languageCode) {
+        searchPrompt = languagePrompt;
+        langSearch = [languageCode];
+        if(searchStr.indexOf(languagePrompt) == 0) { // if searchStr starts with languagePrompt, remove it
+            var q = searchStr.substr(languagePrompt.length).trim();
+            if(q.length) { // if there was more text to search, extract it out
+                fullTextSearch = q;
+                searchPrompt += " " + q;
+            } else {
+                fullTextSearch = null;
+            }
+        }
+    }
+
+    searchManifest(50, langSearch, null, null, null, fullTextSearch, null,
         function (err, entries) {
-            var message = getMessageString(err, entries, search_for);
+            var message = getMessageString(err, entries, searchPrompt);
             alert(message);
         }
     );
@@ -379,7 +402,7 @@ $().ready(function () {
 
   $('#search-td').on('click', function (){
     var search_for = $('#search-for').val();
-    searchAndDisplayResults(search_for);
+    searchAndDisplayResults(search_for, languagePrompt, languageCode);
   });
 
   $('#browse-td').on('click', function (){
