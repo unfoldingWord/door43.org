@@ -167,21 +167,24 @@ var languagePrompt;
  * Initialize the language selector
  */
 function setupLanguageSelector() {
-
   var $searchFor = $('body').find('#search-for');
 
-  $searchFor.on('keyup', function(event) {
+  $searchFor.on('keyup', function (event) {
     languageSelectorKeyUp(event);
   });
 
-  $searchFor.on('autocompleteclose', function() {
-    var langText = jQuery(this).val();
-    languagePrompt = languagePrompt = null;
+  $searchFor.on('autocompleteclose', function () {
+    parseLanguagePrompt(jQuery(this).val());
+  });
+}
+
+function parseLanguagePrompt(langText) {
+    languageCode = languagePrompt = null;
     if (!langText) return;
 
     // if closed without picking from the list, do nothing
-      var endOfLang = langText.indexOf(')');
-      if (endOfLang < 3) return;
+    var endOfLang = langText.indexOf(')');
+    if (endOfLang < 3) return;
 
     var langCodes = langText.match(/\(([a-z0-9-]+)\)$/i);
 
@@ -190,7 +193,6 @@ function setupLanguageSelector() {
     //save language code and readable string
     languagePrompt = langText.substr(0, endOfLang+1);
     languageCode = langCodes[1];
-  });
 }
 
 /**
