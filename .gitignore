@@ -15,4 +15,4 @@ s3cfg-prod
 secrets.tar
 node_modules/
 coverage/
-js/db-keys.json
+js/db_keys.js

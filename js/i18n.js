@@ -162,12 +162,13 @@ function scrollToResults(scroll_to_id) {
 var languageSelectorTimer;
 var languageCode;
 var languagePrompt;
+var languageSearchResults = {};
 
 /**
  * Initialize the language selector
  */
 function setupLanguageSelector() {
-  var $searchFor = $('body').find('#search-for');
+  var $searchFor = $('#search-for');
 
   $searchFor.on('keyup', function (event) {
     languageSelectorKeyUp(event);
@@ -175,6 +176,10 @@ function setupLanguageSelector() {
 
   $searchFor.on('autocompleteclose', function () {
     parseLanguagePrompt(jQuery(this).val());
+  });
+
+  $('body').on('click', '.lc-filter, .remove-lc.x', function(event){
+    removeLanguageFilter(event.target);
   });
 }
 
@@ -210,8 +215,8 @@ function languageSelectorKeyUp(event) {
   }
 
   var $textBox = $(event.target);
-  var textVal = $textBox.val();
-  var lastSearch = $textBox.attr('data-last-search');
+  var textVal = extractLastSearchTerm();
+  var lastSearch = $textBox.data('last-search');
 
   // should we clear the list to avoid showing the wrong list?
   if (lastSearch) {
@@ -239,18 +244,17 @@ function languageSelectorTimeout(textBox) {
   var $textBox = $(textBox);
   var textVal = $textBox.val();
 
-  // don't search for nothing
-  if (textVal.length < 2) return;
-
-  var lastSearch = $textBox.attr('data-last-search');
+  var lastSearch = $textBox.data('last-search');
 
   // limit the search to the first 4 characters
   var thisSearch = (textVal.length > 4) ? textVal.substr(0, 4) : textVal;
+  $textBox.data('last-search', thisSearch);
+
+  // don't search for anything if length is less than 2
+  if (thisSearch.length < 2) return;
 
   // if the search text has changed, refresh the list of languages
   if (thisSearch !== lastSearch) {
-
-    $textBox.attr('data-last-search', thisSearch);
     getLanguageListItems($textBox);
   }
 }
@@ -262,12 +266,10 @@ function languageSelectorTimeout(textBox) {
  * @param {function} [callback]
  */
 function processLanguages($textBox, results, callback) {
-
   var languages = [];
-  var textVal = $textBox.val().toLowerCase();
+  var textVal = extractLastSearchTerm().toLowerCase();
 
   for (var i = 0; i < results.length; i++) {
-
     var langData = results[i];
     if ((textVal.length > 2) || (langData['lc'].toLowerCase().startsWith(textVal))) {
       langData['value'] = langData['ln'] + (langData['ang'] && langData['ang'] !== langData['ln'] ? ' - ' + langData['ang']:'') + ' (' + langData['lc'] +')';
@@ -278,7 +280,12 @@ function processLanguages($textBox, results, callback) {
 
   if (!$textBox.hasClass('ui-autocomplete-input')) {
     $textBox.autocomplete({
-      minLength: 0
+      minLength: 0,
+      select: function(event, ui){
+        removeLastSearchTerm();
+        addLanguageFilter(ui.item);
+        return false;
+      }
     }).autocomplete('instance')._renderItem = function( ul, item ) {
       return $('<li style="font-size: 0.9em;">')
         .append(item['ln'] + (item['ang'] && item['ang'] !== item['ln'] ? ' - ' + item['ang'] : '') + ' (' + item['lc'] + ')<br><span style="font-size: 0.9em;">Region: ' + item['lr'] + '</span>')
@@ -340,15 +347,17 @@ function sortLanguages(langA, langB, text) {
  * @param {function|Spy} [callback]  Optional. Initially added for unit testing
  */
 function getLanguageListItems($textBox, callback) {
-
-  var request = {type: 'GET', url: 'https://door43.org:9096/?q=' + encodeURIComponent($textBox.val().toLowerCase())};
-
-  $.ajax(request).done(function(data) {
-
-    if (!data.results) return;
-
-    processLanguages($textBox, data.results, callback);
-  });
+  var term = extractLastSearchTerm().toLowerCase();
+  if(languageSearchResults[term] !== undefined){
+    processLanguages($textBox, languageSearchResults[term], callback);
+  } else {
+    var request = {type: 'GET', url: 'https://door43.org:9096/?q=' + encodeURIComponent(term)};
+    $.ajax(request).done(function (data) {
+      if (!data.results) return;
+      languageSearchResults[term] = data.results;
+      processLanguages($textBox, data.results, callback);
+    });
+  }
 }
 
 function getMessageString(err, entries, search_for) {
@@ -368,6 +377,48 @@ function getMessageString(err, entries, search_for) {
         }
     }
     return message;
+}
+
+function splitSearchTerms(val) {
+  return val.split( /\s+/ );
+}
+
+function extractLastSearchTerm() {
+  var $searchFor = $('#search-for');
+  return splitSearchTerms($searchFor.val()).pop();
+}
+
+function removeLastSearchTerm(){
+  var $searchFor = $('#search-for');
+  var terms = $searchFor.val().split(' ');
+  terms.pop();
+  $searchFor.val(terms.join(' '));
+}
+
+function addLanguageFilter(item){
+  var lc = item['lc'];
+  var title = item['ln'] + (item['ang'] && item['ang'] !== item['ln'] ? ' - ' + item['ang'] : '') + ' (' + lc + ')';
+  if(! $('#lc-filter-'+lc).length) {
+    var $lc_filter = $('<span id="lc-filter-'+lc+'" class="lc-filter" title="'+title+'">'+lc+'<span class="remove-lc-x">x</span></span>');
+    $lc_filter.data('lc', lc);  
+    $lc_filter.insertBefore($('#search-for'));
+  }
+}
+
+function removeLanguageFilter(element){
+  $element = $(element);
+  if($element.hasClass('lc-filter'))
+    $element.remove();
+  else if($element.hasClass('remove-lc-x'))
+    $element.parent().remove();
+}
+
+function getLanguageCodesToFilter(){
+  var lcs = [];
+  $('.lc-filter').each(function(){
+    lcs.push($(this).data('lc'));
+  });
+  return lcs;
 }
 
 function searchAndDisplayResults(searchStr, languagePrompt, languageCode) {
