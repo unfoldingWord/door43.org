@@ -6,62 +6,6 @@ describe('Test Manifest Search', function () {
   var returnedError;
   var returnedEntries;
 
-    it('parseLanguagePrompt: parse valid language search', function () {
-        //given
-        var langText = 'Espanol (es)';
-        var expectedLanguageCode = 'es';
-        var expectedLanguagePrompt = langText;
-
-        //when
-        parseLanguagePrompt(langText);
-
-        //then
-        expect(languageCode).toEqual(expectedLanguageCode);
-        expect(languagePrompt).toEqual(expectedLanguagePrompt);
-    });
-
-    it('parseLanguagePrompt: parse null language search', function () {
-        //given
-        var langText = null;
-        var expectedLanguageCode = null;
-        var expectedLanguagePrompt = null;
-
-        //when
-        parseLanguagePrompt(langText);
-
-        //then
-        expect(languageCode).toEqual(expectedLanguageCode);
-        expect(languagePrompt).toEqual(expectedLanguagePrompt);
-    });
-
-    it('parseLanguagePrompt: parse too short language search', function () {
-        //given
-        var langText = 'es)';
-        var expectedLanguageCode = null;
-        var expectedLanguagePrompt = null;
-
-        //when
-        parseLanguagePrompt(langText);
-
-        //then
-        expect(languageCode).toEqual(expectedLanguageCode);
-        expect(languagePrompt).toEqual(expectedLanguagePrompt);
-    });
-
-    it('parseLanguagePrompt: parse invalid language code', function () {
-        //given
-        var langText = 'Espanol (#)';
-        var expectedLanguageCode = null;
-        var expectedLanguagePrompt = null;
-
-        //when
-        parseLanguagePrompt(langText);
-
-        //then
-        expect(languageCode).toEqual(expectedLanguageCode);
-        expect(languagePrompt).toEqual(expectedLanguagePrompt);
-    });
-
     it('getMessageString: error should return error message', function () {
         //given
         var err = "Error";

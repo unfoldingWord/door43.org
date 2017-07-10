@@ -396,6 +396,15 @@ function searchAndDisplayResults(searchStr, languagePrompt, languageCode) {
             alert(message);
         }
     );
+
+    // var resultFields = "repo_name, user_name, title, lang_code";
+    // searchManifestPopular(resultFields,
+    //     function (err, entries) {
+    //         var message = getMessageString(err, entries, searchPrompt);
+    //         alert(message);
+    //     }
+    // );
+
 }
 
 $().ready(function () {
@@ -510,6 +519,66 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resource, f
             ExpressionAttributeNames: expressionAttributeNames,
             FilterExpression: filterExpression,
             ExpressionAttributeValues: expressionAttributeValues,
+            Limit: 3000 // number of records to check at a time
+        };
+
+        if (returnedFields) {
+            params.ProjectionExpression = returnedFields;
+        }
+
+    } catch(e) {
+        var err = "Could not search languages: " + e.message;
+        onFinished(err, null);
+        return false;
+    }
+
+    var docClient = new AWS.DynamoDB.DocumentClient();
+    searchContinue(docClient, params, [], matchLimit, onFinished);
+    return true;
+}
+
+/***
+ * kicks off a search for popular entries in the manifest.  Will retry if too many matches or not enough matches
+ * @param returnedFields - comma delimited list of fields to return.  If null it will default to
+ *                              all fields
+ * @param onFinished - call back function onScan(err, entries) - where:
+ *                                              err - an error message string
+ *                                              entries - an array of table entry objects that match the search params.
+ *                                                where each object contains returnedFields
+ * @param minimumViews - threshold for popular (default is 50)
+ * @param matchLimit - limit the number of matches to return  (default is 1000). This is not an exact limit, but has to do
+ *                          with responses being returned a page at a time.  Once number of entries gets to or is above
+ *                          this count then no more pages will be fetched.
+ * @return boolean - true if search initiated, if false then search error
+ */
+function searchManifestPopular(returnedFields, onFinished, minimumViews, matchLimit) {
+    matchLimit = matchLimit || 1000;
+    minimumViews = minimumViews || 50;
+    searchManifestPopularSub(matchLimit,  minimumViews, returnedFields,
+        function (err, entries) {
+            var count = entries.length;
+            if(!err && (count >= matchLimit)) { // if we hit limit, raise threshold
+                searchManifestPopular(returnedFields, onFinished, minimumViews * 2, matchLimit);
+            }
+            else if(!err && ((count < 10) && (minimumViews> 1))) { // if not enough popular, lower threshold
+                var newMin = Math.floor(Math.max(minimumViews / 10, 1));
+                searchManifestPopular(returnedFields, onFinished, newMin, matchLimit);
+            }
+            else {
+                onFinished(err, entries);
+            }
+        }
+    );
+}
+
+function searchManifestPopularSub(matchLimit, minimumViews, returnedFields, onFinished) {
+    try {
+        var tableName = getManifestTable();
+        var params = {
+            TableName: tableName,
+            ExpressionAttributeNames: { "#vw": "views" },
+            FilterExpression: "#vw >= :views",
+            ExpressionAttributeValues: { ":views": minimumViews },
             Limit: 3000 // number of records to check at a time
         };
 
