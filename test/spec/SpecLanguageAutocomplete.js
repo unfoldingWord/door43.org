@@ -52,7 +52,7 @@ describe('Test Language Selector Autocomplete', function () {
     });
   });
 
-  it('Adding and removing a button for "en"', function (done) {
+  it('Adding and removing a button for "en"', function () {
     expect(getLanguageCodesToFilter()).toEqual([]);
 
     addLanguageFilter({'lc':'en','ang':'English','ln':'English'});
@@ -76,7 +76,7 @@ describe('Test Language Selector Autocomplete', function () {
     expect(getLanguageCodesToFilter()).toEqual(['fr']);
   });
 
-  it('Test functions for getting terms from the search field', function (done) {
+  it('Test functions for getting terms from the search field', function () {
     var $searchFor = $('#search-for');
     $searchFor.val('test1 test2 test3');
 
@@ -95,7 +95,7 @@ describe('Test Language Selector Autocomplete', function () {
     expect($searchFor.val()).toEqual('');
   });
 
-  it('Test splitSearchTerms function', function(done) {
+  it('Test splitSearchTerms function', function() {
     expect(splitSearchTerms('val1 val2')).toEqual(['val1', 'val2']);
     expect(splitSearchTerms('val1')).toEqual(['val1']);
     expect(splitSearchTerms('')).toEqual(['']);
