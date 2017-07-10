@@ -55,20 +55,22 @@ describe('Test Language Selector Autocomplete', function () {
   it('Adding and removing a button for "en"', function (done) {
     expect(getLanguageCodesToFilter()).toEqual([]);
 
-    addLanguageFilter('en');
+    addLanguageFilter({'lc':'en','ang':'English','ln':'English'});
     expect($('#lc-filter-en').length).toEqual(1);
+    expect($('#lc-filter-en').prop('title')).toEqual('English (en)');
 
     // Adding again should not make another button
-    addLanguageFilter('en');
+    addLanguageFilter({'lc':'en','ang':'English','ln':'English'});
     expect($('#lc-filter-en').length).toEqual(1);
 
     // Adding "fr" should result in two buttons
-    addLanguageFilter('fr');
+    addLanguageFilter({'lc':'fr','ang':'French','ln':'français, langue française'});
     expect($('.lc-filter').length).toEqual(2);
     expect(getLanguageCodesToFilter()).toEqual(['en', 'fr']);
+    expect($('#lc-filter-fr').prop('title')).toEqual('français, langue française - French (fr)');
 
     // Removing "en" should have no #lc-filter-en and one .lc-filter
-    removeLanguageFilter('en');
+    removeLanguageFilter(document.getElementById('lc-filter-en'));
     expect($('#lc-filter-en').length).toEqual(0);
     expect($('.lc-filter').length).toEqual(1);
     expect(getLanguageCodesToFilter()).toEqual(['fr']);
