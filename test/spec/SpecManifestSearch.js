@@ -1,3 +1,5 @@
+window.doAutoStartup = null; // prevent auto-startup
+
 describe('Test Manifest Search', function () {
 
   var expectedErr;
@@ -66,7 +68,7 @@ describe('Test Manifest Search', function () {
         searchAndDisplayResults(search_for, languageStr, languageCode);
 
         //then
-        expect(window.alert).toHaveBeenCalled();
+        expect(window.updateResults).toHaveBeenCalled();
     });
 
     it('searchAndDisplayResults: language search should show message', function () {
@@ -83,7 +85,7 @@ describe('Test Manifest Search', function () {
         searchAndDisplayResults(search_for, languageStr, languageCode);
 
         //then
-        expect(window.alert).toHaveBeenCalled();
+        expect(window.updateResults).toHaveBeenCalled();
     });
 
     it('searchAndDisplayResults: language search with extra text should show message', function () {
@@ -100,23 +102,40 @@ describe('Test Manifest Search', function () {
         searchAndDisplayResults(search_for, languageStr, languageCode);
 
         //then
-        expect(window.alert).toHaveBeenCalled();
+        expect(window.updateResults).toHaveBeenCalled();
     });
 
-    it('searchManifest: valid language array should return success', function () {
+    it('searchForResources: valid language array should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
-        setupDynamoDbMocks(expectedReturn);
-        var language = ['es', 'ceb'];
-        var matchLimit = 20;
+        setupSearchManifestMocks(expectedReturn);
+        var search_url = 'http://127.0.0.1:4000/en/?lc=en&lc=ceb&q=Bible&user=tx-manager-test-data';
         expectedErr = null;
         expectedData = { Items:[] };
 
         //when
-        var results = searchManifest(matchLimit, language, null, null, null, null, null, onFinished);
+        var results = searchForResources(search_url);
 
         //then
+        expect(window.updateResults).toHaveBeenCalled();
+        validateResults(results, expectedReturn, expectedItemCount);
+    });
+
+    it('searchForResources: multiple language array and extra q should return success', function () {
+        //given
+        var expectedReturn = true;
+        var expectedItemCount = 0;
+        setupSearchManifestMocks(expectedReturn);
+        var search_url = 'http://127.0.0.1:4000/en/?lc=en&q=Bible&q=ceb&user=tx-manager-test-data';
+        expectedErr = null;
+        expectedData = { Items:[] };
+
+        //when
+        var results = searchForResources(search_url);
+
+        //then
+        expect(window.updateResults).toHaveBeenCalled();
         validateResults(results, expectedReturn, expectedItemCount);
     });
 
@@ -134,7 +153,7 @@ describe('Test Manifest Search', function () {
         };
 
         //when
-        var results = searchManifest(matchLimit, language, null, null, null, null, null, onFinished);
+        var results = searchManifest(matchLimit, language, null, null, null, null, null, null, null, null, null, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -152,7 +171,7 @@ describe('Test Manifest Search', function () {
         expectedData = { Items:[] };
 
         //when
-        var results = searchManifest(matchLimit, language, user, null, null, null, null, onFinished);
+        var results = searchManifest(matchLimit, language, user, null, null, null, null, null, null, null, null, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -171,7 +190,7 @@ describe('Test Manifest Search', function () {
         expectedData = { Items:[] };
 
         //when
-        var results = searchManifest(matchLimit, null, null, repo, resource, null, returnFields, onFinished);
+        var results = searchManifest(matchLimit, null, null, repo, resource, null, null, null, null, null, returnFields, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -189,7 +208,7 @@ describe('Test Manifest Search', function () {
         expectedData = { Items:[] };
 
         //when
-        var results = searchManifest(matchLimit, null, null, null, null, full_text, returnFields, onFinished);
+        var results = searchManifest(matchLimit, null, null, null, null, null, null, null, null, full_text, returnFields, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -209,7 +228,7 @@ describe('Test Manifest Search', function () {
         };
 
         //when
-        var results = searchManifest(matchLimit, language, null, null, null, null, null, onFinished);
+        var results = searchManifest(matchLimit, language, null, null, null, null, null, null, null, null, null, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -226,7 +245,7 @@ describe('Test Manifest Search', function () {
         expectedData = {};
 
         //when
-        var results = searchManifest(matchLimit, language, null, null, null, null, null, onFinished);
+        var results = searchManifest(matchLimit, language, null, null, null, null, null, null, null, null, null, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -270,9 +289,16 @@ describe('Test Manifest Search', function () {
     }
 
     function setupSearchManifestMocks(retVal) {
-        spyOn(window, 'alert').and.returnValue("dummy-table");
+        spyOn(window, 'updateResults').and.callFake(onFinished);
         spyOn(window, 'searchManifest').and.callFake(mockSearchManifest);
-        function mockSearchManifest(matchLimit, languages, user_name, repo_name, resource, full_text, returnedFields, onFinished) { // mock the table scan operation
+        spyOn(window, 'searchManifestPopularAndRecent').and.callFake(mockSearchManifestPopularAndRecent);
+        function mockSearchManifest(matchLimit, languages, user_name, repo_name, resID, resType, title, time, manifest, full_text, returnedFields, onFinished) { // mock the table scan operation
+            if(onFinished) {
+                onFinished(expectedErr, expectedData); // call onScan handler with mock data
+            }
+            return retVal;
+        }
+        function mockSearchManifestPopularAndRecent(returnedFields, onFinished, minimumViews, matchLimit) { // mock the table scan operation
             if(onFinished) {
                 onFinished(expectedErr, expectedData); // call onScan handler with mock data
             }

@@ -50,12 +50,12 @@ function updateResults(err, entries) {
 function searchForResources(search_url) {
   var parts = search_url.split('?');
   var urlParts = parts[0].split('/');
-  var remove = (urlParts[urlParts.length - 1] == '') ? 2 : 1;
+  var remove = (urlParts[urlParts.length - 1] === '') ? 2 : 1;
   urlParts = urlParts.slice(0, urlParts.length - remove);
   baseUrl = urlParts.join('/');
 
   var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
-  if((parts.length == 1) || ((parts.length == 2) && (parts[1] == ''))) {
+  if((parts.length === 1) || ((parts.length === 2) && (parts[1] === ''))) {
       searchManifestPopularAndRecent(resultFields,
           function (err, entries) {
               updateResults(err, entries);
@@ -73,7 +73,7 @@ function searchForResources(search_url) {
       var time = getSingleItem(params, 'time');
       var manifest = getSingleItem(params, 'manifest');
       var languages = getArrayItem(params, 'lc');
-      searchManifest(matchLimit, languages, user_name, repo_name, resID, resType, title, time, manifest, full_text, resultFields,
+      return searchManifest(matchLimit, languages, user_name, repo_name, resID, resType, title, time, manifest, full_text, resultFields,
           function (err, entries) {
               updateResults(err, entries);
           }
@@ -95,11 +95,11 @@ function extractUrlParams(search_string) {
             params[key] = [].concat(params[key], value);
         }
 
-        return pairs.length == 1 ? params : parse(params, pairs.slice(1))
-    };
+        return pairs.length === 1 ? params : parse(params, pairs.slice(1));
+    }
 
     // Get rid of leading ?
-    return search_string.length == 0 ? {} : parse({}, search_string.split('&'));
+    return search_string.length === 0 ? {} : parse({}, search_string.split('&'));
 }
 
 /**
@@ -148,6 +148,7 @@ function showSearchResults(results) {
  * extract sub item with fallback on error
  * @param item
  * @param keys
+ * @param defaultValue - default value to return on error (otherwise will return "" on error)
  * @return {string}
  */
 function getSubItem(item, keys, defaultValue) {
@@ -155,7 +156,7 @@ function getSubItem(item, keys, defaultValue) {
     try {
         keys.forEach(function (key) {
             item = item[key];
-            if(key == "manifest") {
+            if(key === "manifest") {
                 item = JSON.parse(item);
             }
         });
@@ -454,7 +455,7 @@ function getMessageString(err, entries, search_for) {
     if (err) {
         console.log("Error: " + err);
     } else {
-        if (entries.length == 0) {
+        if (entries.length === 0) {
             message = "No matches found for: '" + search_for + "'";
         } else {
             var summary = "";
@@ -481,7 +482,7 @@ function searchAndDisplayResults(searchStr, languagePrompt, languageCode) {
     if(languageCode) {
         searchPrompt = languagePrompt;
         langSearch = [languageCode];
-        if(searchStr.indexOf(languagePrompt) == 0) { // if searchStr starts with languagePrompt, remove it
+        if(searchStr.indexOf(languagePrompt) === 0) { // if searchStr starts with languagePrompt, remove it
             var q = searchStr.substr(languagePrompt.length).trim();
             if(q.length) { // if there was more text to search, extract it out
                 fullTextSearch = q;
@@ -493,16 +494,20 @@ function searchAndDisplayResults(searchStr, languagePrompt, languageCode) {
     }
 
     var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
-    searchManifest(100, langSearch, null, null, null, null, null, null, fullTextSearch, resultFields,
+    searchManifest(100, langSearch, null, null, null, null, null, null, null, fullTextSearch, resultFields,
         function (err, entries) {
             updateResults(err, entries);
         }
     );
 }
 
+function doAutoStartup() {
+    window.setTimeout(searchForResources(window.location.href), 500);
+    window.setTimeout(setupLanguageSelector(), 500);
+}
+
 $().ready(function () {
-  window.setTimeout(searchForResources(window.location.href), 500);
-  window.setTimeout(setupLanguageSelector(), 500);
+    if(doAutoStartup) { doAutoStartup(); }
 
   $('#search-td').on('click', function (){
     var search_for = $('#search-for').val();
@@ -551,7 +556,8 @@ function appendFilter(filterExpression, rule, orTogether) {
 }
 
 /***
- * kicks off a search for entries in the manifest (case insensitive). Search parameters are ANDed together to refine search.
+ * kicks off a search for entries in the manifest table (case insensitive). Search parameters are ANDed together to
+ *              refine search.
  * @param languages - array of language code strings or null for any language
  * @param matchLimit - limit the number of matches to return. This is not an exact limit, but has to do with responses
  *                          being returned a page at a time.  Once number of entries gets to or is above this count

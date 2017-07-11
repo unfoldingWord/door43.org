@@ -85,13 +85,16 @@ In order to synchronize the assets to the cdn S3 bucket you may now run `make as
 #### Running Tests Locally using Karma
 - to make sure we have dependencies do `npm install`
 - to run the tests do `npm run-script test-phantom`
+
+#### Viewing local code coverage
+- coverage reports are generated automatically when you run the previous step `Running Tests Locally using Karma`
 - coverage reports will be in coverage folder - open coverage/PhantomJS*/lcov-report/index.html in browser to view.
 
 #### Debugging Tests Locally using Karma
 - to make sure we have dependencies do `npm install`
 - to debug the tests do `./karma_start_debug.sh`
-- in Chrome open browser to `http://localhost:9876/#` and then click on Debug
-- then open "Developer Tools", set breakpoints (click Sources tab, js files are under base/test/spec) and then do refresh.
+- in Chrome Browser open to `http://localhost:9876/#` and then click on Debug
+- then open Chrome's "Developer Tools" (on current Chrome click on the three vertical dots in upper right then select More Tools/Developer Tools), set breakpoints (click Sources tab, js files are under base/test/spec) and then do refresh.
 - when done debugging, do `./karma_stop.sh` to stop karma running
 
 #### Open source acknowledgements
