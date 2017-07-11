@@ -14,18 +14,34 @@ function simpleFormat(format, args) {
 
 var baseUrl = "..";
 
+function getSingleItem(params, key) {
+    var value = params[key];
+    if(value && (value instanceof Array)) {
+        return value[0]; // if multiple, use first
+    }
+    return value;
+}
+
+function getArrayItem(params, key) {
+    var value = params[key];
+    if ((value && !(value instanceof Array))) {
+        return [value]; // if single, put in array
+    }
+    return value;
+}
+
 /**
  * Search for the selected search keys in url
  * @param {String} search_url - The term or phrase to search for
  */
 function searchForResources(search_url) {
-  var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, #vw";
   var parts = search_url.split('?');
   var urlParts = parts[0].split('/');
   var remove = (urlParts[urlParts.length - 1] == '') ? 2 : 1;
   urlParts = urlParts.slice(0, urlParts.length - remove);
   baseUrl = urlParts.join('/');
 
+  var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
   if((parts.length == 1) || ((parts.length == 2) && (parts[1] == ''))) {
       searchManifestPopularAndRecent(resultFields,
           function (err, entries) {
@@ -42,8 +58,49 @@ function searchForResources(search_url) {
           }
       );
   } else {
-      //TODO blm: need to add key value searching
+      var params = extractUrlParams(parts[1]);
+      var matchLimit = 1000;
+      var full_text = getSingleItem(params, 'q');
+      var repo_name = getSingleItem(params, 'repo');
+      var user_name = getSingleItem(params, 'user');
+      var resource = getSingleItem(params, 'resource');
+      var languages = getArrayItem(params, 'lc');
+      searchManifest(matchLimit, languages, user_name, repo_name, resource, full_text, resultFields,
+          function (err, entries) {
+              if(!err) {
+                  var results = {
+                      popular: entries,
+                      recent: entries
+                  };
+                  showSearchResults(results)
+              } else {
+                  var message = getMessageString(err, entries, "Search");
+                  alert(message);
+              }
+          }
+      );
   }
+}
+
+function extractUrlParams(search_string) {
+    function parse(params, pairs) {
+        var pair = pairs[0];
+        var parts = pair.split('=');
+        var key = decodeURIComponent(parts[0]);
+        var value = decodeURIComponent(parts.slice(1).join('='));
+
+        // Handle multiple parameters of the same name
+        if (typeof params[key] === "undefined") {
+            params[key] = value;
+        } else {
+            params[key] = [].concat(params[key], value);
+        }
+
+        return pairs.length == 1 ? params : parse(params, pairs.slice(1))
+    };
+
+    // Get rid of leading ?
+    return search_string.length == 0 ? {} : parse({}, search_string.split('&'));
 }
 
 /**
@@ -436,7 +493,7 @@ function searchAndDisplayResults(searchStr, languagePrompt, languageCode) {
         }
     }
 
-    var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, #vw";
+    var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
     searchManifest(50, langSearch, null, null, null, fullTextSearch, resultFields,
         function (err, entries) {
             var message = getMessageString(err, entries, searchPrompt);
@@ -518,7 +575,8 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resource, f
         var tableName = getManifestTable();
         var expressionAttributeValues = {};
         var filterExpression = "";
-        var expressionAttributeNames = {  };
+        var expressionAttributeNames = {};
+        var projectionExpression = null;
 
         if (languages) {
             var languageStr = "[" + languages.join(",") + "]"; // convert array to set string
@@ -554,6 +612,11 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resource, f
             expressionAttributeNames["#u"] = "user_name_lower";
         }
 
+        if (returnedFields) {
+            returnedFields = substituteReserved(returnedFields, 'views', expressionAttributeNames);
+            projectionExpression = returnedFields;
+        }
+
         var params = {
             TableName: tableName,
             ExpressionAttributeNames: expressionAttributeNames,
@@ -562,8 +625,8 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resource, f
             Limit: 3000 // number of records to check at a time
         };
 
-        if (returnedFields) {
-            params.ProjectionExpression = returnedFields;
+        if (projectionExpression) {
+            params.ProjectionExpression = projectionExpression;
         }
 
     } catch(e) {
@@ -605,18 +668,24 @@ function searchManifestPopularSub(matchLimit, minimumViews, recentDate, returned
     try {
         var expressionAttributeValues = {};
         var filterExpression = "";
-        var expressionAttributeNames = {  };
+        var expressionAttributeNames = {};
+        var projectionExpression = null;
 
         if(minimumViews > 0) {
-            expressionAttributeNames["#vw"] = "views";
+            expressionAttributeNames["#views"] = "views";
             expressionAttributeValues[":views"] = minimumViews;
-            filterExpression = appendFilter(filterExpression, "#vw >= :views", true);
+            filterExpression = appendFilter(filterExpression, "#views >= :views", true);
         }
 
         if (recentDate) {
             expressionAttributeNames["#date"] = "last_updated";
             expressionAttributeValues[":recent"] = recentDate;
             filterExpression = appendFilter(filterExpression, "#date >= :recent", true);
+        }
+
+        if (returnedFields) {
+            returnedFields = substituteReserved(returnedFields, 'views', expressionAttributeNames);
+            projectionExpression = returnedFields;
         }
 
         var tableName = getManifestTable();
@@ -628,8 +697,8 @@ function searchManifestPopularSub(matchLimit, minimumViews, recentDate, returned
             Limit: 3000 // number of records to check at a time
         };
 
-        if (returnedFields) {
-            params.ProjectionExpression = returnedFields;
+        if (projectionExpression) {
+            params.ProjectionExpression = projectionExpression;
         }
 
     } catch(e) {
@@ -641,4 +710,13 @@ function searchManifestPopularSub(matchLimit, minimumViews, recentDate, returned
     var docClient = new AWS.DynamoDB.DocumentClient();
     searchContinue(docClient, params, [], matchLimit, onFinished);
     return true;
+}
+
+function substituteReserved(returnedFields, key, expressionAttributeNames) {
+    if (returnedFields.indexOf(key)) {
+        var sub = "#" + key;
+        returnedFields = returnedFields.replace(key, sub);
+        expressionAttributeNames[sub] = key;
+        return returnedFields;
+    }
 }
