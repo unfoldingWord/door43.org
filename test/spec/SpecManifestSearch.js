@@ -8,6 +8,62 @@ describe('Test Manifest Search', function () {
   var returnedError;
   var returnedEntries;
 
+    it('parseLanguagePrompt: parse valid language search', function () {
+        //given
+        var langText = 'Espanol (es)';
+        var expectedLanguageCode = 'es';
+        var expectedLanguagePrompt = langText;
+
+        //when
+        parseLanguagePrompt(langText);
+
+        //then
+        expect(languageCode).toEqual(expectedLanguageCode);
+        expect(languagePrompt).toEqual(expectedLanguagePrompt);
+    });
+
+    it('parseLanguagePrompt: parse null language search', function () {
+        //given
+        var langText = null;
+        var expectedLanguageCode = null;
+        var expectedLanguagePrompt = null;
+
+        //when
+        parseLanguagePrompt(langText);
+
+        //then
+        expect(languageCode).toEqual(expectedLanguageCode);
+        expect(languagePrompt).toEqual(expectedLanguagePrompt);
+    });
+
+    it('parseLanguagePrompt: parse too short language search', function () {
+        //given
+        var langText = 'es)';
+        var expectedLanguageCode = null;
+        var expectedLanguagePrompt = null;
+
+        //when
+        parseLanguagePrompt(langText);
+
+        //then
+        expect(languageCode).toEqual(expectedLanguageCode);
+        expect(languagePrompt).toEqual(expectedLanguagePrompt);
+    });
+
+    it('parseLanguagePrompt: parse invalid language code', function () {
+        //given
+        var langText = 'Espanol (#)';
+        var expectedLanguageCode = null;
+        var expectedLanguagePrompt = null;
+
+        //when
+        parseLanguagePrompt(langText);
+
+        //then
+        expect(languageCode).toEqual(expectedLanguageCode);
+        expect(languagePrompt).toEqual(expectedLanguagePrompt);
+    });
+
     it('getMessageString: error should return error message', function () {
         //given
         var err = "Error";
@@ -188,7 +244,7 @@ describe('Test Manifest Search', function () {
         setupSearchManifestMocks(expectedReturn);
         var search_url = 'http://127.0.0.1:4000/en/?repo=es&lc=dummy_repo&resource=dummy_res';
         var expectedBaseUrl = 'http://127.0.0.1:4000';
-        var returnFields = "user_name, repo_name views";
+        var returnFields = "user_name, repo_name, views";
         expectedErr = null;
         expectedData = [];
 
@@ -350,6 +406,27 @@ describe('Test Manifest Search', function () {
         validateResults(results, expectedReturn, expectedItemCount);
     });
 
+    it('searchManifest: misc. parameters should return success', function () {
+        //given
+        var expectedReturn = true;
+        var expectedItemCount = 0;
+        setupDynamoDbMocks(expectedReturn);
+        var resType = "dummy_res";
+        var title = "dummy_title";
+        var time = "dummy_time";
+        var manifest = "dummy_manifest";
+        var returnFields = "user_name, repo_name, views";
+        var matchLimit = 20;
+        expectedErr = null;
+        expectedData = { Items:[] };
+
+        //when
+        var results = searchManifest(matchLimit, null, null, null, null, resType, title, time, manifest, null, returnFields, onFinished);
+
+        //then
+        validateResults(results, expectedReturn, expectedItemCount);
+    });
+
     it('searchManifest: search error should return error', function () {
         //given
         var expectedReturn = true;
@@ -382,6 +459,38 @@ describe('Test Manifest Search', function () {
 
         //when
         var results = searchManifest(matchLimit, language, null, null, null, null, null, null, null, null, null, onFinished);
+
+        //then
+        validateResults(results, expectedReturn, expectedItemCount);
+    });
+
+    it('searchManifestPopularAndRecent: should return success', function () {
+        //given
+        var expectedReturn = true;
+        var expectedItemCount = 0;
+        setupDynamoDbMocks(expectedReturn);
+        var returnFields = "user_name, repo_name";
+        expectedErr = null;
+        expectedData = { Items:[] };
+
+        //when
+        var results = searchManifestPopularAndRecent(returnFields, onFinished);
+
+        //then
+        validateResults(results, expectedReturn, expectedItemCount);
+    });
+
+    it('searchManifest: undefined getTable() should return error', function () {
+        //given
+        getManifestTable = null;
+        var expectedReturn = false;
+        var expectedItemCount = 0;
+        var returnFields = "user_name, repo_name";
+        expectedErr = "dummy error";
+        expectedData = {};
+
+        //when
+        var results = searchManifestPopularAndRecent(returnFields, onFinished);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);

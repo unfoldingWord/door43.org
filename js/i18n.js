@@ -692,7 +692,7 @@ function searchManifestPopularAndRecent(returnedFields, onFinished, minimumViews
     var recentMS = current.valueOf() - 30*24*60*60*1000; // go back 30 days in milliseconds
     var recentDate = new Date(recentMS);
     var recentDateStr = recentDate.toISOString();
-    searchManifestPopularSub(matchLimit,  minimumViews, recentDateStr, returnedFields, onFinished);
+    return searchManifestPopularSub(matchLimit,  minimumViews, recentDateStr, returnedFields, onFinished);
 }
 
 function searchManifestPopularSub(matchLimit, minimumViews, recentDate, returnedFields, onFinished) {
