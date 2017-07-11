@@ -12,6 +12,8 @@ function simpleFormat(format, args) {
   });
 }
 
+var baseUrl = "..";
+
 /**
  * Search for the selected search keys in url
  * @param {String} search_url - The term or phrase to search for
@@ -19,6 +21,11 @@ function simpleFormat(format, args) {
 function searchForResources(search_url) {
   var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, #vw";
   var parts = search_url.split('?');
+  var urlParts = parts[0].split('/');
+  var remove = (urlParts[urlParts.length - 1] == '') ? 2 : 1;
+  urlParts = urlParts.slice(0, urlParts.length - remove);
+  baseUrl = urlParts.join('/');
+
   if((parts.length == 1) || ((parts.length == 2) && (parts[1] == ''))) {
       searchManifestPopularAndRecent(resultFields,
           function (err, entries) {
@@ -125,8 +132,8 @@ function showThisItem(item, $div, template) {
   var lastUpdated = getSubItem(item,['last_updated'],'1970-01-01');
   $template.find('.updated-span').html(getDateDiff(lastUpdated, today));
 
-  // TODO: set anchor href to the correct value
-  $template.find('a').attr('href', 'put_the_url_here');
+  var url = baseUrl + '/u/' + author + "/" + getSubItem(item,['repo_name']);
+  $template.find('a').attr('href', url);
 
   $div.append($template);
 }
