@@ -680,7 +680,7 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resID, resT
  * @return boolean - true if search initiated, if false then search error
  */
 function searchManifestPopularAndRecent(returnedFields, onFinished, minimumViews, matchLimit) {
-    matchLimit = matchLimit || 1000;
+    matchLimit = matchLimit || 10000;
     minimumViews = minimumViews || 10;
     var current = new Date();
     var recentMS = current.valueOf() - 30*24*60*60*1000; // go back 30 days in milliseconds
