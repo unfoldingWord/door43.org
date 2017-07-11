@@ -160,8 +160,6 @@ function scrollToResults(scroll_to_id) {
 
 /**************************** language selector ****************************/
 var languageSelectorTimer;
-var languageCode;
-var languagePrompt;
 var languageSearchResults = {};
 
 /**
@@ -184,7 +182,6 @@ function setupLanguageSelector() {
  * @param event
  */
 function languageSelectorKeyUp(event) {
-
   // the Enter key press must be handled by the plugin
   if (event.which === 13) return;
 
@@ -194,21 +191,17 @@ function languageSelectorKeyUp(event) {
   }
 
   var $textBox = $(event.target);
-  var textVal = extractLastSearchTerm();
-  var lastSearch = $textBox.data('last-search');
+  var term = extractLastSearchTerm().toLowerCase().substr(0,4);
 
-  // should we clear the list to avoid showing the wrong list?
-  if (lastSearch) {
-    if (textVal.length === 1
-      || ((lastSearch.length > 2) && (textVal.length < 3))
-      || ((lastSearch.length < 3) && (textVal.length > 2))
-      || ((textVal.length < lastSearch.length) && !lastSearch.startsWith(textVal))) {
-      $textBox.autocomplete('option', 'source', []);
-    }
-  }
+  // clear the list
+  if($textBox.autocomplete('instance'))
+    $textBox.autocomplete('option', 'source', []);
 
-  if (typeof event['unitTest'] === 'undefined')
+  if (typeof event['unitTest'] === 'undefined' && languageSearchResults[term] === undefined) {
     languageSelectorTimer = setTimeout(languageSelectorTimeout, 500, event.target);
+  } else{
+    languageSelectorTimeout(event.target);
+  }
 }
 
 /**
@@ -223,19 +216,14 @@ function languageSelectorTimeout(textBox) {
   var $textBox = $(textBox);
   var textVal = $textBox.val();
 
-  var lastSearch = $textBox.data('last-search');
-
   // limit the search to the first 4 characters
   var thisSearch = (textVal.length > 4) ? textVal.substr(0, 4) : textVal;
-  $textBox.data('last-search', thisSearch);
 
   // don't search for anything if length is less than 2
   if (thisSearch.length < 2) return;
 
   // if the search text has changed, refresh the list of languages
-  if (thisSearch !== lastSearch) {
-    getLanguageListItems($textBox);
-  }
+  getLanguageListItems($textBox);
 }
 
 /**
@@ -326,7 +314,7 @@ function sortLanguages(langA, langB, text) {
  * @param {function|Spy} [callback]  Optional. Initially added for unit testing
  */
 function getLanguageListItems($textBox, callback) {
-  var term = extractLastSearchTerm().toLowerCase();
+  var term = extractLastSearchTerm().toLowerCase().substr(0, 4);
   if(languageSearchResults[term] !== undefined){
     processLanguages($textBox, languageSearchResults[term], callback);
   } else {
@@ -359,12 +347,19 @@ function getMessageString(err, entries, search_for) {
 }
 
 function splitSearchTerms(val) {
-  return val.split( /\s+/ );
+  if(val !== undefined)
+    return val.split( /\s+/ );
+  else
+    return [];
 }
 
 function extractLastSearchTerm() {
   var $searchFor = $('#search-for');
-  return splitSearchTerms($searchFor.val()).pop();
+  var terms = splitSearchTerms($searchFor.val());
+  if(terms.length > 0)
+    return terms.pop();
+  else
+    return '';
 }
 
 function removeLastSearchTerm(){
@@ -400,32 +395,12 @@ function getLanguageCodesToFilter(){
   return lcs;
 }
 
-function searchAndDisplayResults(searchStr, languagePrompt, languageCode) {
-    var langSearch = null;
-    var fullTextSearch = searchStr; // default to fulltext search
-    var searchPrompt = searchStr;
-
-    // if language was selected, separate it out
-    if(languageCode) {
-        searchPrompt = languagePrompt;
-        langSearch = [languageCode];
-        if(searchStr.indexOf(languagePrompt) == 0) { // if searchStr starts with languagePrompt, remove it
-            var q = searchStr.substr(languagePrompt.length).trim();
-            if(q.length) { // if there was more text to search, extract it out
-                fullTextSearch = q;
-                searchPrompt += " " + q;
-            } else {
-                fullTextSearch = null;
-            }
-        }
-    }
-
-    searchManifest(50, langSearch, null, null, null, fullTextSearch, null,
-        function (err, entries) {
-            var message = getMessageString(err, entries, searchPrompt);
-            alert(message);
-        }
-    );
+function searchAndDisplayResults(searchStr, languageCodes) {
+  searchManifest(50, languageCodes, null, null, null, searchStr, null, function (err, entries) {
+    // display results here
+    var message = getMessageString(err, entries, searchStr);
+    alert(message);
+  });
 }
 
 $().ready(function () {
@@ -433,8 +408,7 @@ $().ready(function () {
   window.setTimeout(setupLanguageSelector(), 500);
 
   $('#search-td').on('click', function (){
-    var search_for = $('#search-for').val();
-    searchAndDisplayResults(search_for, languagePrompt, languageCode);
+    searchAndDisplayResults($('#search-for').val(), getLanguageCodesToFilter());
   });
 
   $('#browse-td').on('click', function (){
