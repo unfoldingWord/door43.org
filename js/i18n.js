@@ -168,7 +168,10 @@ var languageSearchResults = {};
 function setupLanguageSelector() {
   var $searchFor = $('#search-for');
 
-  $searchFor.on('keyup', function (event) {
+  $searchFor.on('keyup', function (event, testEvent) {
+    if(typeof testEvent!== 'undefined'){
+      event = testEvent;
+    }
     languageSelectorKeyUp(event);
   });
 
@@ -194,36 +197,21 @@ function languageSelectorKeyUp(event) {
   var term = extractLastSearchTerm().toLowerCase().substr(0,4);
 
   // clear the list
-  if($textBox.autocomplete('instance'))
+  if($textBox.autocomplete('instance')) {
     $textBox.autocomplete('option', 'source', []);
-
-  if (typeof event['unitTest'] === 'undefined' && languageSearchResults[term] === undefined) {
-    languageSelectorTimer = setTimeout(languageSelectorTimeout, 500, event.target);
-  } else{
-    languageSelectorTimeout(event.target);
   }
-}
 
-/**
- * Use a timeout to prevent unnecessary searching while typing
- * @param {HTMLInputElement} textBox
- */
-function languageSelectorTimeout(textBox) {
+  if($textBox.val().length < 2) {
+    return;
+  }
 
-  // reset the timer flag
-  languageSelectorTimer = 0;
-
-  var $textBox = $(textBox);
-  var textVal = $textBox.val();
-
-  // limit the search to the first 4 characters
-  var thisSearch = (textVal.length > 4) ? textVal.substr(0, 4) : textVal;
-
-  // don't search for anything if length is less than 2
-  if (thisSearch.length < 2) return;
-
-  // if the search text has changed, refresh the list of languages
-  getLanguageListItems($textBox);
+  if(typeof languageSearchResults[term] === 'undefined') {
+    if (typeof event['unitTest'] === 'undefined') {
+      languageSelectorTimer = setTimeout(getLanguageListItems, 500, $textBox);
+    }
+  } else{
+    getLanguageListItems($textBox);
+  }
 }
 
 /**
@@ -245,7 +233,7 @@ function processLanguages($textBox, results, callback) {
     }
   }
 
-  if (!$textBox.hasClass('ui-autocomplete-input')) {
+  if (! $textBox.hasClass('ui-autocomplete-input')) {
     $textBox.autocomplete({
       minLength: 0,
       select: function(event, ui){
@@ -314,8 +302,10 @@ function sortLanguages(langA, langB, text) {
  * @param {function|Spy} [callback]  Optional. Initially added for unit testing
  */
 function getLanguageListItems($textBox, callback) {
+  // reset the timer flag
+  languageSelectorTimer = 0;
   var term = extractLastSearchTerm().toLowerCase().substr(0, 4);
-  if(languageSearchResults[term] !== undefined){
+  if(typeof languageSearchResults[term] !== 'undefined'){
     processLanguages($textBox, languageSearchResults[term], callback);
   } else {
     var request = {type: 'GET', url: 'https://door43.org:9096/?q=' + encodeURIComponent(term)};
@@ -347,7 +337,7 @@ function getMessageString(err, entries, search_for) {
 }
 
 function splitSearchTerms(val) {
-  if(val !== undefined)
+  if(typeof val !== 'undefined')
     return val.split( /\s+/ );
   else
     return [];
