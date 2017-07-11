@@ -30,6 +30,19 @@ function getArrayItem(params, key) {
     return value;
 }
 
+function updateResults(err, entries) {
+    if (!err) {
+        var results = {
+            popular: entries,
+            recent: entries
+        };
+        showSearchResults(results)
+    } else {
+        var message = getMessageString(err, entries, "Search");
+        alert(message);
+    }
+}
+
 /**
  * Search for the selected search keys in url
  * @param {String} search_url - The term or phrase to search for
@@ -45,16 +58,7 @@ function searchForResources(search_url) {
   if((parts.length == 1) || ((parts.length == 2) && (parts[1] == ''))) {
       searchManifestPopularAndRecent(resultFields,
           function (err, entries) {
-              if(!err) {
-                  var results = {
-                      popular: entries,
-                      recent: entries
-                  };
-                  showSearchResults(results)
-              } else {
-                  var message = getMessageString(err, entries, "Default");
-                  alert(message);
-              }
+              updateResults(err, entries);
           }
       );
   } else {
@@ -63,20 +67,15 @@ function searchForResources(search_url) {
       var full_text = getSingleItem(params, 'q');
       var repo_name = getSingleItem(params, 'repo');
       var user_name = getSingleItem(params, 'user');
-      var resource = getSingleItem(params, 'resource');
+      var resID = getSingleItem(params, 'resource');
+      var resType = getSingleItem(params, 'type');
+      var title = getSingleItem(params, 'title');
+      var time = getSingleItem(params, 'time');
+      var manifest = getSingleItem(params, 'manifest');
       var languages = getArrayItem(params, 'lc');
-      searchManifest(matchLimit, languages, user_name, repo_name, resource, full_text, resultFields,
+      searchManifest(matchLimit, languages, user_name, repo_name, resID, resType, title, time, manifest, full_text, resultFields,
           function (err, entries) {
-              if(!err) {
-                  var results = {
-                      popular: entries,
-                      recent: entries
-                  };
-                  showSearchResults(results)
-              } else {
-                  var message = getMessageString(err, entries, "Search");
-                  alert(message);
-              }
+              updateResults(err, entries);
           }
       );
   }
@@ -494,10 +493,9 @@ function searchAndDisplayResults(searchStr, languagePrompt, languageCode) {
     }
 
     var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
-    searchManifest(50, langSearch, null, null, null, fullTextSearch, resultFields,
+    searchManifest(100, langSearch, null, null, null, null, null, null, fullTextSearch, resultFields,
         function (err, entries) {
-            var message = getMessageString(err, entries, searchPrompt);
-            alert(message);
+            updateResults(err, entries);
         }
     );
 }
@@ -553,15 +551,19 @@ function appendFilter(filterExpression, rule, orTogether) {
 }
 
 /***
- * kicks off a search for entries in the manifest (case insensitive)
+ * kicks off a search for entries in the manifest (case insensitive). Search parameters are ANDed together to refine search.
  * @param languages - array of language code strings or null for any language
  * @param matchLimit - limit the number of matches to return. This is not an exact limit, but has to do with responses
  *                          being returned a page at a time.  Once number of entries gets to or is above this count
  *                          then no more pages will be fetched.
- * @param user_name - user name to match or null for any user
- * @param repo_name - repo name to match or null for any repo
- * @param full_text - text to find in any field
- * @param resource - resource type to find in resource_idString or resource_typeString
+ * @param user_name - text to find in user_name (if not null)
+ * @param repo_name - text to find in repo_name (if not null)
+ * @param resID - text to match in resource_id (if not null)
+ * @param resType - text to match in resource_type (if not null)
+ * @param title - text to find in title (if not null)
+ * @param time - text to find in time (if not null)
+ * @param manifest - text to find in manifest (if not null)
+ * @param full_text - text to find in any field (if not null)
  * @param returnedFields - comma delimited list of fields to return.  If null it will default to
  *                              all fields
  * @param onFinished - call back function onScan(err, entries) - where:
@@ -570,7 +572,7 @@ function appendFilter(filterExpression, rule, orTogether) {
  *                                                where each object contains returnedFields
  * @return boolean - true if search initiated, if false then search error
  */
-function searchManifest(matchLimit, languages, user_name, repo_name, resource, full_text, returnedFields, onFinished) {
+function searchManifest(matchLimit, languages, user_name, repo_name, resID, resType, title, time, manifest, full_text, returnedFields, onFinished) {
     try {
         var tableName = getManifestTable();
         var expressionAttributeValues = {};
@@ -587,20 +589,43 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resource, f
 
         if(user_name) {
             expressionAttributeValues[":user"] = user_name.toLowerCase();
-            filterExpression = appendFilter(filterExpression, "#u = :user");
+            filterExpression = appendFilter(filterExpression, "contains(#u, :user)");
             expressionAttributeNames["#u"] = "user_name_lower";
         }
 
         if(repo_name) {
             expressionAttributeValues[":repo"] = repo_name.toLowerCase();
-            filterExpression = appendFilter(filterExpression, "#r = :repo");
+            filterExpression = appendFilter(filterExpression, "contains(#r, :repo)");
             expressionAttributeNames["#r"] = "repo_name_lower";
         }
 
-        if(resource) {
-            expressionAttributeValues[":res"] = resource.toLowerCase();
-            filterExpression = appendFilter(filterExpression, "(#id = :res OR #t = :res)");
+        if(title) {
+            expressionAttributeValues[":title"] = title;
+            filterExpression = appendFilter(filterExpression, "contains(#title, :title)");
+            expressionAttributeNames["#title"] = "title";
+        }
+
+        if(time) {
+            expressionAttributeValues[":time"] = time;
+            filterExpression = appendFilter(filterExpression, "contains(#time, :time)");
+            expressionAttributeNames["#time"] = "last_updated";
+        }
+
+        if(manifest) {
+            expressionAttributeValues[":manifest"] = manifest.toLowerCase();
+            filterExpression = appendFilter(filterExpression, "contains(#m, :manifest)");
+            expressionAttributeNames["#m"] = "manifest_lower";
+        }
+
+        if(resID) {
+            expressionAttributeValues[":resID"] = resID.toLowerCase();
+            filterExpression = appendFilter(filterExpression, "#id = :resID");
             expressionAttributeNames["#id"] = "resource_id";
+        }
+
+        if(resType) {
+            expressionAttributeValues[":type"] = resType.toLowerCase();
+            filterExpression = appendFilter(filterExpression, "#t = :type");
             expressionAttributeNames["#t"] = "resource_type";
         }
 
@@ -641,7 +666,7 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resource, f
 }
 
 /***
- * kicks off a search for popular entries in the manifest.  Will retry if too many matches or not enough matches
+ * kicks off a search for popular or recent entries in the manifest. Note that this is an OR search to minimize DB calls.
  * @param returnedFields - comma delimited list of fields to return.  If null it will default to
  *                              all fields
  * @param onFinished - call back function onScan(err, entries) - where:
@@ -655,7 +680,7 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resource, f
  * @return boolean - true if search initiated, if false then search error
  */
 function searchManifestPopularAndRecent(returnedFields, onFinished, minimumViews, matchLimit) {
-    matchLimit = matchLimit || 10000;
+    matchLimit = matchLimit || 1000;
     minimumViews = minimumViews || 10;
     var current = new Date();
     var recentMS = current.valueOf() - 30*24*60*60*1000; // go back 30 days in milliseconds
