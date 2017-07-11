@@ -13,28 +13,30 @@ function simpleFormat(format, args) {
 }
 
 /**
- * Search for the selected term or phrase
- * @param {String} search_term The term or phrase to search for
+ * Search for the selected search keys in url
+ * @param {String} search_url - The term or phrase to search for
  */
-function searchForResources(search_term) {
-
-  var url = '/temp-data.json';
-
-  $.ajax({
-    url: url,
-    dataType: 'json',
-    data: {
-      q: search_term,
-      format: 'json'
-    }
-  })
-    .done(function (response) {
-      showSearchResults(response);
-    })
-    .fail(function (data, status, error) {
-      console.log(error);
-      console.log(data);
-    });
+function searchForResources(search_url) {
+  var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, #vw";
+  var parts = search_url.split('?');
+  if((parts.length == 1) || ((parts.length == 2) && (parts[1] == ''))) {
+      searchManifestPopularAndRecent(resultFields,
+          function (err, entries) {
+              if(!err) {
+                  var results = {
+                      popular: entries,
+                      recent: entries
+                  };
+                  showSearchResults(results)
+              } else {
+                  var message = getMessageString(err, entries, "Default");
+                  alert(message);
+              }
+          }
+      );
+  } else {
+      //TODO blm: need to add key value searching
+  }
 }
 
 /**
@@ -60,7 +62,7 @@ function showSearchResults(results) {
   var template = $('#listing-template').html();
 
   // sort popular and recent
-  var popular = _.sortBy(results['popular'], 'num_views').reverse();
+  var popular = _.sortBy(results['popular'], 'views').reverse();
   var recent = _.sortBy(results['recent'], 'last_updated').reverse();
 
   // display popular
@@ -80,22 +82,48 @@ function showSearchResults(results) {
 }
 
 /**
+ * extract sub item with fallback on error
+ * @param item
+ * @param keys
+ * @return {string}
+ */
+function getSubItem(item, keys, defaultValue) {
+    var retValue = defaultValue || "";
+    try {
+        keys.forEach(function (key) {
+            item = item[key];
+            if(key == "manifest") {
+                item = JSON.parse(item);
+            }
+        });
+        retValue = item;
+    } catch (e) { }
+    return retValue;
+}
+
+/**
  * Appends item to the specified div
  * @param {Object} item
  * @param {Object} $div A jquery object
  * @param {String} template The HTML template for the new item
  */
 function showThisItem(item, $div, template) {
-
   var $template = $(template);
   var today = moment.utc().startOf('day');
-
-  $template.find('.title-span').html(item['resource_name']);
-  $template.find('.author-div').html(simpleFormat(l10n['author'], [item['author']]));
+  var title = getSubItem(item, ['title']);
+  $template.find('.title-span').html(title);
+  var authorFormat = l10n['author'];
+  var author = getSubItem(item,['user_name']);
+  $template.find('.author-div').html(simpleFormat(authorFormat, [author]));
   $template.find('.language-title-span').html(l10n['language']);
-  $template.find('.language-code-div').html(simpleFormat(l10n['language_with_code'], [item['lang_name'], item['lang_code']]));
-  $template.find('.views-span').html(item['num_views']);
-  $template.find('.updated-span').html(getDateDiff(item['last_updated'], today));
+  var langAndCodeFormat = l10n['language_with_code'];
+  var langName = getSubItem(item, ['manifest', 'dublin_core','language','title']);
+  var langCode = getSubItem(item, ['lang_code']);
+  $template.find('.language-code-div').html(simpleFormat(langAndCodeFormat, [langName, langCode]));
+  var views = getSubItem(item, ['views']);
+  $template.find('.views-span').html(views);
+  var lastUpdated = getSubItem(item,['last_updated'],'1970-01-01');
+  $template.find('.updated-span').html(getDateDiff(lastUpdated, today));
 
   // TODO: set anchor href to the correct value
   $template.find('a').attr('href', 'put_the_url_here');
@@ -411,7 +439,7 @@ function searchAndDisplayResults(searchStr, languagePrompt, languageCode) {
 }
 
 $().ready(function () {
-  window.setTimeout(searchForResources(''), 300);
+  window.setTimeout(searchForResources(window.location.href), 500);
   window.setTimeout(setupLanguageSelector(), 500);
 
   $('#search-td').on('click', function (){
@@ -424,68 +452,7 @@ $().ready(function () {
     // TODO: put actual browse code here.
     alert('Browse code goes here.');
   });
-
-    var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, #vw";
-    var searchPrompt = "Recent";
-    searchManifestPopularAndRecent(resultFields,
-        function (err, entries) {
-            if(!err) {
-                var popular = getMostPopular(entries, 10);
-                var recent = getMostRecent(entries, 10);
-                var message = getMessageString(err, popular, "Popular");
-                alert(message);
-                message = getMessageString(err, recent, "Recent");
-                alert(message);
-            } else {
-                var message = getMessageString(err, entries, searchPrompt);
-                alert(message);
-            }
-        }
-    );
 });
-
-function getMostPopular(entries, maxCount) {
-    var key = 'views';
-    return getHighestValues(entries, maxCount, key);
-}
-
-function getMostRecent(entries, maxCount) {
-    var key = 'last_updated';
-    return getHighestValues(entries, maxCount, key);
-}
-
-function getHighestValues(entries, maxCount, key) {
-    const count = entries.length;
-    var popular = [];
-    var threshold = null;
-
-    if (count > 0) {
-        popular.push(entries[0]);
-        for (var i = 1; i < count; i++) {
-            var insertItem = entries[i];
-
-            if ((popular.length < maxCount) || !threshold || (insertItem[key] > threshold)) {
-                var inserted = false;
-                for (var j = 0; (j < maxCount) && (j < popular.length); j++) {
-                    var hiItem = popular[j];
-                    if (insertItem[key] > hiItem[key]) {
-                        popular.splice(j, 0, insertItem); // insert item
-                        if (popular.length > maxCount) {
-                            popular.pop();
-                        }
-                        inserted = true;
-                        break;
-                    }
-                }
-                if (!inserted && (popular.length < maxCount)) {
-                    popular.push(insertItem);
-                }
-                threshold = popular[popular.length - 1][key];
-            }
-        }
-    }
-    return popular;
-}
 
 function searchContinue(docClient, params, retData, matchLimit, onFinished) {
     docClient.scan(params, onScan);
