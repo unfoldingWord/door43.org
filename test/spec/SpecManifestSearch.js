@@ -111,15 +111,17 @@ describe('Test Manifest Search', function () {
         var expectedItemCount = 0;
         setupSearchManifestMocks(expectedReturn);
         var search_url = 'http://127.0.0.1:4000/en/?lc=en&lc=ceb&q=Bible&user=tx-manager-test-data';
+        var expectedBaseUrl = 'http://127.0.0.1:4000';
         expectedErr = null;
-        expectedData = { Items:[] };
+        expectedData = [];
 
         //when
         var results = searchForResources(search_url);
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
-        validateResults(results, expectedReturn, expectedItemCount);
+        expect(window.searchManifest).toHaveBeenCalled();
+        validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl);
     });
 
     it('searchForResources: multiple language array and extra q should return success', function () {
@@ -128,16 +130,150 @@ describe('Test Manifest Search', function () {
         var expectedItemCount = 0;
         setupSearchManifestMocks(expectedReturn);
         var search_url = 'http://127.0.0.1:4000/en/?lc=en&q=Bible&q=ceb&user=tx-manager-test-data';
+        var expectedBaseUrl = 'http://127.0.0.1:4000';
         expectedErr = null;
-        expectedData = { Items:[] };
+        expectedData = [];
 
         //when
         var results = searchForResources(search_url);
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
-        validateResults(results, expectedReturn, expectedItemCount);
+        expect(window.searchManifest).toHaveBeenCalled();
+        validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl);
     });
+
+    it('searchForResources: valid language array with continue should return success', function () {
+        //given
+        var expectedReturn = true;
+        var expectedItemCount = 2;
+        setupSearchManifestMocks(expectedReturn);
+        var search_url = 'http://127.0.0.1:4000/en/?lc=es';
+        var expectedBaseUrl = 'http://127.0.0.1:4000';
+        expectedErr = null;
+        expectedData = [ { 'object': "" }];
+
+        //when
+        var results = searchForResources(search_url);
+
+        //then
+        expect(window.updateResults).toHaveBeenCalled();
+        expect(window.searchManifest).toHaveBeenCalled();
+        validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl);
+    });
+
+    it('searchForResources: valid language array and user name should return success', function () {
+        //given
+        var expectedReturn = true;
+        var expectedItemCount = 0;
+        setupSearchManifestMocks(expectedReturn);
+        var search_url = 'http://127.0.0.1:4000/en/?lc=es&lc=ceb&user=dummy';
+        var expectedBaseUrl = 'http://127.0.0.1:4000';
+        expectedErr = null;
+        expectedData = [];
+
+        //when
+        var results = searchForResources(search_url);
+
+        //then
+        expect(window.updateResults).toHaveBeenCalled();
+        expect(window.searchManifest).toHaveBeenCalled();
+        validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl);
+    });
+
+    it('searchForResources: valid repo name and resource should return success', function () {
+        //given
+        var expectedReturn = true;
+        var expectedItemCount = 0;
+        setupSearchManifestMocks(expectedReturn);
+        var search_url = 'http://127.0.0.1:4000/en/?repo=es&lc=dummy_repo&resource=dummy_res';
+        var expectedBaseUrl = 'http://127.0.0.1:4000';
+        var returnFields = "user_name, repo_name views";
+        expectedErr = null;
+        expectedData = [];
+
+        //when
+        var results = searchForResources(search_url);
+
+        //then
+        expect(window.updateResults).toHaveBeenCalled();
+        expect(window.searchManifest).toHaveBeenCalled();
+        validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl);
+    });
+
+    it('searchForResources: empty search parameters should return success', function () {
+        //given
+        var expectedReturn = true;
+        var expectedItemCount = 0;
+        setupSearchManifestMocks(expectedReturn);
+        var search_url = 'http://127.0.0.1:4000/en/?';
+        var expectedBaseUrl = 'http://127.0.0.1:4000';
+        expectedErr = null;
+        expectedData = [];
+
+        //when
+        var results = searchForResources(search_url);
+
+        //then
+        expect(window.updateResults).toHaveBeenCalled();
+        expect(window.searchManifestPopularAndRecent).toHaveBeenCalled();
+        validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl);
+    });
+
+    it('searchForResources: no search parameters should return success', function () {
+        //given
+        var expectedReturn = true;
+        var expectedItemCount = 0;
+        setupSearchManifestMocks(expectedReturn);
+        var search_url = 'http://127.0.0.1:4000/en';
+        var expectedBaseUrl = 'http://127.0.0.1:4000';
+        expectedErr = null;
+        expectedData = [];
+
+        //when
+        var results = searchForResources(search_url);
+
+        //then
+        expect(window.updateResults).toHaveBeenCalled();
+        expect(window.searchManifestPopularAndRecent).toHaveBeenCalled();
+        validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl);
+    });
+
+    it('searchForResources: search error should return error', function () {
+        //given
+        var expectedReturn = true;
+        var expectedItemCount = 1;
+        setupSearchManifestMocks(expectedReturn);
+        var search_url = 'http://127.0.0.1:4000/en/?lc=ceb';
+        var expectedBaseUrl = 'http://127.0.0.1:4000';
+        expectedErr = "search Failure";
+        expectedData = [ { 'object': "" }];
+
+        //when
+        var results = searchForResources(search_url);
+
+        //then
+        expect(window.updateResults).toHaveBeenCalled();
+        expect(window.searchManifest).toHaveBeenCalled();
+        validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl);
+    });
+
+    it('searchManifest: valid language array should return success', function () {
+        //given
+        var expectedReturn = true;
+        var expectedItemCount = 0;
+        setupDynamoDbMocks(expectedReturn);
+        var language = ['es'];
+        var matchLimit = 20;
+        expectedErr = null;
+        expectedData = { Items:[] };
+
+        //when
+        var results = searchManifest(matchLimit, language, null, null, null, null, null, null, null, null, null, onFinished);
+
+        //then
+        validateResults(results, expectedReturn, expectedItemCount);
+   });
 
     it('searchManifest: valid language array with continue should return success', function () {
         //given
@@ -255,7 +391,7 @@ describe('Test Manifest Search', function () {
     // helpers
     //
 
-    function validateResults(results, expectedReturn, expectedItemCount) {
+    function validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl) {
         expect(results).toEqual(expectedReturn);
         if (expectedErr) {
             expect(returnedError.length > 0).toBeTruthy();
@@ -270,6 +406,9 @@ describe('Test Manifest Search', function () {
                 expect(returnedEntries.length).toEqual(expectedItemCount);
             }
         }
+        if(expectedBaseUrl) {
+            expect(baseUrl).toEqual(expectedBaseUrl);
+        }
     }
 
     function setupDynamoDbMocks(retVal) {
@@ -278,6 +417,9 @@ describe('Test Manifest Search', function () {
         };
         AWS.DynamoDB.DocumentClient = DocumentClientClassMock;
 
+        spyOn(window, 'updateResults').and.callThrough();
+        spyOn(window, 'searchManifest').and.callThrough();
+        spyOn(window, 'searchManifestPopularAndRecent').and.callThrough();
         getManifestTable = jasmine.createSpy().and.returnValue("dummy-table");
         scanMock = jasmine.createSpy().and.callFake(mockOnScan);
         function mockOnScan(params, onScan) { // mock the table scan operation

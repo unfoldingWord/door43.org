@@ -56,7 +56,7 @@ function searchForResources(search_url) {
 
   var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
   if((parts.length === 1) || ((parts.length === 2) && (parts[1] === ''))) {
-      searchManifestPopularAndRecent(resultFields,
+      return searchManifestPopularAndRecent(resultFields,
           function (err, entries) {
               updateResults(err, entries);
           }

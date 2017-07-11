@@ -86,7 +86,7 @@ In order to synchronize the assets to the cdn S3 bucket you may now run `make as
 - to make sure we have dependencies do `npm install`
 - to run the tests do `npm run-script test-phantom`
 
-#### Viewing local code coverage
+#### Viewing Local Code Coverage
 - coverage reports are generated automatically when you run the previous step `Running Tests Locally using Karma`
 - coverage reports will be in coverage folder - open coverage/PhantomJS*/lcov-report/index.html in browser to view.
 
