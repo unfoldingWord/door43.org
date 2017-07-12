@@ -64,6 +64,99 @@ describe('Test Manifest Search', function () {
         expect(languagePrompt).toEqual(expectedLanguagePrompt);
     });
 
+    it('updateUrlWithSearchParams: valid language language array two item search', function () {
+        //given
+        var fullTextSearch = "dummy_text";
+        var langSearch = ['es', 'ceb'];
+        baseUrl = 'http://127.0.0.1:4000/en';
+        var expectedBaseUrl = baseUrl + '/';
+        var expectedParams = {
+            q: fullTextSearch,
+            lc: langSearch
+        };
+        setupPushStateMock();
+
+        //when
+        var url = updateUrlWithSearchParams(langSearch, fullTextSearch);
+
+        //then
+        validateSearchParameters(url, expectedBaseUrl, expectedParams);
+    });
+
+    it('updateUrlWithSearchParams: valid language language array single item search', function () {
+        //given
+        var fullTextSearch = "dummy_text";
+        var langSearch = ['es'];
+        baseUrl = 'http://127.0.0.1:4000/en';
+        var expectedBaseUrl = baseUrl + '/';
+        var expectedParams = {
+            q: fullTextSearch,
+            lc: langSearch
+        };
+        setupPushStateMock();
+
+        //when
+        var url = updateUrlWithSearchParams(langSearch, fullTextSearch);
+
+        //then
+        validateSearchParameters(url, expectedBaseUrl, expectedParams);
+    });
+
+    it('updateUrlWithSearchParams: valid language language array three item search', function () {
+        //given
+        var fullTextSearch = "dummy_text";
+        var langSearch = ['es', 'ceb', 'ne'];
+        baseUrl = 'http://127.0.0.1:4000/en';
+        var expectedBaseUrl = baseUrl + '/';
+        var expectedParams = {
+            q: fullTextSearch,
+            lc: langSearch
+        };
+        setupPushStateMock();
+
+        //when
+        var url = updateUrlWithSearchParams(langSearch, fullTextSearch);
+
+        //then
+        validateSearchParameters(url, expectedBaseUrl, expectedParams);
+    });
+
+    it('updateUrlWithSearchParams: valid language language array 0 item search', function () {
+        //given
+        var fullTextSearch = "dummy_text";
+        var langSearch = [];
+        baseUrl = 'http://127.0.0.1:4000/en';
+        var expectedBaseUrl = baseUrl + '/';
+        var expectedParams = {
+            q: fullTextSearch
+        };
+        setupPushStateMock();
+
+        //when
+        var url = updateUrlWithSearchParams(langSearch, fullTextSearch);
+
+        //then
+        validateSearchParameters(url, expectedBaseUrl, expectedParams);
+    });
+
+    it('updateUrlWithSearchParams: valid language language array null item search', function () {
+        //given
+        var fullTextSearch = "dummy_text";
+        var langSearch = null;
+        baseUrl = 'http://127.0.0.1:4000/en';
+        var expectedBaseUrl = baseUrl + '/';
+        var expectedParams = {
+            q: fullTextSearch
+        };
+        setupPushStateMock();
+
+        //when
+        var url = updateUrlWithSearchParams(langSearch, fullTextSearch);
+
+        //then
+        validateSearchParameters(url, expectedBaseUrl, expectedParams);
+    });
+
     it('getMessageString: error should return error message', function () {
         //given
         var err = "Error";
@@ -520,6 +613,33 @@ describe('Test Manifest Search', function () {
         }
     }
 
+   function validateSearchParameters(url, expectedBaseUrl, expectedParams) {
+        var parts = url.split('?');
+        expect(parts[0]).toEqual(expectedBaseUrl);
+        var params = extractUrlParams(parts[1]);
+        expect(params.length).toEqual(expectedParams.length);
+        _.each(params, function (param, key) {
+            if (param instanceof Array) {
+                expect(param.length).toEqual(expectedParams[key].length);
+                _.each(param, function (item) {
+                    expect(_.contains(expectedParams[key], item)).toBeTruthy();
+                })
+            } else {
+                var expectedParam = expectedParams[key];
+                if (expectedParam instanceof Array) {
+                    expect(_.contains(expectedParam, param)).toBeTruthy();
+                    expect(expectedParam.length).toEqual(1);
+                } else {
+                    expect(param).toEqual(expectedParam);
+                }
+            }
+        });
+    }
+
+    function setupPushStateMock() {
+        spyOn(history, 'pushState').and.returnValue("dummy_pushState");
+    }
+
     function setupDynamoDbMocks(retVal) {
         AWS = {
             DynamoDB: {}
@@ -540,6 +660,7 @@ describe('Test Manifest Search', function () {
     }
 
     function setupSearchManifestMocks(retVal) {
+        spyOn(history, 'pushState').and.returnValue("dummy_pushState");
         spyOn(window, 'updateResults').and.callFake(onFinished);
         spyOn(window, 'searchManifest').and.callFake(mockSearchManifest);
         spyOn(window, 'searchManifestPopularAndRecent').and.callFake(mockSearchManifestPopularAndRecent);

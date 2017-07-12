@@ -473,6 +473,19 @@ function getMessageString(err, entries, search_for) {
     return message;
 }
 
+function updateUrlWithSearchParams(langSearch, fullTextSearch) {
+    var languageParams = "";
+    if (langSearch && langSearch.length > 0) {
+        languageParams = "lc=" + langSearch.join("&lc=");
+    }
+    if(fullTextSearch && languageParams) {
+        languageParams += "&";
+    }
+    var newUrl = baseUrl + "/?" + encodeURI(languageParams + "q=" + fullTextSearch);
+    history.pushState(null, null, newUrl);
+    return newUrl;
+}
+
 function searchAndDisplayResults(searchStr, languagePrompt, languageCode) {
     var langSearch = null;
     var fullTextSearch = searchStr; // default to fulltext search
@@ -492,6 +505,7 @@ function searchAndDisplayResults(searchStr, languagePrompt, languageCode) {
             }
         }
     }
+    updateUrlWithSearchParams(langSearch, fullTextSearch);
 
     var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
     searchManifest(100, langSearch, null, null, null, null, null, null, null, fullTextSearch, resultFields,
