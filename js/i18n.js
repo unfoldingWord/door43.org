@@ -73,6 +73,26 @@ function searchForResources(search_url) {
       var time = getSingleItem(params, 'time');
       var manifest = getSingleItem(params, 'manifest');
       var languages = getArrayItem(params, 'lc');
+      
+      var searchFieldArr = [];
+      if(full_text) searchFieldArr.push(full_text);
+      if(repo_name) searchFieldArr.push('repo:'+repo_name);
+      if(user_name) searchFieldArr.push('user:'+user_name);
+      if(resID) searchFieldArr.push('resource:'+resID);
+      if(resType) searchFieldArr.push('type:'+resType);
+      if(title) searchFieldArr.push('title:'+title);
+      if(time) searchFieldArr.push('time:'+time);
+      if(manifest) searchFieldArr.push('manifest:'+manifest);
+
+      $('#search-for').val(searchFieldArr.join(' '));
+
+      if(languages) {
+          $.each(languages, function(index){
+            var lc = languages[index];
+            addLanguageFilter({'lc': lc, 'ln': lc, 'ang': lc});
+          });
+      }
+
       return searchManifest(matchLimit, languages, user_name, repo_name, resID, resType, title, time, manifest, full_text, resultFields,
           function (err, entries) {
               updateResults(err, entries);
@@ -539,14 +559,13 @@ function doAutoStartup() {
 }
 
 $().ready(function () {
-    if(doAutoStartup) { doAutoStartup(); }
+  doAutoStartup(); 
 
   $('#search-td').on('click', function (){
     searchAndDisplayResults($('#search-for').val(), getLanguageCodesToFilter());
   });
 
   $('#browse-td').on('click', function (){
-
     // TODO: put actual browse code here.
     alert('Browse code goes here.');
   });
