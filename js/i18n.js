@@ -107,7 +107,7 @@ function addEntriesToDiv($div, recent, template) {
     for (var i = 0, len = recent.length; i < len; i++) {
         showThisItem(recent[i], $div, template);
     }
-    showMoreLink($div);
+    // showMoreLink($div);
 }
 /**
  * Displays the results returned by the search
@@ -517,6 +517,14 @@ function getLanguageCodesToFilter(){
 function searchAndDisplayResults(searchStr, languageCodes) {
     updateUrlWithSearchParams(window.location.href, languageCodes, searchStr);
 
+    if(!searchStr && (!languageCodes || !languageCodes.length)) {
+        searchManifestPopularAndRecent(resultFields,
+            function (err, entries) {
+                updateResults(err, entries);
+            }
+        );
+    }
+
     var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
     searchManifest(100, languageCodes, null, null, null, null, null, null, null, searchStr, resultFields,
         function (err, entries) {
@@ -677,6 +685,12 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resID, resT
             expressionAttributeNames["#m"] = "manifest_lower";
             expressionAttributeNames["#r"] = "repo_name_lower";
             expressionAttributeNames["#u"] = "user_name_lower";
+        }
+
+        var attributes = _.keys(expressionAttributeNames).length;
+        if(!attributes) { // if empty search, return nothing
+            onFinished(null, []);
+            return true;
         }
 
         if (returnedFields) {
