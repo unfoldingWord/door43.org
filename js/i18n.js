@@ -102,6 +102,13 @@ function extractUrlParams(search_string) {
     return search_string.length === 0 ? {} : parse({}, search_string.split('&'));
 }
 
+function addEntriesToDiv($div, recent, template) {
+    $div.empty();
+    for (var i = 0, len = recent.length; i < len; i++) {
+        showThisItem(recent[i], $div, template);
+    }
+    showMoreLink($div);
+}
 /**
  * Displays the results returned by the search
  * @param {Object} results
@@ -130,18 +137,11 @@ function showSearchResults(results) {
 
   // display popular
   var $div = $('#popular-div').find('.search-listing');
-  var i, len;
-  for (i = 0, len = popular.length; i < len; i++) {
-    showThisItem(popular[i], $div, template);
-  }
-  showMoreLink($div);
+  addEntriesToDiv($div, popular, template);
 
   // display popular
   $div = $('#recent-div').find('.search-listing');
-  for (i = 0, len = recent.length; i < len; i++) {
-    showThisItem(recent[i], $div, template);
-  }
-  showMoreLink($div);
+  addEntriesToDiv($div, recent, template);
 }
 
 /**
@@ -623,7 +623,7 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resID, resT
         var expressionAttributeNames = {};
         var projectionExpression = null;
 
-        if (languages) {
+        if (languages && languages.length) {
             var set = generateQuerySet(languages, expressionAttributeValues);
             filterExpression = appendFilter(filterExpression, "(#lc in (" + set + "))");
             expressionAttributeNames["#lc"] = "lang_code";
