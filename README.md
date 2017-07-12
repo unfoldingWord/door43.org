@@ -91,7 +91,7 @@ In order to synchronize the assets to the cdn S3 bucket you may now run `make as
 - to make sure we have dependencies do `npm install`
 - to debug the tests do `./karma_start_debug.sh`
 - in Chrome open browser to `http://localhost:9876/#` and then click on Debug
-- then open "Developer Tools", set breakpoints (click Sources tab, js files are under base/test/spec) and then do refresh.
+- then open Chrome's "Developer Tools", set breakpoints (click Sources tab, js files are under base/test/spec) and then do refresh.
 - when done debugging, do `./karma_stop.sh` to stop karma running
 
 #### Open source acknowledgements

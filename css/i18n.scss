@@ -138,6 +138,7 @@ div.clear {
       color: $navbar-inverse-link-color;
       text-align: center;
       cursor: pointer;
+      font-size: 18px;
     }
 
     #browse-td {
@@ -148,16 +149,45 @@ div.clear {
       padding: 0 8px;
       border-left: 3px solid #fff;
       white-space: nowrap;
+      font-size: 18px;
     }
 
-    #search-td:hover, #browse-td:hover {
+    #search-td:hover, #browse-td:hover, .lc-filter:hover {
       background-color: $navbar-inverse-bg;
     }
 
     #search-for {
-      height: 32px;
-      font-size: 16px;
+      height: 40px;
+      font-size: 18px;
       width: 300px;
+      vertical-align: top;
+    }
+
+    .lc-filter {
+      display: inline-block;
+      height: 40px;
+      padding: 8px 12px;
+      font-size: 16px;
+      font-style: italic;
+      font-weight: bold;
+      text-align: center;
+      vertical-align: top;
+      text-transform: uppercase;
+      margin-right: 5px;
+      background-color: $navbar-inverse-link-active-color;
+      color: $navbar-inverse-link-color;
+      cursor: pointer;
+      position: relative;
+
+      .remove-lc-x {
+        font-size: 10px;
+        color: #ffffff;
+        position: absolute;
+        right: 2px;
+        top: 1px;
+        text-transform: none;
+        font-weight: bold;
+      }
     }
   }
 }
