@@ -74,7 +74,7 @@ describe('Test Manifest Search', function () {
             q: fullTextSearch,
             lc: langSearch
         };
-        setupPushStateMock();
+        setupUpdateUrlMock();
 
         //when
         var url = updateUrlWithSearchParams(langSearch, fullTextSearch);
@@ -93,7 +93,7 @@ describe('Test Manifest Search', function () {
             q: fullTextSearch,
             lc: langSearch
         };
-        setupPushStateMock();
+        setupUpdateUrlMock();
 
         //when
         var url = updateUrlWithSearchParams(langSearch, fullTextSearch);
@@ -112,7 +112,7 @@ describe('Test Manifest Search', function () {
             q: fullTextSearch,
             lc: langSearch
         };
-        setupPushStateMock();
+        setupUpdateUrlMock();
 
         //when
         var url = updateUrlWithSearchParams(langSearch, fullTextSearch);
@@ -130,7 +130,7 @@ describe('Test Manifest Search', function () {
         var expectedParams = {
             q: fullTextSearch
         };
-        setupPushStateMock();
+        setupUpdateUrlMock();
 
         //when
         var url = updateUrlWithSearchParams(langSearch, fullTextSearch);
@@ -148,7 +148,7 @@ describe('Test Manifest Search', function () {
         var expectedParams = {
             q: fullTextSearch
         };
-        setupPushStateMock();
+        setupUpdateUrlMock();
 
         //when
         var url = updateUrlWithSearchParams(langSearch, fullTextSearch);
@@ -636,8 +636,8 @@ describe('Test Manifest Search', function () {
         });
     }
 
-    function setupPushStateMock() {
-        spyOn(history, 'pushState').and.returnValue("dummy_pushState");
+    function setupUpdateUrlMock() {
+        spyOn(window, 'updateUrl').and.returnValue("mock_updateUrl");
     }
 
     function setupDynamoDbMocks(retVal) {
@@ -660,7 +660,7 @@ describe('Test Manifest Search', function () {
     }
 
     function setupSearchManifestMocks(retVal) {
-        spyOn(history, 'pushState').and.returnValue("dummy_pushState");
+        setupUpdateUrlMock();
         spyOn(window, 'updateResults').and.callFake(onFinished);
         spyOn(window, 'searchManifest').and.callFake(mockSearchManifest);
         spyOn(window, 'searchManifestPopularAndRecent').and.callFake(mockSearchManifestPopularAndRecent);

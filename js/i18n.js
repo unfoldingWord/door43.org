@@ -473,6 +473,10 @@ function getMessageString(err, entries, search_for) {
     return message;
 }
 
+function updateUrl(newUrl) {
+    history.pushState(null, null, newUrl);
+}
+
 function updateUrlWithSearchParams(langSearch, fullTextSearch) {
     var languageParams = "";
     if (langSearch && langSearch.length > 0) {
@@ -482,7 +486,7 @@ function updateUrlWithSearchParams(langSearch, fullTextSearch) {
         languageParams += "&";
     }
     var newUrl = baseUrl + "/?" + encodeURI(languageParams + "q=" + fullTextSearch);
-    history.pushState(null, null, newUrl);
+    updateUrl(newUrl);
     return newUrl;
 }
 
