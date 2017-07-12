@@ -13,6 +13,11 @@ module.exports = function(config) {
     config.set({
         frameworks: ['jasmine-jquery', 'jasmine'],
 
+        browserConsoleLogOptions: {
+            terminal: true,
+            level: "log"
+        },
+
         files: [
             './js/jquery.min.js',
             './js/jquery-ui.min.js',
