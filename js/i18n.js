@@ -445,15 +445,19 @@ function updateUrl(newUrl) {
     history.pushState(null, null, newUrl);
 }
 
-function updateUrlWithSearchParams(langSearch, fullTextSearch) {
-    var languageParams = "";
+function updateUrlWithSearchParams(url, langSearch, fullTextSearch) {
+    var searchStr = "";
     if (langSearch && langSearch.length > 0) {
-        languageParams = "lc=" + langSearch.join("&lc=");
+        searchStr = "lc=" + langSearch.join("&lc=");
     }
-    if(fullTextSearch && languageParams) {
-        languageParams += "&";
+    if(fullTextSearch) {
+        if(searchStr) {
+            searchStr += "&";
+        }
+        searchStr += "q=" + fullTextSearch;
     }
-    var newUrl = baseUrl + "/?" + encodeURI(languageParams + "q=" + fullTextSearch);
+    var parts = url.split('?');
+    var newUrl = parts[0] + "?" + encodeURI(searchStr);
     updateUrl(newUrl);
     return newUrl;
 }
@@ -511,7 +515,7 @@ function getLanguageCodesToFilter(){
  * @param languageCodes
  */
 function searchAndDisplayResults(searchStr, languageCodes) {
-    updateUrlWithSearchParams(languageCodes, searchStr);
+    updateUrlWithSearchParams(window.location.href, languageCodes, searchStr);
 
     var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
     searchManifest(100, languageCodes, null, null, null, null, null, null, null, searchStr, resultFields,

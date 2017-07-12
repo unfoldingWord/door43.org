@@ -40,8 +40,8 @@ describe('Test Manifest Search', function () {
         //given
         var fullTextSearch = "dummy_text";
         var langSearch = ['es', 'ceb'];
-        baseUrl = 'http://127.0.0.1:4000/en';
-        var expectedBaseUrl = baseUrl + '/';
+        var baseUrl = 'http://127.0.0.1:4000/en';
+        var expectedBaseUrl = baseUrl;
         var expectedParams = {
             q: fullTextSearch,
             lc: langSearch
@@ -49,7 +49,7 @@ describe('Test Manifest Search', function () {
         setupUpdateUrlMock();
 
         //when
-        var url = updateUrlWithSearchParams(langSearch, fullTextSearch);
+        var url = updateUrlWithSearchParams(baseUrl, langSearch, fullTextSearch);
 
         //then
         validateSearchParameters(url, expectedBaseUrl, expectedParams);
@@ -59,8 +59,8 @@ describe('Test Manifest Search', function () {
         //given
         var fullTextSearch = "dummy_text";
         var langSearch = ['es'];
-        baseUrl = 'http://127.0.0.1:4000/en';
-        var expectedBaseUrl = baseUrl + '/';
+        var baseUrl = 'http://127.0.0.1:4000/en';
+        var expectedBaseUrl = baseUrl;
         var expectedParams = {
             q: fullTextSearch,
             lc: langSearch
@@ -68,7 +68,7 @@ describe('Test Manifest Search', function () {
         setupUpdateUrlMock();
 
         //when
-        var url = updateUrlWithSearchParams(langSearch, fullTextSearch);
+        var url = updateUrlWithSearchParams(baseUrl, langSearch, fullTextSearch);
 
         //then
         validateSearchParameters(url, expectedBaseUrl, expectedParams);
@@ -78,8 +78,8 @@ describe('Test Manifest Search', function () {
         //given
         var fullTextSearch = "dummy_text";
         var langSearch = ['es', 'ceb', 'ne'];
-        baseUrl = 'http://127.0.0.1:4000/en';
-        var expectedBaseUrl = baseUrl + '/';
+        var baseUrl = 'http://127.0.0.1:4000/en';
+        var expectedBaseUrl = baseUrl;
         var expectedParams = {
             q: fullTextSearch,
             lc: langSearch
@@ -87,7 +87,7 @@ describe('Test Manifest Search', function () {
         setupUpdateUrlMock();
 
         //when
-        var url = updateUrlWithSearchParams(langSearch, fullTextSearch);
+        var url = updateUrlWithSearchParams(baseUrl, langSearch, fullTextSearch);
 
         //then
         validateSearchParameters(url, expectedBaseUrl, expectedParams);
@@ -97,15 +97,15 @@ describe('Test Manifest Search', function () {
         //given
         var fullTextSearch = "dummy_text";
         var langSearch = [];
-        baseUrl = 'http://127.0.0.1:4000/en';
-        var expectedBaseUrl = baseUrl + '/';
+        var baseUrl = 'http://127.0.0.1:4000/en';
+        var expectedBaseUrl = baseUrl;
         var expectedParams = {
             q: fullTextSearch
         };
         setupUpdateUrlMock();
 
         //when
-        var url = updateUrlWithSearchParams(langSearch, fullTextSearch);
+        var url = updateUrlWithSearchParams(baseUrl, langSearch, fullTextSearch);
 
         //then
         validateSearchParameters(url, expectedBaseUrl, expectedParams);
@@ -115,15 +115,15 @@ describe('Test Manifest Search', function () {
         //given
         var fullTextSearch = "dummy_text";
         var langSearch = null;
-        baseUrl = 'http://127.0.0.1:4000/en';
-        var expectedBaseUrl = baseUrl + '/';
+        var baseUrl = 'http://127.0.0.1:4000/en';
+        var expectedBaseUrl = baseUrl;
         var expectedParams = {
             q: fullTextSearch
         };
         setupUpdateUrlMock();
 
         //when
-        var url = updateUrlWithSearchParams(langSearch, fullTextSearch);
+        var url = updateUrlWithSearchParams(baseUrl, langSearch, fullTextSearch);
 
         //then
         validateSearchParameters(url, expectedBaseUrl, expectedParams);
