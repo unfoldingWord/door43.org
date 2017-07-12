@@ -16,3 +16,4 @@ secrets.tar
 node_modules/
 coverage/
 js/db-keys.json
+karma.log
