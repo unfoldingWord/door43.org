@@ -679,6 +679,12 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resID, resT
             expressionAttributeNames["#u"] = "user_name_lower";
         }
 
+        var attributes = _.keys(expressionAttributeNames).length;
+        if(!attributes) { // if empty search, return nothing
+            onFinished(null, []);
+            return true;
+        }
+
         if (returnedFields) {
             returnedFields = substituteReserved(returnedFields, 'views', expressionAttributeNames);
             projectionExpression = returnedFields;
