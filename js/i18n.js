@@ -314,7 +314,9 @@ function languageSelectorKeyUp(event) {
  */
 function processLanguages($textBox, results, callback) {
   var languages = [];
-  var textVal = extractLastSearchTerm().toLowerCase();
+  var lastSearchTerm = extractLastSearchTerm();
+  if(!lastSearchTerm) return;
+  var textVal = lastSearchTerm.toLowerCase();
 
   for (var i = 0; i < results.length; i++) {
     var langData = results[i];
@@ -456,6 +458,13 @@ function updateUrlWithSearchParams(langSearch, fullTextSearch) {
     return newUrl;
 }
 
+function splitSearchTerms(val) {
+  if(typeof val !== 'undefined')
+    return val.split( /\s+/ );
+  else
+    return [];
+}
+
 function extractLastSearchTerm() {
   var $searchFor = $('#search-for');
   var terms = splitSearchTerms($searchFor.val());
@@ -496,6 +505,11 @@ function getLanguageCodesToFilter(){
   return lcs;
 }
 
+/**
+ *
+ * @param searchStr
+ * @param languageCodes
+ */
 function searchAndDisplayResults(searchStr, languageCodes) {
     updateUrlWithSearchParams(languageCodes, searchStr);
 

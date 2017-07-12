@@ -8,6 +8,34 @@ describe('Test Manifest Search', function () {
   var returnedError;
   var returnedEntries;
 
+    it('updateResults: err should call alert', function () {
+        //given
+        var err = "Error";
+        var entries = [];
+        setupMocksForUpdateResults();
+
+        //when
+        updateResults(err, entries);
+
+        //then
+        expect(window.alert).toHaveBeenCalled();
+        expect(window.showSearchResults).not.toHaveBeenCalled();
+    });
+
+    it('updateResults: no err should call showSearchResults', function () {
+        //given
+        var err = null;
+        var entries = [];
+        setupMocksForUpdateResults();
+
+        //when
+        updateResults(err, entries);
+
+        //then
+        expect(window.alert).not.toHaveBeenCalled();
+        expect(window.showSearchResults).toHaveBeenCalled();
+    });
+
     it('updateUrlWithSearchParams: valid language language array two item search', function () {
         //given
         var fullTextSearch = "dummy_text";
@@ -147,52 +175,97 @@ describe('Test Manifest Search', function () {
         expect(message).toContain("Matches found");
     });
 
-    it('searchAndDisplayResults: full text search should show message', function () {
+    it('searchAndDisplayResults: full text search without languages should call updateResults', function () {
         //given
         var expectedReturn = true;
         setupSearchManifestMocks(expectedReturn);
         var search_for = 'es';
         expectedErr = 'error';
         expectedData = null;
-        var languageStr = null;
-        var languageCode = null;
+        var languageCodes = null;
 
         //when
-        searchAndDisplayResults(search_for, languageStr, languageCode);
+        searchAndDisplayResults(search_for, languageCodes);
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
     });
 
-    it('searchAndDisplayResults: language search should show message', function () {
+    it('searchAndDisplayResults: language search should call updateResults', function () {
         //given
         var expectedReturn = true;
         setupSearchManifestMocks(expectedReturn);
-        var languageCode = 'es';
-        var languageStr = 'Espanol (es)';
-        var search_for = languageStr;
+        var languageCodes = ['es'];
+        var search_for = "";
         expectedErr = 'error';
         expectedData = null;
 
         //when
-        searchAndDisplayResults(search_for, languageStr, languageCode);
+        searchAndDisplayResults(search_for, languageCodes);
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
     });
 
-    it('searchAndDisplayResults: language search with extra text should show message', function () {
+    it('searchAndDisplayResults: language and text search should call updateResults', function () {
         //given
         var expectedReturn = true;
         setupSearchManifestMocks(expectedReturn);
-        var languageCode = 'es';
-        var languageStr = 'Espanol (es)';
-        var search_for = languageStr + " extra";
+        var languageCodes = ['es'];
+        var search_for = "text";
         expectedErr = 'error';
         expectedData = null;
 
         //when
-        searchAndDisplayResults(search_for, languageStr, languageCode);
+        searchAndDisplayResults(search_for, languageCodes);
+
+        //then
+        expect(window.updateResults).toHaveBeenCalled();
+    });
+
+    it('searchAndDisplayResults: language search with null extra text should call updateResults', function () {
+        //given
+        var expectedReturn = true;
+        setupSearchManifestMocks(expectedReturn);
+        var languageCodes = ['es'];
+        var search_for = null;
+        expectedErr = 'error';
+        expectedData = null;
+
+        //when
+        searchAndDisplayResults(search_for, languageCodes);
+
+        //then
+        expect(window.updateResults).toHaveBeenCalled();
+    });
+
+    it('searchAndDisplayResults: multi language search with extra text should call updateResults', function () {
+        //given
+        var expectedReturn = true;
+        setupSearchManifestMocks(expectedReturn);
+        var languageCodes = ['en','ceb'];
+        var search_for = 'text';
+        expectedErr = 'error';
+        expectedData = null;
+
+        //when
+        searchAndDisplayResults(search_for, languageCodes);
+
+        //then
+        expect(window.updateResults).toHaveBeenCalled();
+    });
+
+    it('searchAndDisplayResults: empty language search with extra text should call updateResults', function () {
+        //given
+        var expectedReturn = true;
+        setupSearchManifestMocks(expectedReturn);
+        var languageCodes = [];
+        var search_for = 'text';
+        expectedErr = 'error';
+        expectedData = null;
+
+        //when
+        searchAndDisplayResults(search_for, languageCodes);
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
@@ -557,7 +630,7 @@ describe('Test Manifest Search', function () {
         }
     }
 
-   function validateSearchParameters(url, expectedBaseUrl, expectedParams) {
+    function validateSearchParameters(url, expectedBaseUrl, expectedParams) {
         var parts = url.split('?');
         expect(parts[0]).toEqual(expectedBaseUrl);
         var params = extractUrlParams(parts[1]);
@@ -620,6 +693,11 @@ describe('Test Manifest Search', function () {
             }
             return retVal;
         }
+    }
+
+    function setupMocksForUpdateResults() {
+        spyOn(window, 'alert').and.returnValue("dummy-alert");
+        spyOn(window, 'showSearchResults').and.returnValue("dummy-showSearchResults");
     }
 
     function DocumentClientClassMock() {
