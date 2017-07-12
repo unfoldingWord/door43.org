@@ -578,6 +578,20 @@ function appendFilter(filterExpression, rule, orTogether) {
     return filterExpression;
 }
 
+function generateQuerySet(languages, expressionAttributeValues) {
+    var set = "";
+    for (var i = 0; i < languages.length; i++) {
+        var contentIdName = ":val_" + (i + 1);
+        if (i === 0) {
+            set += contentIdName;
+        } else {
+            set += ", " + contentIdName;
+        }
+        expressionAttributeValues[contentIdName] = languages[i].toLowerCase();
+    }
+    return set;
+}
+
 /***
  * kicks off a search for entries in the manifest table (case insensitive). Search parameters are ANDed together to
  *              refine search.
@@ -610,9 +624,8 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resID, resT
         var projectionExpression = null;
 
         if (languages) {
-            var languageStr = "[" + languages.join(",") + "]"; // convert array to set string
-            expressionAttributeValues[":langs"] = languageStr.toLowerCase();
-            filterExpression = appendFilter(filterExpression, "contains(:langs, #lc)");
+            var set = generateQuerySet(languages, expressionAttributeValues);
+            filterExpression = appendFilter(filterExpression, "(#lc in (" + set + "))");
             expressionAttributeNames["#lc"] = "lang_code";
         }
 
