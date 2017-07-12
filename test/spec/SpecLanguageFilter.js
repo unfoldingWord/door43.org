@@ -52,14 +52,22 @@ describe('Test Language Filters and the Selector Autocomplete', function () {
       expect(languages[0]['lc']).toEqual(expectedLc);
 
       // each language code should begin with 'en'
-      var ul = jQuery('ul.ui-autocomplete')[0];
-      jQuery(ul).find('li').each(function() {
+      $('ul.ui-autocomplete li').each(function() {
         var expectedText = ' (en';
         expect(this.innerHTML.toLowerCase()).toContain(expectedText);
       });
+      $('ul.ui-autocomplete li:first-child').first().trigger('click');
+      var expectedVal = '';
+      expect($search_for.val()).toEqual(expectedVal);
+      var expectedLcs = ['en'];
+      expect(getLanguageCodesToFilter()).toEqual(expectedLcs);
 
       expect(languageSearchResults['en'] !== undefined).toBeTruthy();
 
+      // calling getLanguageListItems a second time should not need to do a timer
+      $search_for.autocomplete('instance').term = null;
+      getLanguageListItems($search_for);
+      expect($('ul.ui-autocomplete li').length).toBeGreaterThan(0);
       done();
     });
   });

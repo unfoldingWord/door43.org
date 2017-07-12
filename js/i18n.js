@@ -348,8 +348,6 @@ function extractLastSearchTerm() {
   var terms = splitSearchTerms($searchFor.val());
   if(terms.length > 0)
     return terms.pop();
-  else
-    return '';
 }
 
 function removeLastSearchTerm(){
