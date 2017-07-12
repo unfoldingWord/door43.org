@@ -12,31 +12,103 @@ function simpleFormat(format, args) {
   });
 }
 
-/**
- * Search for the selected term or phrase
- * @param {String} search_term The term or phrase to search for
- */
-function searchForResources(search_term) {
+var baseUrl = "..";
 
-  var url = '/temp-data.json';
-
-  $.ajax({
-    url: url,
-    dataType: 'json',
-    data: {
-      q: search_term,
-      format: 'json'
+function getSingleItem(params, key) {
+    var value = params[key];
+    if(value && (value instanceof Array)) {
+        return value[0]; // if multiple, use first
     }
-  })
-    .done(function (response) {
-      showSearchResults(response);
-    })
-    .fail(function (data, status, error) {
-      console.log(error);
-      console.log(data);
-    });
+    return value;
 }
 
+function getArrayItem(params, key) {
+    var value = params[key];
+    if ((value && !(value instanceof Array))) {
+        return [value]; // if single, put in array
+    }
+    return value;
+}
+
+function updateResults(err, entries) {
+    if (!err) {
+        var results = {
+            popular: entries,
+            recent: entries
+        };
+        showSearchResults(results)
+    } else {
+        var message = getMessageString(err, entries, "Search");
+        alert(message);
+    }
+}
+
+/**
+ * Search for the selected search keys in url
+ * @param {String} search_url - The term or phrase to search for
+ */
+function searchForResources(search_url) {
+  var parts = search_url.split('?');
+  var urlParts = parts[0].split('/');
+  var remove = (urlParts[urlParts.length - 1] === '') ? 2 : 1;
+  urlParts = urlParts.slice(0, urlParts.length - remove);
+  baseUrl = urlParts.join('/');
+
+  var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
+  if((parts.length === 1) || ((parts.length === 2) && (parts[1] === ''))) {
+      return searchManifestPopularAndRecent(resultFields,
+          function (err, entries) {
+              updateResults(err, entries);
+          }
+      );
+  } else {
+      var params = extractUrlParams(parts[1]);
+      var matchLimit = 1000;
+      var full_text = getSingleItem(params, 'q');
+      var repo_name = getSingleItem(params, 'repo');
+      var user_name = getSingleItem(params, 'user');
+      var resID = getSingleItem(params, 'resource');
+      var resType = getSingleItem(params, 'type');
+      var title = getSingleItem(params, 'title');
+      var time = getSingleItem(params, 'time');
+      var manifest = getSingleItem(params, 'manifest');
+      var languages = getArrayItem(params, 'lc');
+      return searchManifest(matchLimit, languages, user_name, repo_name, resID, resType, title, time, manifest, full_text, resultFields,
+          function (err, entries) {
+              updateResults(err, entries);
+          }
+      );
+  }
+}
+
+function extractUrlParams(search_string) {
+    function parse(params, pairs) {
+        var pair = pairs[0];
+        var parts = pair.split('=');
+        var key = decodeURIComponent(parts[0]);
+        var value = decodeURIComponent(parts.slice(1).join('='));
+
+        // Handle multiple parameters of the same name
+        if (typeof params[key] === "undefined") {
+            params[key] = value;
+        } else {
+            params[key] = [].concat(params[key], value);
+        }
+
+        return pairs.length === 1 ? params : parse(params, pairs.slice(1));
+    }
+
+    // Get rid of leading ?
+    return search_string.length === 0 ? {} : parse({}, search_string.split('&'));
+}
+
+function addEntriesToDiv($div, recent, template) {
+    $div.empty();
+    for (var i = 0, len = recent.length; i < len; i++) {
+        showThisItem(recent[i], $div, template);
+    }
+    showMoreLink($div);
+}
 /**
  * Displays the results returned by the search
  * @param {Object} results
@@ -60,23 +132,37 @@ function showSearchResults(results) {
   var template = $('#listing-template').html();
 
   // sort popular and recent
-  var popular = _.sortBy(results['popular'], 'num_views').reverse();
+  var popular = _.sortBy(results['popular'], 'views').reverse();
   var recent = _.sortBy(results['recent'], 'last_updated').reverse();
 
   // display popular
   var $div = $('#popular-div').find('.search-listing');
-  var i, len;
-  for (i = 0, len = popular.length; i < len; i++) {
-    showThisItem(popular[i], $div, template);
-  }
-  showMoreLink($div);
+  addEntriesToDiv($div, popular, template);
 
   // display popular
   $div = $('#recent-div').find('.search-listing');
-  for (i = 0, len = recent.length; i < len; i++) {
-    showThisItem(recent[i], $div, template);
-  }
-  showMoreLink($div);
+  addEntriesToDiv($div, recent, template);
+}
+
+/**
+ * extract sub item with fallback on error
+ * @param item
+ * @param keys
+ * @param defaultValue - default value to return on error (otherwise will return "" on error)
+ * @return {string}
+ */
+function getSubItem(item, keys, defaultValue) {
+    var retValue = defaultValue || "";
+    try {
+        keys.forEach(function (key) {
+            item = item[key];
+            if(key === "manifest") {
+                item = JSON.parse(item);
+            }
+        });
+        retValue = item;
+    } catch (e) { }
+    return retValue;
 }
 
 /**
@@ -86,19 +172,25 @@ function showSearchResults(results) {
  * @param {String} template The HTML template for the new item
  */
 function showThisItem(item, $div, template) {
-
   var $template = $(template);
   var today = moment.utc().startOf('day');
-
-  $template.find('.title-span').html(item['resource_name']);
-  $template.find('.author-div').html(simpleFormat(l10n['author'], [item['author']]));
+  var title = getSubItem(item, ['title']);
+  $template.find('.title-span').html(title);
+  var authorFormat = l10n['author'];
+  var author = getSubItem(item,['user_name']);
+  $template.find('.author-div').html(simpleFormat(authorFormat, [author]));
   $template.find('.language-title-span').html(l10n['language']);
-  $template.find('.language-code-div').html(simpleFormat(l10n['language_with_code'], [item['lang_name'], item['lang_code']]));
-  $template.find('.views-span').html(item['num_views']);
-  $template.find('.updated-span').html(getDateDiff(item['last_updated'], today));
+  var langAndCodeFormat = l10n['language_with_code'];
+  var langName = getSubItem(item, ['manifest', 'dublin_core','language','title']);
+  var langCode = getSubItem(item, ['lang_code']);
+  $template.find('.language-code-div').html(simpleFormat(langAndCodeFormat, [langName, langCode]));
+  var views = getSubItem(item, ['views']);
+  $template.find('.views-span').html(views);
+  var lastUpdated = getSubItem(item,['last_updated'],'1970-01-01');
+  $template.find('.updated-span').html(getDateDiff(lastUpdated, today));
 
-  // TODO: set anchor href to the correct value
-  $template.find('a').attr('href', 'put_the_url_here');
+  var url = baseUrl + '/u/' + author + "/" + getSubItem(item,['repo_name']);
+  $template.find('a').attr('href', url);
 
   $div.append($template);
 }
@@ -222,7 +314,9 @@ function languageSelectorKeyUp(event) {
  */
 function processLanguages($textBox, results, callback) {
   var languages = [];
-  var textVal = extractLastSearchTerm().toLowerCase();
+  var lastSearchTerm = extractLastSearchTerm();
+  if(!lastSearchTerm) return;
+  var textVal = lastSearchTerm.toLowerCase();
 
   for (var i = 0; i < results.length; i++) {
     var langData = results[i];
@@ -317,23 +411,55 @@ function getLanguageListItems($textBox, callback) {
   }
 }
 
+function addKey(entry, key, line) {
+    if (entry[key]) {
+        line += ", " + key + "=" + entry[key];
+    }
+    return line;
+}
+
 function getMessageString(err, entries, search_for) {
     var message = "Search error";
     if (err) {
         console.log("Error: " + err);
     } else {
-        if (entries.length == 0) {
+        if (entries.length === 0) {
             message = "No matches found for: '" + search_for + "'";
         } else {
             var summary = "";
             var count = 0;
             entries.forEach(function (entry) {
-                summary += "entry " + (++count) + ": '" + entry.title + "', " + entry.repo_name + "/" + entry.user_name + ", lang=" + entry.lang_code + "\n";
+                var line = "entry " + (++count) + ": '" + entry.title + "', " + entry.repo_name + "/" + entry.user_name;
+                line = addKey(entry, 'lang_code', line);
+                line = addKey(entry, 'views', line);
+                line = addKey(entry, 'last_updated', line);
+                summary += line + "\n";
             });
             message = count + " Matches found for '" + search_for + "':\n" + summary;
         }
     }
     return message;
+}
+
+function updateUrl(newUrl) {
+    history.pushState(null, null, newUrl);
+}
+
+function updateUrlWithSearchParams(url, langSearch, fullTextSearch) {
+    var searchStr = "";
+    if (langSearch && langSearch.length > 0) {
+        searchStr = "lc=" + langSearch.join("&lc=");
+    }
+    if(fullTextSearch) {
+        if(searchStr) {
+            searchStr += "&";
+        }
+        searchStr += "q=" + fullTextSearch;
+    }
+    var parts = url.split('?');
+    var newUrl = parts[0] + "?" + encodeURI(searchStr);
+    updateUrl(newUrl);
+    return newUrl;
 }
 
 function splitSearchTerms(val) {
@@ -362,7 +488,7 @@ function addLanguageFilter(item){
   var title = item['ln'] + (item['ang'] && item['ang'] !== item['ln'] ? ' - ' + item['ang'] : '') + ' (' + lc + ')';
   if(! $('#lc-filter-'+lc).length) {
     var $lc_filter = $('<span id="lc-filter-'+lc+'" class="lc-filter" title="'+title+'">'+lc+'<span class="remove-lc-x">x</span></span>');
-    $lc_filter.data('lc', lc);  
+    $lc_filter.data('lc', lc);
     $lc_filter.insertBefore($('#search-for'));
   }
 }
@@ -383,17 +509,29 @@ function getLanguageCodesToFilter(){
   return lcs;
 }
 
+/**
+ *
+ * @param searchStr
+ * @param languageCodes
+ */
 function searchAndDisplayResults(searchStr, languageCodes) {
-  searchManifest(50, languageCodes, null, null, null, searchStr, null, function (err, entries) {
-    // display results here
-    var message = getMessageString(err, entries, searchStr);
-    alert(message);
-  });
+    updateUrlWithSearchParams(window.location.href, languageCodes, searchStr);
+
+    var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
+    searchManifest(100, languageCodes, null, null, null, null, null, null, null, searchStr, resultFields,
+        function (err, entries) {
+            updateResults(err, entries);
+        }
+    );
+}
+
+function doAutoStartup() {
+    window.setTimeout(searchForResources(window.location.href), 500);
+    window.setTimeout(setupLanguageSelector(), 500);
 }
 
 $().ready(function () {
-  window.setTimeout(searchForResources(''), 300);
-  window.setTimeout(setupLanguageSelector(), 500);
+    if(doAutoStartup) { doAutoStartup(); }
 
   $('#search-td').on('click', function (){
     searchAndDisplayResults($('#search-for').val(), getLanguageCodesToFilter());
@@ -427,27 +565,48 @@ function searchContinue(docClient, params, retData, matchLimit, onFinished) {
     }
 }
 
-function appendFilter(filterExpression, rule) {
+function appendFilter(filterExpression, rule, orTogether) {
+    const concat = orTogether ? " OR " : " AND ";
+
     if(!filterExpression) {
         filterExpression = "";
     }
     if(filterExpression.length > 0) {
-        filterExpression += " AND ";
+        filterExpression += concat;
     }
     filterExpression += rule;
     return filterExpression;
 }
 
+function generateQuerySet(languages, expressionAttributeValues) {
+    var set = "";
+    for (var i = 0; i < languages.length; i++) {
+        var contentIdName = ":val_" + (i + 1);
+        if (i === 0) {
+            set += contentIdName;
+        } else {
+            set += ", " + contentIdName;
+        }
+        expressionAttributeValues[contentIdName] = languages[i].toLowerCase();
+    }
+    return set;
+}
+
 /***
- * kicks off a search for entries in the manifest (case insensitive)
+ * kicks off a search for entries in the manifest table (case insensitive). Search parameters are ANDed together to
+ *              refine search.
  * @param languages - array of language code strings or null for any language
  * @param matchLimit - limit the number of matches to return. This is not an exact limit, but has to do with responses
  *                          being returned a page at a time.  Once number of entries gets to or is above this count
  *                          then no more pages will be fetched.
- * @param user_name - user name to match or null for any user
- * @param repo_name - repo name to match or null for any repo
- * @param full_text - text to find in any field
- * @param resource - resource type to find in resource_idString or resource_typeString
+ * @param user_name - text to find in user_name (if not null)
+ * @param repo_name - text to find in repo_name (if not null)
+ * @param resID - text to match in resource_id (if not null)
+ * @param resType - text to match in resource_type (if not null)
+ * @param title - text to find in title (if not null)
+ * @param time - text to find in time (if not null)
+ * @param manifest - text to find in manifest (if not null)
+ * @param full_text - text to find in any field (if not null)
  * @param returnedFields - comma delimited list of fields to return.  If null it will default to
  *                              all fields
  * @param onFinished - call back function onScan(err, entries) - where:
@@ -456,36 +615,59 @@ function appendFilter(filterExpression, rule) {
  *                                                where each object contains returnedFields
  * @return boolean - true if search initiated, if false then search error
  */
-function searchManifest(matchLimit, languages, user_name, repo_name, resource, full_text, returnedFields, onFinished) {
+function searchManifest(matchLimit, languages, user_name, repo_name, resID, resType, title, time, manifest, full_text, returnedFields, onFinished) {
     try {
         var tableName = getManifestTable();
         var expressionAttributeValues = {};
         var filterExpression = "";
-        var expressionAttributeNames = {  };
+        var expressionAttributeNames = {};
+        var projectionExpression = null;
 
-        if (languages) {
-            var languageStr = "[" + languages.join(",") + "]"; // convert array to set string
-            expressionAttributeValues[":langs"] = languageStr.toLowerCase();
-            filterExpression = appendFilter(filterExpression, "contains(:langs, #lc)");
+        if (languages && languages.length) {
+            var set = generateQuerySet(languages, expressionAttributeValues);
+            filterExpression = appendFilter(filterExpression, "(#lc in (" + set + "))");
             expressionAttributeNames["#lc"] = "lang_code";
         }
 
         if(user_name) {
             expressionAttributeValues[":user"] = user_name.toLowerCase();
-            filterExpression = appendFilter(filterExpression, "#u = :user");
+            filterExpression = appendFilter(filterExpression, "contains(#u, :user)");
             expressionAttributeNames["#u"] = "user_name_lower";
         }
 
         if(repo_name) {
             expressionAttributeValues[":repo"] = repo_name.toLowerCase();
-            filterExpression = appendFilter(filterExpression, "#r = :repo");
+            filterExpression = appendFilter(filterExpression, "contains(#r, :repo)");
             expressionAttributeNames["#r"] = "repo_name_lower";
         }
 
-        if(resource) {
-            expressionAttributeValues[":res"] = resource.toLowerCase();
-            filterExpression = appendFilter(filterExpression, "(#id = :res OR #t = :res)");
+        if(title) {
+            expressionAttributeValues[":title"] = title;
+            filterExpression = appendFilter(filterExpression, "contains(#title, :title)");
+            expressionAttributeNames["#title"] = "title";
+        }
+
+        if(time) {
+            expressionAttributeValues[":time"] = time;
+            filterExpression = appendFilter(filterExpression, "contains(#time, :time)");
+            expressionAttributeNames["#time"] = "last_updated";
+        }
+
+        if(manifest) {
+            expressionAttributeValues[":manifest"] = manifest.toLowerCase();
+            filterExpression = appendFilter(filterExpression, "contains(#m, :manifest)");
+            expressionAttributeNames["#m"] = "manifest_lower";
+        }
+
+        if(resID) {
+            expressionAttributeValues[":resID"] = resID.toLowerCase();
+            filterExpression = appendFilter(filterExpression, "#id = :resID");
             expressionAttributeNames["#id"] = "resource_id";
+        }
+
+        if(resType) {
+            expressionAttributeValues[":type"] = resType.toLowerCase();
+            filterExpression = appendFilter(filterExpression, "#t = :type");
             expressionAttributeNames["#t"] = "resource_type";
         }
 
@@ -497,6 +679,11 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resource, f
             expressionAttributeNames["#u"] = "user_name_lower";
         }
 
+        if (returnedFields) {
+            returnedFields = substituteReserved(returnedFields, 'views', expressionAttributeNames);
+            projectionExpression = returnedFields;
+        }
+
         var params = {
             TableName: tableName,
             ExpressionAttributeNames: expressionAttributeNames,
@@ -505,8 +692,8 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resource, f
             Limit: 3000 // number of records to check at a time
         };
 
-        if (returnedFields) {
-            params.ProjectionExpression = returnedFields;
+        if (projectionExpression) {
+            params.ProjectionExpression = projectionExpression;
         }
 
     } catch(e) {
@@ -518,4 +705,85 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resource, f
     var docClient = new AWS.DynamoDB.DocumentClient();
     searchContinue(docClient, params, [], matchLimit, onFinished);
     return true;
+}
+
+/***
+ * kicks off a search for popular or recent entries in the manifest. Note that this is an OR search to minimize DB calls.
+ * @param returnedFields - comma delimited list of fields to return.  If null it will default to
+ *                              all fields
+ * @param onFinished - call back function onScan(err, entries) - where:
+ *                                              err - an error message string
+ *                                              entries - an array of table entry objects that match the search params.
+ *                                                where each object contains returnedFields
+ * @param minimumViews - threshold for popular (default is 50)
+ * @param matchLimit - limit the number of matches to return  (default is 1000). This is not an exact limit, but has to do
+ *                          with responses being returned a page at a time.  Once number of entries gets to or is above
+ *                          this count then no more pages will be fetched.
+ * @return boolean - true if search initiated, if false then search error
+ */
+function searchManifestPopularAndRecent(returnedFields, onFinished, minimumViews, matchLimit) {
+    matchLimit = matchLimit || 10000;
+    minimumViews = minimumViews || 10;
+    var current = new Date();
+    var recentMS = current.valueOf() - 30*24*60*60*1000; // go back 30 days in milliseconds
+    var recentDate = new Date(recentMS);
+    var recentDateStr = recentDate.toISOString();
+    return searchManifestPopularSub(matchLimit,  minimumViews, recentDateStr, returnedFields, onFinished);
+}
+
+function searchManifestPopularSub(matchLimit, minimumViews, recentDate, returnedFields, onFinished) {
+    try {
+        var expressionAttributeValues = {};
+        var filterExpression = "";
+        var expressionAttributeNames = {};
+        var projectionExpression = null;
+
+        if(minimumViews > 0) {
+            expressionAttributeNames["#views"] = "views";
+            expressionAttributeValues[":views"] = minimumViews;
+            filterExpression = appendFilter(filterExpression, "#views >= :views", true);
+        }
+
+        if (recentDate) {
+            expressionAttributeNames["#date"] = "last_updated";
+            expressionAttributeValues[":recent"] = recentDate;
+            filterExpression = appendFilter(filterExpression, "#date >= :recent", true);
+        }
+
+        if (returnedFields) {
+            returnedFields = substituteReserved(returnedFields, 'views', expressionAttributeNames);
+            projectionExpression = returnedFields;
+        }
+
+        var tableName = getManifestTable();
+        var params = {
+            TableName: tableName,
+            ExpressionAttributeNames: expressionAttributeNames,
+            FilterExpression: filterExpression,
+            ExpressionAttributeValues: expressionAttributeValues,
+            Limit: 3000 // number of records to check at a time
+        };
+
+        if (projectionExpression) {
+            params.ProjectionExpression = projectionExpression;
+        }
+
+    } catch(e) {
+        var err = "Could not search languages: " + e.message;
+        onFinished(err, null);
+        return false;
+    }
+
+    var docClient = new AWS.DynamoDB.DocumentClient();
+    searchContinue(docClient, params, [], matchLimit, onFinished);
+    return true;
+}
+
+function substituteReserved(returnedFields, key, expressionAttributeNames) {
+    if (returnedFields.indexOf(key)) {
+        var sub = "#" + key;
+        returnedFields = returnedFields.replace(key, sub);
+        expressionAttributeNames[sub] = key;
+        return returnedFields;
+    }
 }

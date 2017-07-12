@@ -76,22 +76,28 @@ Assets (binary things like images) are housed on cdn.door43.org/assets for this 
 In order to synchronize the assets to the cdn S3 bucket you may now run `make assets`.  This process will **not remove** assets from the /assets folder, only add or update existing files.
 
 ### Running Unit Tests
+*Note: we do not run these tests directly from InteliJ or Pycharm environments.  They are launched from the command-line and debugging is done within Chrome using it's JavaScript Debugger with it's 'Developer Tools'.*
 
 #### Adding Tests
-
 - tests are js files in ./test/spec
 - will also need to add new test spec files to ./test/SpecRunner.html
 
 #### Running Tests Locally using Karma
 - to make sure we have dependencies do `npm install`
 - to run the tests do `npm run-script test-phantom`
+
+*Note: if Karma tests fail, you may find a hint in looking at karma log file (`karma.log`).  Unfortunately there are no line numbers in the log.*
+
+#### Viewing Local Code Coverage
+- coverage reports are generated automatically when you run the previous step `Running Tests Locally using Karma`
 - coverage reports will be in coverage folder - open coverage/PhantomJS*/lcov-report/index.html in browser to view.
 
 #### Debugging Tests Locally using Karma
+*Note: we do not run these tests directly from InteliJ or Pycharm environments.  They are launched from the command-line and debugging is done within Chrome using it's JavaScript Debugger with it's 'Developer Tools'.*
 - to make sure we have dependencies do `npm install`
 - to debug the tests do `./karma_start_debug.sh`
-- in Chrome open browser to `http://localhost:9876/#` and then click on Debug
-- then open Chrome's "Developer Tools", set breakpoints (click Sources tab, js files are under base/test/spec) and then do refresh.
+- in Chrome Browser open to `http://localhost:9876/#` and then click on Debug
+- then open Chrome's "Developer Tools" (on current Chrome click on the three vertical dots in upper right then select More Tools/Developer Tools), set breakpoints (click Sources tab, js files are under base/test/spec) and then do refresh.
 - when done debugging, do `./karma_stop.sh` to stop karma running
 
 #### Open source acknowledgements

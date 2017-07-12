@@ -13,6 +13,18 @@ module.exports = function(config) {
     config.set({
         frameworks: ['jasmine-jquery', 'jasmine'],
 
+        browserConsoleLogOptions: {
+            level: 'log',
+            format: '%b %T: %m',
+            path: 'karma.log'
+        },
+
+        client: {
+            captureConsole: true
+        },
+
+        logLevel: config.LOG_DEBUG,
+
         files: [
             './js/jquery.min.js',
             './js/jquery-ui.min.js',

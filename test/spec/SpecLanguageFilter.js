@@ -64,7 +64,7 @@ describe('Test Language Filters and the Selector Autocomplete', function () {
 
       expect(languageSearchResults['en'] !== undefined).toBeTruthy();
 
-      // calling getLanguageListItems a second time should not need to do a timer
+      // calling getLanguageListItems a second time should not have to do an ajax call
       $search_for.autocomplete('instance').term = null;
       getLanguageListItems($search_for);
       expect($('ul.ui-autocomplete li').length).toBeGreaterThan(0);
