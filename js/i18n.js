@@ -76,13 +76,13 @@ function searchForResources(search_url) {
       
       var searchFieldArr = [];
       if(full_text) searchFieldArr.push(full_text);
-      if(repo_name) searchFieldArr.push('repo:'+repo_name);
-      if(user_name) searchFieldArr.push('user:'+user_name);
-      if(resID) searchFieldArr.push('resource:'+resID);
-      if(resType) searchFieldArr.push('type:'+resType);
-      if(title) searchFieldArr.push('title:'+title);
-      if(time) searchFieldArr.push('time:'+time);
-      if(manifest) searchFieldArr.push('manifest:'+manifest);
+      // if(repo_name) searchFieldArr.push('repo:'+repo_name);
+      // if(user_name) searchFieldArr.push('user:'+user_name);
+      // if(resID) searchFieldArr.push('resource:'+resID);
+      // if(resType) searchFieldArr.push('type:'+resType);
+      // if(title) searchFieldArr.push('title:'+title);
+      // if(time) searchFieldArr.push('time:'+time);
+      // if(manifest) searchFieldArr.push('manifest:'+manifest);
 
       $('#search-for').val(searchFieldArr.join(' '));
 
