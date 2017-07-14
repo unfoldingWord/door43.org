@@ -880,7 +880,7 @@ function getNextFibonacci(last) {
  * Adds an array of project entries from the DB to the display of a given section
  *
  * @param {JQuery} $div
- * @param {string} section_type
+ * @param {number} section_type
  * @param {Object[]} entries
  * @param {HTMLElement} template
  * @param {boolean} displayMoreLink
