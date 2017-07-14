@@ -1,12 +1,12 @@
 /**************************************************************************************************
-**********************          DOCUMENT READY FUNCTIONS                **************************
-**************************************************************************************************/
+ **********************          DOCUMENT READY FUNCTIONS                **************************
+ **************************************************************************************************/
 var pageLoaded = false;
 
 /**
  * Functions to setup the language page on document ready
  */
-function onReady(){
+function onReady() {
     setupLanguageSelector();
     populateSearchFieldFromUrl();
     searchProjects();
@@ -22,8 +22,8 @@ function onReady(){
         alert('Browse code goes here.');
     });
 
-    $('#language-filter').on('DOMSubtreeModified', function(){
-        if(pageLoaded)
+    $('#language-filter').on('DOMSubtreeModified', function () {
+        if (pageLoaded)
             $('#search-button').trigger('click');
     });
 }
@@ -37,8 +37,8 @@ $(document).ready(function () {
 
 
 /**************************************************************************************************
-*******************     SEARCH FIELD & LANGUAGE FILTER FUNCTIONS              ********************
-**************************************************************************************************/
+ *******************     SEARCH FIELD & LANGUAGE FILTER FUNCTIONS              ********************
+ **************************************************************************************************/
 var languageSelectorTimer;
 var languageSearchResults = {};
 
@@ -46,31 +46,31 @@ var languageSearchResults = {};
  * Initialize the language selector
  */
 function setupLanguageSelector() {
-  var $searchField = $('#search-field');
+    var $searchField = $('#search-field');
 
-  $searchField.autocomplete({
-      minLength: 2,
-      select: function(event, ui) {
-          removeLastSearchTerm();
-          addLanguageFilter(ui.item);
-          return false;
-      }
-  }).autocomplete('instance')._renderItem = function( ul, item ) {
-      return $('<li style="font-size: 0.9em;">')
-          .append(item['ln'] + (item['ang'] && item['ang'] !== item['ln'] ? ' - ' + item['ang'] : '') + ' (' + item['lc'] + ')<br><span style="font-size: 0.9em;">Region: ' + item['lr'] + '</span>')
-          .appendTo(ul);
-  };
+    $searchField.autocomplete({
+        minLength: 2,
+        select: function (event, ui) {
+            removeLastSearchTerm();
+            addLanguageFilter(ui.item);
+            return false;
+        }
+    }).autocomplete('instance')._renderItem = function (ul, item) {
+        return $('<li style="font-size: 0.9em;">')
+            .append(item['ln'] + (item['ang'] && item['ang'] !== item['ln'] ? ' - ' + item['ang'] : '') + ' (' + item['lc'] + ')<br><span style="font-size: 0.9em;">Region: ' + item['lr'] + '</span>')
+            .appendTo(ul);
+    };
 
-  $searchField.on('keyup', function (event, testEvent) {
-    if(typeof testEvent!== 'undefined'){
-      event = testEvent;
-    }
-    languageSelectorKeyUp(event);
-  });
+    $searchField.on('keyup', function (event, testEvent) {
+        if (typeof testEvent !== 'undefined') {
+            event = testEvent;
+        }
+        languageSelectorKeyUp(event);
+    });
 
-  $('body').on('click', '.lc-filter, .remove-lc.x', function(event){
-    removeLanguageFilter(event.target);
-  });
+    $('body').on('click', '.lc-filter, .remove-lc.x', function (event) {
+        removeLanguageFilter(event.target);
+    });
 }
 
 /**
@@ -79,36 +79,36 @@ function setupLanguageSelector() {
  * @param {Object} event
  */
 function languageSelectorKeyUp(event) {
-  // the Enter key press must be handled by the plugin
-  if (event.which === 13) {
-      $('#search-button').trigger('click');
-      return;
-  }
-
-  // if the timer is currently running, reset it
-  if (languageSelectorTimer) {
-    clearTimeout(languageSelectorTimer);
-  }
-
-  var $searchField = $(event.target);
-  var term = extractLastSearchTerm().toLowerCase().substr(0,4);
-
-  // clear the list
-  if($searchField.autocomplete('instance')) {
-    $searchField.autocomplete('option', 'source', []);
-  }
-
-  if($searchField.val().length < 2) {
-    return;
-  }
-
-  if(typeof languageSearchResults[term] === 'undefined') {
-    if (typeof event['unitTest'] === 'undefined') {
-      languageSelectorTimer = setTimeout(getLanguageListItems, 500, $searchField);
+    // the Enter key press must be handled by the plugin
+    if (event.which === 13) {
+        $('#search-button').trigger('click');
+        return;
     }
-  } else{
-    getLanguageListItems($searchField);
-  }
+
+    // if the timer is currently running, reset it
+    if (languageSelectorTimer) {
+        clearTimeout(languageSelectorTimer);
+    }
+
+    var $searchField = $(event.target);
+    var term = extractLastSearchTerm().toLowerCase().substr(0, 4);
+
+    // clear the list
+    if ($searchField.autocomplete('instance')) {
+        $searchField.autocomplete('option', 'source', []);
+    }
+
+    if ($searchField.val().length < 2) {
+        return;
+    }
+
+    if (typeof languageSearchResults[term] === 'undefined') {
+        if (typeof event['unitTest'] === 'undefined') {
+            languageSelectorTimer = setTimeout(getLanguageListItems, 500, $searchField);
+        }
+    } else {
+        getLanguageListItems($searchField);
+    }
 }
 
 /**
@@ -117,10 +117,10 @@ function languageSelectorKeyUp(event) {
  * @returns {string}
  */
 function extractLastSearchTerm() {
-  var $searchField = $('#search-field');
-  var terms = splitSearchTerms($searchField.val());
-  if(terms.length > 0)
-    return terms.pop();
+    var $searchField = $('#search-field');
+    var terms = splitSearchTerms($searchField.val());
+    if (terms.length > 0)
+        return terms.pop();
 }
 
 /**
@@ -130,20 +130,20 @@ function extractLastSearchTerm() {
  * @returns {string[]}
  */
 function splitSearchTerms(val) {
-  if(typeof val !== 'undefined')
-    return val.split( /\s+/ );
-  else
-    return [];
+    if (typeof val !== 'undefined')
+        return val.split(/\s+/);
+    else
+        return [];
 }
 
 /**
  * Removes the last word from the search field
  */
-function removeLastSearchTerm(){
-  var $searchField = $('#search-field');
-  var terms = $searchField.val().split(' ');
-  terms.pop();
-  $searchField.val(terms.join(' '));
+function removeLastSearchTerm() {
+    var $searchField = $('#search-field');
+    var terms = $searchField.val().split(' ');
+    terms.pop();
+    $searchField.val(terms.join(' '));
 }
 
 /**
@@ -153,19 +153,19 @@ function removeLastSearchTerm(){
  * @param {function|Spy} [callback]  Optional. Initially added for unit testing
  */
 function getLanguageListItems($searchField, callback) {
-  // reset the timer flag
-  languageSelectorTimer = 0;
-  var term = extractLastSearchTerm().toLowerCase().substr(0, 4);
-  if(typeof languageSearchResults[term] !== 'undefined'){
-    processLanguages($searchField, languageSearchResults[term], callback);
-  } else {
-    var request = {type: 'GET', url: 'https://door43.org:9096/?q=' + encodeURIComponent(term)};
-    $.ajax(request).done(function (data) {
-      if (!data.results) return;
-      languageSearchResults[term] = data.results;
-      processLanguages($searchField, data.results, callback);
-    });
-  }
+    // reset the timer flag
+    languageSelectorTimer = 0;
+    var term = extractLastSearchTerm().toLowerCase().substr(0, 4);
+    if (typeof languageSearchResults[term] !== 'undefined') {
+        processLanguages($searchField, languageSearchResults[term], callback);
+    } else {
+        var request = {type: 'GET', url: 'https://door43.org:9096/?q=' + encodeURIComponent(term)};
+        $.ajax(request).done(function (data) {
+            if (!data.results) return;
+            languageSearchResults[term] = data.results;
+            processLanguages($searchField, data.results, callback);
+        });
+    }
 }
 
 /**
@@ -176,26 +176,28 @@ function getLanguageListItems($searchField, callback) {
  * @param {function} [callback]
  */
 function processLanguages($searchField, results, callback) {
-  var languages = [];
-  var lastSearchTerm = extractLastSearchTerm();
-  if(!lastSearchTerm) return;
-  var textVal = lastSearchTerm.toLowerCase();
+    var languages = [];
+    var lastSearchTerm = extractLastSearchTerm();
+    if (!lastSearchTerm) return;
+    var textVal = lastSearchTerm.toLowerCase();
 
-  for (var i = 0; i < results.length; i++) {
-    var langData = results[i];
-    if ((textVal.length > 2) || (langData['lc'].toLowerCase().startsWith(textVal))) {
-      langData['value'] = langData['ln'] + (langData['ang'] && langData['ang'] !== langData['ln'] ? ' - ' + langData['ang']:'') + ' (' + langData['lc'] +')';
-      langData['label'] = langData['value'] + ' ' + langData['lr'];
-      languages.push(langData);
+    for (var i = 0; i < results.length; i++) {
+        var langData = results[i];
+        if ((textVal.length > 2) || (langData['lc'].toLowerCase().startsWith(textVal))) {
+            langData['value'] = langData['ln'] + (langData['ang'] && langData['ang'] !== langData['ln'] ? ' - ' + langData['ang'] : '') + ' (' + langData['lc'] + ')';
+            langData['label'] = langData['value'] + ' ' + langData['lr'];
+            languages.push(langData);
+        }
     }
-  }
 
-  $searchField.autocomplete('option', 'source', languages.sort(function(a, b) { return sortLanguages(a, b, textVal); }));
-  $searchField.autocomplete('search', textVal);
+    $searchField.autocomplete('option', 'source', languages.sort(function (a, b) {
+        return sortLanguages(a, b, textVal);
+    }));
+    $searchField.autocomplete('search', textVal);
 
-  if (typeof callback === 'function') {
-    callback(languages);
-  }
+    if (typeof callback === 'function') {
+        callback(languages);
+    }
 }
 
 /**
@@ -207,42 +209,42 @@ function processLanguages($searchField, results, callback) {
  * @returns {number}
  */
 function sortLanguages(langA, langB, text) {
-  // SORT THE LIST:
-  // 4. exact language code match
-  // 3. language code starts-with match
-  // 2. language description starts-with
-  // 1. language description contains
-  // 0. sort the rest alphabetically
+    // SORT THE LIST:
+    // 4. exact language code match
+    // 3. language code starts-with match
+    // 2. language description starts-with
+    // 1. language description contains
+    // 0. sort the rest alphabetically
 
-  var valA = 0, valB = 0;
-  text = text.toLowerCase();
-  var langA_code = langA['lc'].toLowerCase();
-  var langB_code = langB['lc'].toLowerCase();
+    var valA = 0, valB = 0;
+    text = text.toLowerCase();
+    var langA_code = langA['lc'].toLowerCase();
+    var langB_code = langB['lc'].toLowerCase();
 
-  // look for exact language code match
-  if (langA_code === text) valA = 4;
-  if (langB_code === text) valB = 4;
+    // look for exact language code match
+    if (langA_code === text) valA = 4;
+    if (langB_code === text) valB = 4;
 
-  // look for language code starts-with match
-  if ((valA === 0) && langA_code.startsWith(text)) valA = 3;
-  if ((valB === 0) && langB_code.startsWith(text)) valB = 3;
+    // look for language code starts-with match
+    if ((valA === 0) && langA_code.startsWith(text)) valA = 3;
+    if ((valB === 0) && langB_code.startsWith(text)) valB = 3;
 
-  // look for language description starts-with
-  var langA_name = langA['ln'].toLowerCase();
-  var langB_name = langB['ln'].toLowerCase();
-  if ((valA === 0) && langA_name.startsWith(text)) valA = 2;
-  if ((valB === 0) && langB_name.startsWith(text)) valB = 2;
+    // look for language description starts-with
+    var langA_name = langA['ln'].toLowerCase();
+    var langB_name = langB['ln'].toLowerCase();
+    if ((valA === 0) && langA_name.startsWith(text)) valA = 2;
+    if ((valB === 0) && langB_name.startsWith(text)) valB = 2;
 
-  // look for language description contains
-  var regex = new RegExp('.+' + text + '.*', 'i');
-  if ((valA === 0) && (regex.test(langA_name))) valA = 1;
-  if ((valB === 0) && (regex.test(langB_name))) valB = 1;
+    // look for language description contains
+    var regex = new RegExp('.+' + text + '.*', 'i');
+    if ((valA === 0) && (regex.test(langA_name))) valA = 1;
+    if ((valB === 0) && (regex.test(langB_name))) valB = 1;
 
-  var compare = valB - valA;
-  if (compare !== 0) return compare;
+    var compare = valB - valA;
+    if (compare !== 0) return compare;
 
-  // if none of the above applies, try to sort alphabetically
-  return langA_name.localeCompare(langB_name);
+    // if none of the above applies, try to sort alphabetically
+    return langA_name.localeCompare(langB_name);
 }
 
 /**
@@ -324,12 +326,12 @@ function removeLanguageFilter(element) {
  *
  * @returns {string[]}
  */
-function getLanguageCodesToFilter(){
-  var lcs = [];
-  $('.lc-filter').each(function(){
-    lcs.push($(this).data('lc'));
-  });
-  return lcs;
+function getLanguageCodesToFilter() {
+    var lcs = [];
+    $('.lc-filter').each(function () {
+        lcs.push($(this).data('lc'));
+    });
+    return lcs;
 }
 
 /**
@@ -349,8 +351,8 @@ function updateUrlWithSearchParams(url, langCodes, fullTextSearch) {
     if (langCodes && langCodes.length > 0) {
         searchStr = "lc=" + langCodes.join("&lc=");
     }
-    if(fullTextSearch) {
-        if(searchStr) {
+    if (fullTextSearch) {
+        if (searchStr) {
             searchStr += "&";
         }
         searchStr += "q=" + fullTextSearch;
@@ -378,7 +380,7 @@ function updateUrl(newUrl) {
 function populateSearchFieldFromUrl(searchUrl) {
     searchUrl = (typeof searchUrl === 'undefined') ? window.location.href : searchUrl;
     var criteria = getSearchCriteriaFromUrl(searchUrl);
-    if(_.isEqual(criteria, new SearchCriteria()))
+    if (_.isEqual(criteria, new SearchCriteria()))
         return; // Nothing to populate so returning;
     var searchFieldArr = [];
     if (criteria.full_text) searchFieldArr.push(criteria.full_text);
@@ -400,8 +402,8 @@ function populateSearchFieldFromUrl(searchUrl) {
 
 
 /**************************************************************************************************
-**********************          MANIFEST TABLE SEARCH FUNCTIONS         **************************
-**************************************************************************************************/
+ **********************          MANIFEST TABLE SEARCH FUNCTIONS         **************************
+ **************************************************************************************************/
 
 /* Default values for search criteria */
 const DEFAULT_PAGE_MINIMUM_VIEWS = 10; // For default page, needs to have this many views
@@ -455,12 +457,12 @@ function SearchCriteria() {
  * @param {string} [searchUrl] - The URL to build the search criteria. Uses page URL if none given.
  * @returns {SearchCriteria}
  */
-function getSearchCriteriaFromUrl(searchUrl){
+function getSearchCriteriaFromUrl(searchUrl) {
     searchUrl = (typeof searchUrl === 'undefined') ? window.location.href : searchUrl;
 
     var criteria = new SearchCriteria();
 
-    if(! searchUrl)
+    if (!searchUrl)
         return criteria;
 
     var parts = searchUrl.split('?');
@@ -521,7 +523,7 @@ function extractUrlParams(search_string) {
  */
 function getSingleItem(params, key) {
     var value = params[key];
-    if(value && (value instanceof Array)) {
+    if (value && (value instanceof Array)) {
         return value[0]; // if multiple, use first
     }
     return value;
@@ -550,7 +552,7 @@ function getArrayItem(params, key) {
 function searchProjects(searchUrl) {
     searchUrl = (typeof searchUrl === 'undefined') ? window.location.href : searchUrl;
     var criteria = getSearchCriteriaFromUrl(searchUrl);
-    if(_.isEqual(criteria, new SearchCriteria())){
+    if (_.isEqual(criteria, new SearchCriteria())) {
         // Nothing was set in the criteria, so is the default page, setting minViews and daysFoRecent
         criteria.minViews = DEFAULT_PAGE_MINIMUM_VIEWS;
         criteria.daysForRecent = DEFAULT_PAGE_NUMBER_DAYS_FOR_RECENT
@@ -581,7 +583,7 @@ function searchManifestTable(criteria, callback) {
         var expressionAttributeNames = {};
         var projectionExpression = null;
 
-        if(criteria.minViews > 0) {
+        if (criteria.minViews > 0) {
             expressionAttributeNames["#views"] = "views";
             expressionAttributeValues[":views"] = criteria.minViews;
             filterExpression = appendFilter(filterExpression, "#views >= :views", true);
@@ -600,49 +602,49 @@ function searchManifestTable(criteria, callback) {
             expressionAttributeNames["#lc"] = "lang_code";
         }
 
-        if(criteria.user_name) {
+        if (criteria.user_name) {
             expressionAttributeValues[":user"] = criteria.user_name.toLowerCase();
             filterExpression = appendFilter(filterExpression, "contains(#u, :user)");
             expressionAttributeNames["#u"] = "user_name_lower";
         }
 
-        if(criteria.repo_name) {
+        if (criteria.repo_name) {
             expressionAttributeValues[":repo"] = criteria.repo_name.toLowerCase();
             filterExpression = appendFilter(filterExpression, "contains(#r, :repo)");
             expressionAttributeNames["#r"] = "repo_name_lower";
         }
 
-        if(criteria.title) {
+        if (criteria.title) {
             expressionAttributeValues[":title"] = criteria.title;
             filterExpression = appendFilter(filterExpression, "contains(#title, :title)");
             expressionAttributeNames["#title"] = "title";
         }
 
-        if(criteria.time) {
+        if (criteria.time) {
             expressionAttributeValues[":time"] = criteria.time;
             filterExpression = appendFilter(filterExpression, "contains(#time, :time)");
             expressionAttributeNames["#time"] = "last_updated";
         }
 
-        if(criteria.manifest) {
+        if (criteria.manifest) {
             expressionAttributeValues[":manifest"] = criteria.manifest.toLowerCase();
             filterExpression = appendFilter(filterExpression, "contains(#m, :manifest)");
             expressionAttributeNames["#m"] = "manifest_lower";
         }
 
-        if(criteria.resID) {
+        if (criteria.resID) {
             expressionAttributeValues[":resID"] = criteria.resID.toLowerCase();
             filterExpression = appendFilter(filterExpression, "#id = :resID");
             expressionAttributeNames["#id"] = "resource_id";
         }
 
-        if(criteria.resType) {
+        if (criteria.resType) {
             expressionAttributeValues[":type"] = criteria.resType.toLowerCase();
             filterExpression = appendFilter(filterExpression, "#t = :type");
             expressionAttributeNames["#t"] = "resource_type";
         }
 
-        if(criteria.full_text) {
+        if (criteria.full_text) {
             expressionAttributeValues[":match"] = criteria.full_text.toLowerCase();
             filterExpression = appendFilter(filterExpression, "(contains(#m, :match) OR contains(#r, :match) OR contains(#u, :match))");
             expressionAttributeNames["#m"] = "manifest_lower";
@@ -660,7 +662,7 @@ function searchManifestTable(criteria, callback) {
             Limit: criteria.matchLimit // number of records to get
         };
 
-        if(filterExpression) {
+        if (filterExpression) {
             params.FilterExpression = filterExpression;
             if (expressionAttributeNames)
                 params.ExpressionAttributeNames = expressionAttributeNames;
@@ -670,7 +672,7 @@ function searchManifestTable(criteria, callback) {
                 params.ProjectionExpression = projectionExpression;
         }
 
-    } catch(e) {
+    } catch (e) {
         var err = "Could not search languages: " + e.message;
         callback(err, null);
         return false;
@@ -692,10 +694,10 @@ function searchManifestTable(criteria, callback) {
 function appendFilter(filterExpression, rule, orTogether) {
     const concat = orTogether ? " OR " : " AND ";
 
-    if(!filterExpression) {
+    if (!filterExpression) {
         filterExpression = "";
     }
-    if(filterExpression.length > 0) {
+    if (filterExpression.length > 0) {
         filterExpression += concat;
     }
     filterExpression += rule;
@@ -757,11 +759,11 @@ function searchContinue(docClient, params, retData, matchLimit, callback) {
         if (err) {
             callback(err, retData);
         } else {
-            if('Items' in data) {
+            if ('Items' in data) {
                 retData = retData.concat(data.Items);
             }
             var itemCount = retData.length;
-            if((itemCount >= matchLimit) || !('LastEvaluatedKey' in data)) {
+            if ((itemCount >= matchLimit) || !('LastEvaluatedKey' in data)) {
                 callback(err, retData);
             } else { // more in list that we need to get
                 params.ExclusiveStartKey = data.LastEvaluatedKey;
@@ -790,8 +792,8 @@ function updateResults(err, entries) {
 
 
 /**************************************************************************************************
-**********************         POPULAR & RECENT SECTION FUNCTIONS        **************************
-**************************************************************************************************/
+ **********************         POPULAR & RECENT SECTION FUNCTIONS        **************************
+ **************************************************************************************************/
 /* For specifying which section is being worked on */
 const SECTION_TYPE_POPULAR = 1;
 const SECTION_TYPE_RECENT = 2;
@@ -817,7 +819,7 @@ function showSearchResults(sectionToShow) {
 
     if (!sectionToShow || sectionToShow === SECTION_TYPE_POPULAR) {
         var popularResults = _.sortBy(results, 'views').reverse();
-        if(! popularResults.length) {
+        if (!popularResults.length) {
             $popular_div.html('<div class="no-results">No results.</div>');
         }
         else {
@@ -838,7 +840,7 @@ function showSearchResults(sectionToShow) {
 
     if (!sectionToShow || sectionToShow === SECTION_TYPE_RECENT) {
         var recentResults = results.reverse();
-        if(! recentResults.length) {
+        if (!recentResults.length) {
             $recent_div.html('<div class="no-results">No results.</div>');
         } else {
             // display recent
@@ -866,7 +868,7 @@ function getNextFibonacci(last) {
     var n1 = 1;
     var n2 = 1;
     var fib = n1;
-    while(fib <= last) {
+    while (fib <= last) {
         fib = n1 + n2;
         n1 = n2;
         n2 = fib;
@@ -888,7 +890,7 @@ function addEntriesToDiv($div, section_type, entries, template, displayMoreLink)
     for (var i = 0, len = entries.length; i < len; i++) {
         showThisItem(entries[i], $div, template);
     }
-    if(displayMoreLink) {
+    if (displayMoreLink) {
         showMoreLink($div, section_type);
     }
 }
@@ -937,12 +939,13 @@ function getSubItem(item, keys, defaultValue) {
     try {
         keys.forEach(function (key) {
             item = item[key];
-            if(key === "manifest") {
+            if (key === "manifest") {
                 item = JSON.parse(item);
             }
         });
         retValue = item;
-    } catch (e) { }
+    } catch (e) {
+    }
     return retValue;
 }
 
@@ -955,9 +958,9 @@ function getSubItem(item, keys, defaultValue) {
  * @returns {string}
  */
 function simpleFormat(format, args) {
-  return format.replace(/{(\d+)}/g, function (match, index) {
-    return (typeof args[index] !== 'undefined') ? args[index] : match;
-  });
+    return format.replace(/{(\d+)}/g, function (match, index) {
+        return (typeof args[index] !== 'undefined') ? args[index] : match;
+    });
 }
 
 /**
@@ -969,32 +972,32 @@ function simpleFormat(format, args) {
  */
 function getDateDiff(published_date, today) {
 
-  // calculate the difference in days
-  var published = moment(published_date);
-  var days = today.diff(published, 'days');
+    // calculate the difference in days
+    var published = moment(published_date);
+    var days = today.diff(published, 'days');
 
-  if (days < 1)
-    return l10n['updated_today'];
+    if (days < 1)
+        return l10n['updated_today'];
 
-  var idx;
+    var idx;
 
-  if (days < 7) {
-    idx = (days > l10n['day'].length - 1 ? l10n['day'].length - 1 : days);
-    return simpleFormat(l10n['updated_days'], [days, l10n['day'][idx]]);
-  }
+    if (days < 7) {
+        idx = (days > l10n['day'].length - 1 ? l10n['day'].length - 1 : days);
+        return simpleFormat(l10n['updated_days'], [days, l10n['day'][idx]]);
+    }
 
-  // calculate the difference in weeks
-  var weeks = today.diff(published, 'weeks');
+    // calculate the difference in weeks
+    var weeks = today.diff(published, 'weeks');
 
-  if (weeks < 5) {
-    idx = (weeks > l10n['week'].length - 1 ? l10n['week'].length - 1 : weeks);
-    return simpleFormat(l10n['updated_weeks'], [weeks, l10n['week'][idx]]);
-  }
+    if (weeks < 5) {
+        idx = (weeks > l10n['week'].length - 1 ? l10n['week'].length - 1 : weeks);
+        return simpleFormat(l10n['updated_weeks'], [weeks, l10n['week'][idx]]);
+    }
 
-  // calculate the difference in months
-  var months = today.diff(published, 'months');
-  idx = (months > l10n['month'].length - 1 ? l10n['month'].length - 1 : months);
-  return simpleFormat(l10n['updated_months'], [months, l10n['month'][idx]]);
+    // calculate the difference in months
+    var months = today.diff(published, 'months');
+    idx = (months > l10n['month'].length - 1 ? l10n['month'].length - 1 : months);
+    return simpleFormat(l10n['updated_months'], [months, l10n['month'][idx]]);
 }
 
 /**
@@ -1004,13 +1007,13 @@ function getDateDiff(published_date, today) {
  * @param {number} section_type
  */
 function showMoreLink($div, section_type) {
-  var $template = $($('#more-template').html());
-  $template.find('a').on('click', function(){
-      showSearchResults(section_type);
-      // prevent default
-      return false;
-  });
-  $div.append($template);
+    var $template = $($('#more-template').html());
+    $template.find('a').on('click', function () {
+        showSearchResults(section_type);
+        // prevent default
+        return false;
+    });
+    $div.append($template);
 }
 
 /**
@@ -1020,8 +1023,8 @@ function showMoreLink($div, section_type) {
  * @returns {boolean}
  */
 function scrollToResults(scroll_to_id) {
-  var item_top = $('#' + scroll_to_id).offset().top;
-  window.scrollTo(0, item_top - 130);
-  // prevent default
-  return false;
+    var item_top = $('#' + scroll_to_id).offset().top;
+    window.scrollTo(0, item_top - 130);
+    // prevent default
+    return false;
 }
