@@ -248,52 +248,6 @@ function sortLanguages(langA, langB, text) {
 }
 
 /**
- * Displays messages
- *
- * @param err
- * @param {Object[]} entries
- * @param {string} search_for
- * @returns {string}
- */
-function getMessageString(err, entries, search_for) {
-    var message = "Search error";
-    if (err) {
-        console.log("Error: " + err);
-    } else {
-        if (entries.length === 0) {
-            message = "No matches found for: '" + search_for + "'";
-        } else {
-            var summary = "";
-            var count = 0;
-            entries.forEach(function (entry) {
-                var line = "entry " + (++count) + ": '" + entry.title + "', " + entry.repo_name + "/" + entry.user_name;
-                line = addKey(entry, 'lang_code', line);
-                line = addKey(entry, 'views', line);
-                line = addKey(entry, 'last_updated', line);
-                summary += line + "\n";
-            });
-            message = count + " Matches found for '" + search_for + "':\n" + summary;
-        }
-    }
-    return message;
-}
-
-/**
- * For adding keys to a message
- *
- * @param {Object} entry
- * @param {string} key
- * @param {string} line
- * @returns {string}
- */
-function addKey(entry, key, line) {
-    if (entry[key]) {
-        line += ", " + key + "=" + entry[key];
-    }
-    return line;
-}
-
-/**
  * Adds a language filter UI button to the language filter
  *
  * @param {Object} item
@@ -788,6 +742,52 @@ function updateResults(err, entries) {
         var message = getMessageString(err, entries, "Search");
         alert(message);
     }
+}
+
+/**
+ * Displays messages
+ *
+ * @param err
+ * @param {Object[]} entries
+ * @param {string} search_for
+ * @returns {string}
+ */
+function getMessageString(err, entries, search_for) {
+    var message = "Search error";
+    if (err) {
+        console.log("Error: " + err);
+    } else {
+        if (entries.length === 0) {
+            message = "No matches found for: '" + search_for + "'";
+        } else {
+            var summary = "";
+            var count = 0;
+            entries.forEach(function (entry) {
+                var line = "entry " + (++count) + ": '" + entry.title + "', " + entry.repo_name + "/" + entry.user_name;
+                line = addKey(entry, 'lang_code', line);
+                line = addKey(entry, 'views', line);
+                line = addKey(entry, 'last_updated', line);
+                summary += line + "\n";
+            });
+            message = count + " Matches found for '" + search_for + "':\n" + summary;
+        }
+    }
+    return message;
+}
+
+/**
+ * For adding keys to a message
+ *
+ * @param {Object} entry
+ * @param {string} key
+ * @param {string} line
+ * @returns {string}
+ */
+function addKey(entry, key, line) {
+    if (entry[key]) {
+        line += ", " + key + "=" + entry[key];
+    }
+    return line;
 }
 
 
