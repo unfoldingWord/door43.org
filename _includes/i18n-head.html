@@ -12,4 +12,8 @@
   <link rel="stylesheet" type="text/css" href="{{ '/css/i18n.css' | prepend: site.baseurl }}">
   <link rel="stylesheet" type="text/css" href="{{ '/css/' | append: page.language_code | append: '.css' | prepend: site.baseurl }}">
   <link rel="canonical" href="{{ canonical_href }}">
+  <script type="text/javascript">
+    var loadingText = "{{ site.data[page.language_code].l10n.loading }}";
+    var noResultsText = "{{ site.data[page.language_code].l10n.no_results }}";
+  </script>
 </head>

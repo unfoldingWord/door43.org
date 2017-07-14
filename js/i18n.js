@@ -559,8 +559,8 @@ function searchProjects(searchUrl) {
     }
     criteria.returnedFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
     results = [];
-    $('#popular-div').find('.search-listing').html('<span class="loading-results">Loading...</span>');
-    $('#recent-div').find('.search-listing').html('<span class="loading-results">Loading...</span>');
+    $('#popular-div').find('.search-listing').html('<span class="loading-results">'+loadingText+'</span>');
+    $('#recent-div').find('.search-listing').html('<span class="loading-results">'+loadingText+'</span>');
     return searchManifestTable(criteria, updateResults);
 }
 
@@ -820,7 +820,7 @@ function showSearchResults(sectionToShow) {
     if (!sectionToShow || sectionToShow === SECTION_TYPE_POPULAR) {
         var popularResults = _.sortBy(results, 'views').reverse();
         if (!popularResults.length) {
-            $popular_div.html('<div class="no-results">No results.</div>');
+            $popular_div.html('<div class="no-results">'+noResultsText+'</div>');
         }
         else {
             // display popular
@@ -841,7 +841,7 @@ function showSearchResults(sectionToShow) {
     if (!sectionToShow || sectionToShow === SECTION_TYPE_RECENT) {
         var recentResults = results.reverse();
         if (!recentResults.length) {
-            $recent_div.html('<div class="no-results">No results.</div>');
+            $recent_div.html('<div class="no-results">'+noResultsText+'</div>');
         } else {
             // display recent
             indexFrom = $recent_div.find('.listing-container').length;
