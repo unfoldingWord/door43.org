@@ -48,6 +48,19 @@ var languageSearchResults = {};
 function setupLanguageSelector() {
   var $searchField = $('#search-field');
 
+  $searchField.autocomplete({
+      minLength: 2,
+      select: function(event, ui) {
+          removeLastSearchTerm();
+          addLanguageFilter(ui.item);
+          return false;
+      }
+  }).autocomplete('instance')._renderItem = function( ul, item ) {
+      return $('<li style="font-size: 0.9em;">')
+          .append(item['ln'] + (item['ang'] && item['ang'] !== item['ln'] ? ' - ' + item['ang'] : '') + ' (' + item['lc'] + ')<br><span style="font-size: 0.9em;">Region: ' + item['lr'] + '</span>')
+          .appendTo(ul);
+  };
+
   $searchField.on('keyup', function (event, testEvent) {
     if(typeof testEvent!== 'undefined'){
       event = testEvent;
@@ -77,24 +90,24 @@ function languageSelectorKeyUp(event) {
     clearTimeout(languageSelectorTimer);
   }
 
-  var $textBox = $(event.target);
+  var $searchField = $(event.target);
   var term = extractLastSearchTerm().toLowerCase().substr(0,4);
 
   // clear the list
-  if($textBox.autocomplete('instance')) {
-    $textBox.autocomplete('option', 'source', []);
+  if($searchField.autocomplete('instance')) {
+    $searchField.autocomplete('option', 'source', []);
   }
 
-  if($textBox.val().length < 2) {
+  if($searchField.val().length < 2) {
     return;
   }
 
   if(typeof languageSearchResults[term] === 'undefined') {
     if (typeof event['unitTest'] === 'undefined') {
-      languageSelectorTimer = setTimeout(getLanguageListItems, 500, $textBox);
+      languageSelectorTimer = setTimeout(getLanguageListItems, 500, $searchField);
     }
   } else{
-    getLanguageListItems($textBox);
+    getLanguageListItems($searchField);
   }
 }
 
@@ -136,21 +149,21 @@ function removeLastSearchTerm(){
 /**
  * Gets the list of language items from https://door43.org:9096
  *
- * @param {JQuery} $textBox
+ * @param {JQuery} $searchField
  * @param {function|Spy} [callback]  Optional. Initially added for unit testing
  */
-function getLanguageListItems($textBox, callback) {
+function getLanguageListItems($searchField, callback) {
   // reset the timer flag
   languageSelectorTimer = 0;
   var term = extractLastSearchTerm().toLowerCase().substr(0, 4);
   if(typeof languageSearchResults[term] !== 'undefined'){
-    processLanguages($textBox, languageSearchResults[term], callback);
+    processLanguages($searchField, languageSearchResults[term], callback);
   } else {
     var request = {type: 'GET', url: 'https://door43.org:9096/?q=' + encodeURIComponent(term)};
     $.ajax(request).done(function (data) {
       if (!data.results) return;
       languageSearchResults[term] = data.results;
-      processLanguages($textBox, data.results, callback);
+      processLanguages($searchField, data.results, callback);
     });
   }
 }
@@ -158,11 +171,11 @@ function getLanguageListItems($textBox, callback) {
 /**
  * Process the languages to make the autocomplete drop-drown
  *
- * @param {JQuery} $textBox
+ * @param {JQuery} $searchField
  * @param results
  * @param {function} [callback]
  */
-function processLanguages($textBox, results, callback) {
+function processLanguages($searchField, results, callback) {
   var languages = [];
   var lastSearchTerm = extractLastSearchTerm();
   if(!lastSearchTerm) return;
@@ -177,23 +190,8 @@ function processLanguages($textBox, results, callback) {
     }
   }
 
-  if (! $textBox.hasClass('ui-autocomplete-input')) {
-    $textBox.autocomplete({
-      minLength: 0,
-      select: function(event, ui){
-        removeLastSearchTerm();
-        addLanguageFilter(ui.item);
-        return false;
-      }
-    }).autocomplete('instance')._renderItem = function( ul, item ) {
-      return $('<li style="font-size: 0.9em;">')
-        .append(item['ln'] + (item['ang'] && item['ang'] !== item['ln'] ? ' - ' + item['ang'] : '') + ' (' + item['lc'] + ')<br><span style="font-size: 0.9em;">Region: ' + item['lr'] + '</span>')
-        .appendTo(ul);
-    };
-  }
-
-  $textBox.autocomplete('option', 'source', languages.sort(function(a, b) { return sortLanguages(a, b, textVal); }));
-  $textBox.autocomplete('search', textVal);
+  $searchField.autocomplete('option', 'source', languages.sort(function(a, b) { return sortLanguages(a, b, textVal); }));
+  $searchField.autocomplete('search', textVal);
 
   if (typeof callback === 'function') {
     callback(languages);
