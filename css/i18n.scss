@@ -106,7 +106,7 @@ div.search-results-category {
       }
     }
 
-    .no-results {
+    .no-results, .loading-results {
       font-style: italic;
       margin: 20px;
     }
@@ -140,7 +140,7 @@ div.clear {
 
     table { height: 32px; }
 
-    #search-td {
+    #search-button {
       padding: 0 8px;
       background-color: $navbar-inverse-link-active-color;
       color: $navbar-inverse-link-color;
@@ -149,7 +149,7 @@ div.clear {
       font-size: 18px;
     }
 
-    #browse-td {
+    #browse-button {
       background-color: $navbar-inverse-link-active-color;
       color: $navbar-inverse-link-color;
       text-align: center;
@@ -160,11 +160,11 @@ div.clear {
       font-size: 18px;
     }
 
-    #search-td:hover, #browse-td:hover, .lc-filter:hover {
+    #search-button:hover, #browse-button:hover, .lc-filter:hover {
       background-color: $navbar-inverse-bg;
     }
 
-    #search-for {
+    #search-field {
       height: 40px;
       font-size: 18px;
       width: 300px;
