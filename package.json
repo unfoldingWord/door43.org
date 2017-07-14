@@ -8,9 +8,9 @@
   },
   "scripts": {
     "test": "node_modules/.bin/karma start",
-    "test-chrome": "node_modules/.bin/karma start --single-run --browsers Chrome",
-    "test-firefox": "node_modules/.bin/karma start --single-run --browsers Firefox",
-    "test-phantom": "node_modules/.bin/karma start --single-run --browsers PhantomJS"
+    "test-chrome": "./run_karma_tests.sh Chrome",
+    "test-firefox": "./run_karma_tests.sh Firefox",
+    "test-phantom": "./run_karma_tests.sh PhantomJS"
   },
   "repository": {
     "type": "git",
