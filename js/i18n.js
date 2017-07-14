@@ -817,7 +817,7 @@ function showSearchResults(sectionToShow) {
         $recent_div.empty();
     }
 
-    if (!sectionToShow || sectionToShow === SECTION_TYPE_POPULAR) {
+    if (typeof sectionToShow === 'undefined' || sectionToShow === SECTION_TYPE_POPULAR) {
         var popularResults = _.sortBy(results, 'views').reverse();
         if (!popularResults.length) {
             $popular_div.html('<div class="no-results">'+noResultsText+'</div>');
@@ -838,7 +838,7 @@ function showSearchResults(sectionToShow) {
         }
     }
 
-    if (!sectionToShow || sectionToShow === SECTION_TYPE_RECENT) {
+    if (typeof sectionToShow === 'undefined' || sectionToShow === SECTION_TYPE_RECENT) {
         var recentResults = results.reverse();
         if (!recentResults.length) {
             $recent_div.html('<div class="no-results">'+noResultsText+'</div>');
