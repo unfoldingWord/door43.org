@@ -43,6 +43,16 @@ var languageSelectorTimer;
 var languageSearchResults = {};
 
 /**
+ * Fix for IE 11 since it doesn't have startsWith()
+ */
+if (!String.prototype.startsWith) {
+    String.prototype.startsWith = function(str, position) {
+        position = position || 0;
+        return this.indexOf(str, position) === position;
+    };
+}
+
+/**
  * Initialize the language selector
  */
 function setupLanguageSelector() {
