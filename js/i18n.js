@@ -735,7 +735,7 @@ function searchContinue(docClient, params, retData, matchLimit, callback) {
  */
 function updateResults(err, entries) {
     if (!err) {
-        results = _.sortBy(entries, 'last_updated');
+        results = _.sortBy(entries, 'last_updated').reverse();
         // Calling showSearchResults() without specifying a section means we want both emptied and newly populated
         showSearchResults();
     } else {
@@ -818,7 +818,7 @@ function showSearchResults(sectionToShow) {
     }
 
     if (typeof sectionToShow === 'undefined' || sectionToShow === SECTION_TYPE_POPULAR) {
-        var popularResults = _.sortBy(results, 'views').reverse();
+        var popularResults = _.sortBy(results.slice().reverse(), 'views').reverse(); // Reverse 1st time since we reverse again
         if (!popularResults.length) {
             $popular_div.html('<div class="no-results">'+noResultsText+'</div>');
         }
@@ -839,8 +839,7 @@ function showSearchResults(sectionToShow) {
     }
 
     if (typeof sectionToShow === 'undefined' || sectionToShow === SECTION_TYPE_RECENT) {
-        var recentResults = results.reverse();
-        if (!recentResults.length) {
+        if (!results.length) {
             $recent_div.html('<div class="no-results">'+noResultsText+'</div>');
         } else {
             // display recent
@@ -849,11 +848,11 @@ function showSearchResults(sectionToShow) {
             numberToAdd = (numberToAdd > 21 ? 21 : (numberToAdd < 5 ? 5 : numberToAdd));
             indexTo = indexFrom + numberToAdd;
             displayMoreLink = true;
-            if (indexTo >= recentResults.length) {
+            if (indexTo >= results.length) {
                 displayMoreLink = false;
-                indexTo = recentResults.length;
+                indexTo = results.length;
             }
-            addEntriesToDiv($recent_div, SECTION_TYPE_RECENT, recentResults.slice(indexFrom, indexTo), template, displayMoreLink);
+            addEntriesToDiv($recent_div, SECTION_TYPE_RECENT, results.slice(indexFrom, indexTo), template, displayMoreLink);
         }
     }
 }
