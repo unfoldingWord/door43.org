@@ -798,6 +798,9 @@ function addKey(entry, key, line) {
 const SECTION_TYPE_POPULAR = 1;
 const SECTION_TYPE_RECENT = 2;
 
+var popular_fibonacci_n;
+var recent_fibonacci_n;
+
 /**
  * Shows more results for the given section
  *
@@ -815,6 +818,8 @@ function showSearchResults(sectionToShow) {
     if (typeof sectionToShow === 'undefined') {
         $popular_div.empty();
         $recent_div.empty();
+        popular_fibonacci_n = 5;
+        recent_fibonacci_n = 5;
     }
 
     if (typeof sectionToShow === 'undefined' || sectionToShow === SECTION_TYPE_POPULAR) {
@@ -825,7 +830,8 @@ function showSearchResults(sectionToShow) {
         else {
             // display popular
             indexFrom = $popular_div.find('.listing-container').length;
-            numberToAdd = getNextFibonacci(indexFrom);
+            numberToAdd = fibonacci(popular_fibonacci_n);
+            ++popular_fibonacci_n;
             numberToAdd = (numberToAdd > 21 ? 21 : (numberToAdd < 5 ? 5 : numberToAdd));
             indexTo = indexFrom + numberToAdd;
             displayMoreLink = true;
@@ -844,7 +850,8 @@ function showSearchResults(sectionToShow) {
         } else {
             // display recent
             indexFrom = $recent_div.find('.listing-container').length;
-            numberToAdd = getNextFibonacci(indexFrom);
+            numberToAdd = fibonacci(recent_fibonacci_n);
+            ++recent_fibonacci_n;
             numberToAdd = (numberToAdd > 21 ? 21 : (numberToAdd < 5 ? 5 : numberToAdd));
             indexTo = indexFrom + numberToAdd;
             displayMoreLink = true;
@@ -858,21 +865,14 @@ function showSearchResults(sectionToShow) {
 }
 
 /**
- * Given a fibonacci number, it gets the next one in the series
+ * Given N, find its fibonacci 
  *
- * @param {number} last - the last fibonacci number in the series
- * @returns {number} - The next fibonacci number in the series
+ * @param {number} num - N for the fibonacci number 
+ * @returns {number} - The fibonacci number
  */
-function getNextFibonacci(last) {
-    var n1 = 1;
-    var n2 = 1;
-    var fib = n1;
-    while (fib <= last) {
-        fib = n1 + n2;
-        n1 = n2;
-        n2 = fib;
-    }
-    return fib;
+function fibonacci(num) {
+  if (num <= 2) return 1;
+  return fibonacci(num - 1) + fibonacci(num - 2);
 }
 
 /**
