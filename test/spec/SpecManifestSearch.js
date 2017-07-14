@@ -175,279 +175,286 @@ describe('Test Manifest Search', function () {
         expect(message).toContain("Matches found");
     });
 
-    it('searchAndDisplayResults: full text search without languages should call updateResults', function () {
+    it('searchProject: full text search without languages should call updateResults', function () {
         //given
         var expectedReturn = true;
-        setupSearchManifestMocks(expectedReturn);
+        setupSearchManifestTableMocks(expectedReturn);
         var search_for = 'es';
         expectedErr = 'error';
         expectedData = null;
         var languageCodes = null;
 
         //when
-        searchAndDisplayResults(search_for, languageCodes);
+        updateUrlWithSearchParams(undefined, languageCodes, search_for);
+        searchProjects();
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
     });
 
-    it('searchAndDisplayResults: language search should call updateResults', function () {
+    it('searchProjects: language search should call updateResults', function () {
         //given
         var expectedReturn = true;
-        setupSearchManifestMocks(expectedReturn);
+        setupSearchManifestTableMocks(expectedReturn);
         var languageCodes = ['es'];
         var search_for = "";
         expectedErr = 'error';
         expectedData = null;
 
         //when
-        searchAndDisplayResults(search_for, languageCodes);
+        updateUrlWithSearchParams(undefined, languageCodes, search_for);
+        searchProjects();
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
     });
 
-    it('searchAndDisplayResults: language and text search should call updateResults', function () {
+    it('searchProjects: language and text search should call updateResults', function () {
         //given
         var expectedReturn = true;
-        setupSearchManifestMocks(expectedReturn);
+        setupSearchManifestTableMocks(expectedReturn);
         var languageCodes = ['es'];
         var search_for = "text";
         expectedErr = 'error';
         expectedData = null;
 
         //when
-        searchAndDisplayResults(search_for, languageCodes);
+        updateUrlWithSearchParams(undefined, languageCodes, search_for);
+        searchProjects();
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
     });
 
-    it('searchAndDisplayResults: language search with null extra text should call updateResults', function () {
+    it('searchProjects: language search with null extra text should call updateResults', function () {
         //given
         var expectedReturn = true;
-        setupSearchManifestMocks(expectedReturn);
+        setupSearchManifestTableMocks(expectedReturn);
         var languageCodes = ['es'];
         var search_for = null;
         expectedErr = 'error';
         expectedData = null;
 
         //when
-        searchAndDisplayResults(search_for, languageCodes);
+        updateUrlWithSearchParams(undefined, languageCodes, search_for);
+        searchProjects();
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
     });
 
-    it('searchAndDisplayResults: multi language search with extra text should call updateResults', function () {
+    it('searchProjects: multi language search with extra text should call updateResults', function () {
         //given
         var expectedReturn = true;
-        setupSearchManifestMocks(expectedReturn);
+        setupSearchManifestTableMocks(expectedReturn);
         var languageCodes = ['en','ceb'];
         var search_for = 'text';
         expectedErr = 'error';
         expectedData = null;
 
         //when
-        searchAndDisplayResults(search_for, languageCodes);
+        updateUrlWithSearchParams(undefined, languageCodes, search_for);
+        searchProjects();
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
     });
 
-    it('searchAndDisplayResults: empty language search with extra text should call updateResults', function () {
+    it('searchProjects: empty language search with extra text should call updateResults', function () {
         //given
         var expectedReturn = true;
-        setupSearchManifestMocks(expectedReturn);
+        setupSearchManifestTableMocks(expectedReturn);
         var languageCodes = [];
         var search_for = 'text';
         expectedErr = 'error';
         expectedData = null;
 
         //when
-        searchAndDisplayResults(search_for, languageCodes);
+        updateUrlWithSearchParams(undefined, languageCodes, search_for);
+        searchProjects();
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
     });
 
-    it('searchForResources: valid language array should return success', function () {
+    it('searchProjects: valid language array should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
-        setupSearchManifestMocks(expectedReturn);
+        setupSearchManifestTableMocks(expectedReturn);
         var search_url = 'http://127.0.0.1:4000/en/?lc=en&lc=ceb&q=Bible&user=tx-manager-test-data';
         var expectedBaseUrl = 'http://127.0.0.1:4000';
         expectedErr = null;
         expectedData = [];
 
         //when
-        var results = searchForResources(search_url);
+        var results = searchProjects(search_url);
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
-        expect(window.searchManifest).toHaveBeenCalled();
+        expect(window.searchManifestTable).toHaveBeenCalled();
         validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl);
     });
 
-    it('searchForResources: multiple language array and extra q should return success', function () {
+    it('searchProjects: multiple language array and extra q should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
-        setupSearchManifestMocks(expectedReturn);
+        setupSearchManifestTableMocks(expectedReturn);
         var search_url = 'http://127.0.0.1:4000/en/?lc=en&q=Bible&q=ceb&user=tx-manager-test-data';
         var expectedBaseUrl = 'http://127.0.0.1:4000';
         expectedErr = null;
         expectedData = [];
 
         //when
-        var results = searchForResources(search_url);
+        var results = searchProjects(search_url);
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
-        expect(window.searchManifest).toHaveBeenCalled();
+        expect(window.searchManifestTable).toHaveBeenCalled();
         validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl);
     });
 
-    it('searchForResources: valid language array with continue should return success', function () {
+    it('searchProjects: valid language array with continue should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 2;
-        setupSearchManifestMocks(expectedReturn);
+        setupSearchManifestTableMocks(expectedReturn);
         var search_url = 'http://127.0.0.1:4000/en/?lc=es';
         var expectedBaseUrl = 'http://127.0.0.1:4000';
         expectedErr = null;
         expectedData = [ { 'object': "" }];
 
         //when
-        var results = searchForResources(search_url);
+        var results = searchProjects(search_url);
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
-        expect(window.searchManifest).toHaveBeenCalled();
+        expect(window.searchManifestTable).toHaveBeenCalled();
         validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl);
     });
 
-    it('searchForResources: valid language array and user name should return success', function () {
+    it('searchProjects: valid language array and user name should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
-        setupSearchManifestMocks(expectedReturn);
+        setupSearchManifestTableMocks(expectedReturn);
         var search_url = 'http://127.0.0.1:4000/en/?lc=es&lc=ceb&user=dummy';
         var expectedBaseUrl = 'http://127.0.0.1:4000';
         expectedErr = null;
         expectedData = [];
 
         //when
-        var results = searchForResources(search_url);
+        var results = searchProjects(search_url);
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
-        expect(window.searchManifest).toHaveBeenCalled();
+        expect(window.searchManifestTable).toHaveBeenCalled();
         validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl);
     });
 
-    it('searchForResources: valid repo name and resource should return success', function () {
+    it('searchProjects: valid repo name and resource should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
-        setupSearchManifestMocks(expectedReturn);
+        setupSearchManifestTableMocks(expectedReturn);
         var search_url = 'http://127.0.0.1:4000/en/?repo=es&lc=dummy_repo&resource=dummy_res';
         var expectedBaseUrl = 'http://127.0.0.1:4000';
-        var returnFields = "user_name, repo_name, views";
         expectedErr = null;
         expectedData = [];
 
         //when
-        var results = searchForResources(search_url);
+        var results = searchProjects(search_url);
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
-        expect(window.searchManifest).toHaveBeenCalled();
+        expect(window.searchManifestTable).toHaveBeenCalled();
         validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl);
     });
 
-    it('searchForResources: empty search parameters should return success', function () {
+    it('searchProjects: empty search parameters should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
-        setupSearchManifestMocks(expectedReturn);
+        setupSearchManifestTableMocks(expectedReturn);
         var search_url = 'http://127.0.0.1:4000/en/?';
         var expectedBaseUrl = 'http://127.0.0.1:4000';
         expectedErr = null;
         expectedData = [];
 
         //when
-        var results = searchForResources(search_url);
+        var results = searchProjects(search_url);
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
-        expect(window.searchManifestPopularAndRecent).toHaveBeenCalled();
+        expect(window.searchManifestTable).toHaveBeenCalled();
         validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl);
     });
 
-    it('searchForResources: no search parameters should return success', function () {
+    it('searchProjects: no search parameters should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
-        setupSearchManifestMocks(expectedReturn);
+        setupSearchManifestTableMocks(expectedReturn);
         var search_url = 'http://127.0.0.1:4000/en';
         var expectedBaseUrl = 'http://127.0.0.1:4000';
         expectedErr = null;
         expectedData = [];
 
         //when
-        var results = searchForResources(search_url);
+        var results = searchProjects(search_url);
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
-        expect(window.searchManifestPopularAndRecent).toHaveBeenCalled();
+        expect(window.searchManifestTable).toHaveBeenCalled();
         validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl);
     });
 
-    it('searchForResources: search error should return error', function () {
+    it('searchProjects: search error should return error', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 1;
-        setupSearchManifestMocks(expectedReturn);
+        setupSearchManifestTableMocks(expectedReturn);
         var search_url = 'http://127.0.0.1:4000/en/?lc=ceb';
         var expectedBaseUrl = 'http://127.0.0.1:4000';
         expectedErr = "search Failure";
         expectedData = [ { 'object': "" }];
 
         //when
-        var results = searchForResources(search_url);
+        var results = searchProjects(search_url);
 
         //then
         expect(window.updateResults).toHaveBeenCalled();
-        expect(window.searchManifest).toHaveBeenCalled();
+        expect(window.searchManifestTable).toHaveBeenCalled();
         validateResults(results, expectedReturn, expectedItemCount, expectedBaseUrl);
     });
 
-    it('searchManifest: valid language array should return success', function () {
+    it('searchManifestTable: valid language array should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
         setupDynamoDbMocks(expectedReturn);
-        var language = ['es'];
-        var matchLimit = 20;
+        var criteria = SearchCriteria();
+        criteria.languages = ['es'];
+        criteria.matchLimit = 20;
         expectedErr = null;
         expectedData = { Items:[] };
 
         //when
-        var results = searchManifest(matchLimit, language, null, null, null, null, null, null, null, null, null, onFinished);
+        var results = searchManifestTable(criteria, callback);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
    });
 
-    it('searchManifest: valid language array with continue should return success', function () {
+    it('searchManifestTable: valid language array with continue should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 2;
         setupDynamoDbMocks(expectedReturn);
-        var language = ['es'];
-        var matchLimit = 2;
+        var criteria = SearchCriteria();
+        criteria.languages =  ['es'];
+        criteria.matchLimit = 2;
         expectedErr = null;
         expectedData = {
             Items:[ { 'object': "" }],
@@ -455,95 +462,100 @@ describe('Test Manifest Search', function () {
         };
 
         //when
-        var results = searchManifest(matchLimit, language, null, null, null, null, null, null, null, null, null, onFinished);
+        var results = searchManifestTable(criteria, callback);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
     });
 
-    it('searchManifest: valid language array and user name should return success', function () {
+    it('searchManifestTable: valid language array and user name should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
         setupDynamoDbMocks(expectedReturn);
-        var language = ['es', 'ceb'];
-        var user = "dummy";
-        var matchLimit = 20;
+        var criteria = SearchCriteria();
+        criteria.languages = ['es', 'ceb'];
+        criteria.user_name = "dummy";
+        criteria.matchLimit = 20;
         expectedErr = null;
         expectedData = { Items:[] };
 
         //when
-        var results = searchManifest(matchLimit, language, user, null, null, null, null, null, null, null, null, onFinished);
+        var results = searchManifestTable(criteria, callback);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
     });
 
-    it('searchManifest: valid repo name and resource should return success', function () {
+    it('searchManifestTable: valid repo name and resource should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
         setupDynamoDbMocks(expectedReturn);
-        var repo = "dummy_repo";
-        var resource = "dummy_res";
-        var returnFields = "user_name, repo_name";
-        var matchLimit = 20;
+        var criteria = SearchCriteria();
+        criteria.repo_name = "dummy_repo";
+        criteria.resID = "dummy_res";
+        criteria.returnFields = "user_name, repo_name";
+        criteria.matchLimit = 20;
         expectedErr = null;
         expectedData = { Items:[] };
 
         //when
-        var results = searchManifest(matchLimit, null, null, repo, resource, null, null, null, null, null, returnFields, onFinished);
+        var results = searchManifestTable(criteria, callback);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
     });
 
-    it('searchManifest: valid repo name and resource should return success', function () {
+    it('searchManifestTable: valid repo name and resource should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
         setupDynamoDbMocks(expectedReturn);
-        var full_text = "dummy_text";
-        var returnFields = "user_name, repo_name";
-        var matchLimit = 20;
+        var criteria = SearchCriteria();
+        criteria.full_text = "dummy_text";
+        criteria.returnFields = "user_name, repo_name";
+        criteria.matchLimit = 20;
         expectedErr = null;
         expectedData = { Items:[] };
 
         //when
-        var results = searchManifest(matchLimit, null, null, null, null, null, null, null, null, full_text, returnFields, onFinished);
+        var results = searchManifestTable(criteria, callback);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
     });
 
-    it('searchManifest: misc. parameters should return success', function () {
+    it('searchManifestTable: misc. parameters should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
         setupDynamoDbMocks(expectedReturn);
-        var resType = "dummy_res";
-        var title = "dummy_title";
-        var time = "dummy_time";
-        var manifest = "dummy_manifest";
-        var returnFields = "user_name, repo_name, views";
-        var matchLimit = 20;
+        var criteria = SearchCriteria();
+        criteria.resType = "dummy_res";
+        criteria.title = "dummy_title";
+        criteria.time = "dummy_time";
+        criteria.manifest = "dummy_manifest";
+        criteria.returnFields = "user_name, repo_name, views";
+        criteria.matchLimit = 20;
         expectedErr = null;
         expectedData = { Items:[] };
 
         //when
-        var results = searchManifest(matchLimit, null, null, null, null, resType, title, time, manifest, null, returnFields, onFinished);
+        var results = searchManifestTable(criteria, callback);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
     });
 
-    it('searchManifest: search error should return error', function () {
+    it('searchManifestTable: search error should return error', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
         setupDynamoDbMocks(expectedReturn);
-        var language = ['ceb'];
-        var matchLimit = 2;
+        var criteria = SearchCriteria();
+        criteria.languages =  ['ceb'];
+        criteria.matchLimit = 2;
         expectedErr = "search Failure";
         expectedData = {
             Items:[ { 'object': "" }],
@@ -551,56 +563,58 @@ describe('Test Manifest Search', function () {
         };
 
         //when
-        var results = searchManifest(matchLimit, language, null, null, null, null, null, null, null, null, null, onFinished);
+        var results = searchManifestTable(criteria, callback);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
     });
 
-    it('searchManifest: undefined getTable() should return error', function () {
+    it('searchManifestTable: undefined getTable() should return error', function () {
         //given
         getManifestTable = null;
         var expectedReturn = false;
         var expectedItemCount = 0;
-        var language = null;
-        var matchLimit = 20;
+        var criteria = SearchCriteria();
+        criteria.matchLimit = 20;
         expectedErr = "dummy error";
         expectedData = {};
 
         //when
-        var results = searchManifest(matchLimit, language, null, null, null, null, null, null, null, null, null, onFinished);
+        var results = searchManifestTable(criteria, callback);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
     });
 
-    it('searchManifestPopularAndRecent: should return success', function () {
+    it('searchManifestTable: should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
         setupDynamoDbMocks(expectedReturn);
-        var returnFields = "user_name, repo_name";
+        var criteria = SearchCriteria();
+        criteria.returnFields = "user_name, repo_name";
         expectedErr = null;
         expectedData = { Items:[] };
 
         //when
-        var results = searchManifestPopularAndRecent(returnFields, onFinished);
+        var results = searchManifestTable(criteria, callback);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
     });
 
-    it('searchManifest: undefined getTable() should return error', function () {
+    it('searchManifestTable: undefined getTable() should return error', function () {
         //given
         getManifestTable = null;
         var expectedReturn = false;
         var expectedItemCount = 0;
-        var returnFields = "user_name, repo_name";
+        var criteria = SearchCriteria();
+        criteria.returnFields = "user_name, repo_name";
         expectedErr = "dummy error";
         expectedData = {};
 
         //when
-        var results = searchManifestPopularAndRecent(returnFields, onFinished);
+        var results = searchManifestTable(criteria, callback);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount);
@@ -658,14 +672,13 @@ describe('Test Manifest Search', function () {
     }
 
     function setupDynamoDbMocks(retVal) {
-        AWS = {
+        var AWS = {
             DynamoDB: {}
         };
         AWS.DynamoDB.DocumentClient = DocumentClientClassMock;
 
         spyOn(window, 'updateResults').and.callThrough();
-        spyOn(window, 'searchManifest').and.callThrough();
-        spyOn(window, 'searchManifestPopularAndRecent').and.callThrough();
+        spyOn(window, 'searchManifestTable').and.callThrough();
         getManifestTable = jasmine.createSpy().and.returnValue("dummy-table");
         scanMock = jasmine.createSpy().and.callFake(mockOnScan);
         function mockOnScan(params, onScan) { // mock the table scan operation
@@ -676,20 +689,13 @@ describe('Test Manifest Search', function () {
         }
     }
 
-    function setupSearchManifestMocks(retVal) {
+    function setupSearchManifestTableMocks(retVal) {
         setupUpdateUrlMock();
-        spyOn(window, 'updateResults').and.callFake(onFinished);
-        spyOn(window, 'searchManifest').and.callFake(mockSearchManifest);
-        spyOn(window, 'searchManifestPopularAndRecent').and.callFake(mockSearchManifestPopularAndRecent);
-        function mockSearchManifest(matchLimit, languages, user_name, repo_name, resID, resType, title, time, manifest, full_text, returnedFields, onFinished) { // mock the table scan operation
-            if(onFinished) {
-                onFinished(expectedErr, expectedData); // call onScan handler with mock data
-            }
-            return retVal;
-        }
-        function mockSearchManifestPopularAndRecent(returnedFields, onFinished, minimumViews, matchLimit) { // mock the table scan operation
-            if(onFinished) {
-                onFinished(expectedErr, expectedData); // call onScan handler with mock data
+        spyOn(window, 'updateResults').and.callFake(callback);
+        spyOn(window, 'searchManifestTable').and.callFake(mockSearchManifestTest);
+        function mockSearchManifestTest(matchLimit, languages, user_name, repo_name, resID, resType, title, time, manifest, full_text, returnedFields, callback) { // mock the table scan operation
+            if(callback) {
+                callback(expectedErr, expectedData); // call onScan handler with mock data
             }
             return retVal;
         }
@@ -704,7 +710,7 @@ describe('Test Manifest Search', function () {
         this.scan = scanMock; // when instance created, setup mock for scan operation
     }
 
-    function onFinished(err, entries) {
+    function callback(err, entries) {
       returnedError = err;
       returnedEntries = entries;
     }

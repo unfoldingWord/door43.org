@@ -1,6 +1,55 @@
+const SECTION_TYPE_POPULAR = 1;
+const SECTION_TYPE_RECENT = 2;
+
+const DEFAULT_PAGE_MINIMUM_VIEWS = 10; // For default page, needs to have this many views
+const DEFAULT_PAGE_NUMBER_DAYS_FOR_RECENT = 30; // For default page, needs to have this many views
+const MAX_NUMBER_OF_ITEMS = 2000;  // Maximum items that will be queried from DynamoDB at one time
+
+var baseUrl = "..";
+var popularResults = [];
+var recentResults = [];
+
+/**
+ * Class for all search criteria
+ *
+ * @constructor
+ */
+function SearchCriteria() {
+    /**
+     * @var matchLimit - limit the number of matches to return. This is not an exact limit, but has to do with responses
+     *                          being returned a page at a time.  Once number of entries gets to or is above this count
+     *                          then no more pages will be fetched.
+     * @var languages - array of language code strings or null for any language
+     * @var full_text - text to find in any field (if not null)
+     * @var user_name - text to find in user_name (if not null)
+     * @var repo_name - text to find in repo_name (if not null)
+     * @var resID - text to match in resource_id (if not null)
+     * @var resType - text to match in resource_type (if not null)
+     * @var title - text to find in title (if not null)
+     * @var time - text to find in time (if not null)
+     * @var manifest - text to find in manifest (if not null)
+     * @var minViews - Minimum number of views needed (if not 0 or null)
+     * @var daysForRecent - Number of days before today that a project's last update has to be to not require minViews
+     * @var returnedFields - comma delimited list of fields to return.  If null it will default to
+     *                              all fields
+     */
+    this.matchLimit = MAX_NUMBER_OF_ITEMS;
+    this.languages = null;
+    this.full_text = null;
+    this.repo_name = null;
+    this.user_name = null;
+    this.resID = null;
+    this.resType = null;
+    this.title = null;
+    this.time = null;
+    this.manifest = null;
+    this.minViews = 0;
+    this.daysForRecent = null;
+}
 
 /**
  * Return a formatted string.
+ *
  * Replaces {0}, {1} ... {n} with the corresponding elements of the args array.
  * @param {String} format The format string
  * @param {String[]} args The list of replacements
@@ -12,8 +61,13 @@ function simpleFormat(format, args) {
   });
 }
 
-var baseUrl = "..";
-
+/**
+ * Creates a single item
+ *
+ * @param params
+ * @param key
+ * @returns {*}
+ */
 function getSingleItem(params, key) {
     var value = params[key];
     if(value && (value instanceof Array)) {
@@ -22,6 +76,13 @@ function getSingleItem(params, key) {
     return value;
 }
 
+/**
+ * Creates an array item
+ *
+ * @param params
+ * @param key
+ * @returns {*}
+ */
 function getArrayItem(params, key) {
     var value = params[key];
     if ((value && !(value instanceof Array))) {
@@ -30,13 +91,18 @@ function getArrayItem(params, key) {
     return value;
 }
 
+/**
+ * Update the results stored in memory and shows them.
+ *
+ * @param err
+ * @param entries
+ */
 function updateResults(err, entries) {
     if (!err) {
-        var results = {
-            popular: entries,
-            recent: entries
-        };
-        showSearchResults(results)
+        popularResults = _.sortBy(entries, 'views').reverse();
+        recentResults = _.sortBy(entries, 'last_updated').reverse();
+        // Calling showSearchResults() without specifying a section means we want both emptied and newly populated
+        showSearchResults();
     } else {
         var message = getMessageString(err, entries, "Search");
         alert(message);
@@ -44,43 +110,90 @@ function updateResults(err, entries) {
 }
 
 /**
- * Search for the selected search keys in url
- * @param {String} search_url - The term or phrase to search for
+ * Searches for the selected search keys in the url
+ *
+ * @param searchUrl - The term or phrase to search for
  */
-function searchForResources(search_url) {
-  var parts = search_url.split('?');
-  var urlParts = parts[0].split('/');
-  var remove = (urlParts[urlParts.length - 1] === '') ? 2 : 1;
-  urlParts = urlParts.slice(0, urlParts.length - remove);
-  baseUrl = urlParts.join('/');
-
-  var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
-  if((parts.length === 1) || ((parts.length === 2) && (parts[1] === ''))) {
-      return searchManifestPopularAndRecent(resultFields,
-          function (err, entries) {
-              updateResults(err, entries);
-          }
-      );
-  } else {
-      var params = extractUrlParams(parts[1]);
-      var matchLimit = 1000;
-      var full_text = getSingleItem(params, 'q');
-      var repo_name = getSingleItem(params, 'repo');
-      var user_name = getSingleItem(params, 'user');
-      var resID = getSingleItem(params, 'resource');
-      var resType = getSingleItem(params, 'type');
-      var title = getSingleItem(params, 'title');
-      var time = getSingleItem(params, 'time');
-      var manifest = getSingleItem(params, 'manifest');
-      var languages = getArrayItem(params, 'lc');
-      return searchManifest(matchLimit, languages, user_name, repo_name, resID, resType, title, time, manifest, full_text, resultFields,
-          function (err, entries) {
-              updateResults(err, entries);
-          }
-      );
-  }
+function searchProjects(searchUrl) {
+    searchUrl = (typeof searchUrl === 'undefined') ? window.location.href : searchUrl;
+    var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
+    var criteria = getSearchCriteriaFromUrl(searchUrl);
+    if(_.isEqual(criteria, new SearchCriteria())){
+        // Nothing was set in the criteria, so is the default page, setting minViews and daysFoRecent
+        criteria.minViews = DEFAULT_PAGE_MINIMUM_VIEWS;
+        criteria.daysForRecent = DEFAULT_PAGE_NUMBER_DAYS_FOR_RECENT
+    }
+    return searchManifestTable(criteria, updateResults);
 }
 
+/**
+ * Gets the search criteria from the URL and returns it in an object
+ * 
+ * @param searchUrl
+ * @returns SearchCriteria
+ */
+function getSearchCriteriaFromUrl(searchUrl){
+    var criteria = new SearchCriteria();
+
+    if(! searchUrl)
+        return criteria;
+
+    var parts = searchUrl.split('?');
+    var urlParts = parts[0].split('/');
+    var remove = (urlParts[urlParts.length - 1] === '') ? 2 : 1;
+    urlParts = urlParts.slice(0, urlParts.length - remove);
+    baseUrl = urlParts.join('/');
+
+    if (parts.length < 2)
+        return criteria;
+
+    var params = extractUrlParams(parts[1]);
+    criteria.full_text = getSingleItem(params, 'q');
+    criteria.repo_name = getSingleItem(params, 'repo');
+    criteria.user_name = getSingleItem(params, 'user');
+    criteria.resID = getSingleItem(params, 'resource');
+    criteria.resType = getSingleItem(params, 'type');
+    criteria.title = getSingleItem(params, 'title');
+    criteria.time = getSingleItem(params, 'time');
+    criteria.manifest = getSingleItem(params, 'manifest');
+    criteria.languages = getArrayItem(params, 'lc');
+    return criteria;
+}
+
+/**
+ * Repopulates the search field and language filters from the URL parameters
+ *
+ * @param searchUrl
+ */
+function populateSearchFieldFromUrl(searchUrl) {
+    searchUrl = (typeof searchUrl === 'undefined') ? window.location.href : searchUrl;
+    var criteria = getSearchCriteriaFromUrl(searchUrl);
+    if(_.isEqual(criteria, new SearchCriteria()))
+        return; // Nothing to populate so returning;
+    var searchFieldArr = [];
+    if (criteria.full_text) searchFieldArr.push(criteria.full_text);
+    // if (criteria.repo_name) searchFieldArr.push('repo:'+criteria.repo_name);
+    // if (criteria.user_name) searchFieldArr.push('user:'+criteria.user_name);
+    // if (criteria.resID) searchFieldArr.push('resource:'+criteria.resID);
+    // if (criteria.resType) searchFieldArr.push('type:'+criteria.resType);
+    // if (criteria.title) searchFieldArr.push('title:'+criteria.title);
+    // if (criteria.time) searchFieldArr.push('time:'+criteria.time);
+    // if (criteria.manifest) searchFieldArr.push('manifest:'+criteria.manifest);
+    $('#search-for').val(searchFieldArr.join(' '));
+    if (criteria.languages) {
+        $.each(criteria.languages, function (index) {
+            var lc = criteria.languages[index];
+            addLanguageFilter({'lc': lc, 'ln': lc, 'ang': lc});
+        });
+    }
+}
+
+/**
+ * Gets the parameters from a URL
+ *
+ * @param search_string
+ * @returns {{}}
+ */
 function extractUrlParams(search_string) {
     function parse(params, pairs) {
         var pair = pairs[0];
@@ -102,50 +215,103 @@ function extractUrlParams(search_string) {
     return search_string.length === 0 ? {} : parse({}, search_string.split('&'));
 }
 
-function addEntriesToDiv($div, recent, template) {
-    $div.empty();
+/**
+ * Adds an array of project entries from the DB to the display of a given section
+ *
+ * @param $div
+ * @param section_type
+ * @param recent
+ * @param template
+ * @param moreLink
+ */
+function addEntriesToDiv($div, section_type, recent, template, moreLink) {
+    $div.find('.more-container').remove();
     for (var i = 0, len = recent.length; i < len; i++) {
         showThisItem(recent[i], $div, template);
     }
-    // showMoreLink($div);
+    if(moreLink) {
+        showMoreLink($div, section_type);
+    }
 }
+
 /**
- * Displays the results returned by the search
- * @param {Object} results
+ * Given a fibonacci number, it gets the next one in the series
+ *
+ * @param last - the last fibonacci number in the series
+ * @returns {number} - The next fibonacci number in the series
  */
-function showSearchResults(results) {
-
-  // validate the results
-  if (!results.hasOwnProperty('popular')) {
-    console.log('Returned object does not contain "popular."');
-    console.log(results);
-    return;
-  }
-
-  if (!results.hasOwnProperty('recent')) {
-    console.log('Returned object does not contain "recent."');
-    console.log(results);
-    return;
-  }
-
-  // load the template
-  var template = $('#listing-template').html();
-
-  // sort popular and recent
-  var popular = _.sortBy(results['popular'], 'views').reverse();
-  var recent = _.sortBy(results['recent'], 'last_updated').reverse();
-
-  // display popular
-  var $div = $('#popular-div').find('.search-listing');
-  addEntriesToDiv($div, popular, template);
-
-  // display popular
-  $div = $('#recent-div').find('.search-listing');
-  addEntriesToDiv($div, recent, template);
+function getNextFibonacci(last) {
+    var n1 = 1;
+    var n2 = 1;
+    var fib = n1;
+    while(fib <= last) {
+        fib = n1 + n2;
+        n1 = n2;
+        n2 = fib;
+    }
+    return fib;
 }
 
 /**
- * extract sub item with fallback on error
+ * Shows more results for the given section
+ *
+ * @param sectionToShow
+ */
+function showSearchResults(sectionToShow) {
+    // load the template
+    var template = $('#listing-template').html();
+
+    var $popular_div = $('#popular-div .search-listing');
+    var $recent_div = $('#recent-div .search-listing');
+
+    var indexFrom, numberToAdd, indexTo, moreLink;
+
+    if (typeof sectionToShow === 'undefined') {
+        $popular_div.empty();
+        $recent_div.empty();
+    }
+
+    if (!sectionToShow || sectionToShow === SECTION_TYPE_POPULAR) {
+        if(! popularResults.length) {
+            $popular_div.html('<div class="no-results">No results.</div>');
+        }
+        else {
+            // display popular
+            indexFrom = $popular_div.find('.listing-container').length;
+            numberToAdd = getNextFibonacci(indexFrom);
+            numberToAdd = (numberToAdd > 21 ? 21 : (numberToAdd < 5 ? 5 : numberToAdd));
+            indexTo = indexFrom + numberToAdd;
+            moreLink = true;
+            if (indexTo >= popularResults.length) {
+                moreLink = false;
+                indexTo = popularResults.length - 1;
+            }
+            addEntriesToDiv($popular_div, SECTION_TYPE_POPULAR, popularResults.slice(indexFrom, indexTo), template, moreLink);
+        }
+    }
+
+    if (!sectionToShow || sectionToShow === SECTION_TYPE_RECENT) {
+        if(! recentResults.length) {
+            $recent_div.html('<div class="no-results">No results.</div>');
+        } else {
+            // display recent
+            indexFrom = $recent_div.find('.listing-container').length;
+            numberToAdd = getNextFibonacci(indexFrom);
+            numberToAdd = (numberToAdd > 21 ? 21 : (numberToAdd < 5 ? 5 : numberToAdd));
+            indexTo = indexFrom + numberToAdd;
+            moreLink = true;
+            if (indexTo >= recentResults.length) {
+                moreLink = false;
+                indexTo = recentResults.length - 1;
+            }
+            addEntriesToDiv($recent_div, SECTION_TYPE_RECENT, recentResults.slice(indexFrom, indexTo), template, moreLink);
+        }
+    }
+}
+
+/**
+ * Extract sub item with fallback on error
+ *
  * @param item
  * @param keys
  * @param defaultValue - default value to return on error (otherwise will return "" on error)
@@ -167,35 +333,37 @@ function getSubItem(item, keys, defaultValue) {
 
 /**
  * Appends item to the specified div
+ *
  * @param {Object} item
  * @param {Object} $div A jquery object
  * @param {String} template The HTML template for the new item
  */
 function showThisItem(item, $div, template) {
-  var $template = $(template);
-  var today = moment.utc().startOf('day');
-  var title = getSubItem(item, ['title']);
-  $template.find('.title-span').html(title);
-  var authorFormat = l10n['author'];
-  var author = getSubItem(item,['user_name']);
-  $template.find('.author-div').html(simpleFormat(authorFormat, [author]));
-  $template.find('.language-title-span').html(l10n['language']);
-  var langAndCodeFormat = l10n['language_with_code'];
-  var langName = getSubItem(item, ['manifest', 'dublin_core','language','title']);
-  var langCode = getSubItem(item, ['lang_code']);
-  $template.find('.language-code-div').html(simpleFormat(langAndCodeFormat, [langName, langCode]));
-  var views = getSubItem(item, ['views']);
-  $template.find('.views-span').html(views);
-  var lastUpdated = getSubItem(item,['last_updated'],'1970-01-01');
-  $template.find('.updated-span').html(getDateDiff(lastUpdated, today));
+    var $template = $(template);
+    var today = moment.utc().startOf('day');
+    var title = getSubItem(item, ['title']);
+    $template.find('.title-span').html(title);
+    var authorFormat = l10n['author'];
+    var author = getSubItem(item, ['user_name']);
+    $template.find('.author-div').html(simpleFormat(authorFormat, [author]));
+    $template.find('.language-title-span').html(l10n['language']);
+    var langAndCodeFormat = l10n['language_with_code'];
+    var langName = getSubItem(item, ['manifest', 'dublin_core', 'language', 'title']);
+    var langCode = getSubItem(item, ['lang_code']);
+    $template.find('.language-code-div').html(simpleFormat(langAndCodeFormat, [langName, langCode]));
+    var views = getSubItem(item, ['views']);
+    $template.find('.views-span').html(views);
+    var lastUpdated = getSubItem(item, ['last_updated'], '1970-01-01');
+    $template.find('.updated-span').html(getDateDiff(lastUpdated, today));
 
-  var url = baseUrl + '/u/' + author + "/" + getSubItem(item,['repo_name']);
-  $template.find('a').attr('href', url);
+    var url = baseUrl + '/u/' + author + "/" + getSubItem(item, ['repo_name']);
+    $template.find('a').attr('href', url);
 
-  $div.append($template);
+    $div.append($template);
 }
 
 /**
+ * Gets the amount of time from now to a given date
  *
  * @param published_date
  * @param {Object} today A moment object representing today
@@ -231,21 +399,31 @@ function getDateDiff(published_date, today) {
   return simpleFormat(l10n['updated_months'], [months, l10n['month'][idx]]);
 }
 
-function showMoreLink($div) {
-
+/**
+ * Displays the more link for a given section
+ *
+ * @param $div
+ * @param section_type
+ */
+function showMoreLink($div, section_type) {
   var $template = $($('#more-template').html());
-
-  // TODO: set anchor href to the correct value
-  $template.find('a').attr('href', 'put_the_url_here');
-
+  $template.find('a').click(function(){
+      showSearchResults(section_type);
+      // prevent default
+      return false;
+  });
   $div.append($template);
 }
 
+/**
+ * Scrolls to the Results section
+ *
+ * @param scroll_to_id
+ * @returns {boolean}
+ */
 function scrollToResults(scroll_to_id) {
-
   var item_top = $('#' + scroll_to_id).offset().top;
   window.scrollTo(0, item_top - 130);
-
   // prevent default
   return false;
 }
@@ -273,6 +451,7 @@ function setupLanguageSelector() {
 }
 
 /**
+ * Handles KeyUp event in the search field to see if it is a language code and present the user with autocomplete
  *
  * @param event
  */
@@ -307,6 +486,7 @@ function languageSelectorKeyUp(event) {
 }
 
 /**
+ * Process the languages to make the autocomplete drop-drown
  *
  * @param {Object} $textBox
  * @param results
@@ -350,8 +530,15 @@ function processLanguages($textBox, results, callback) {
   }
 }
 
+/**
+ * Sorts the languages for best results first
+ *
+ * @param langA
+ * @param langB
+ * @param text
+ * @returns {number}
+ */
 function sortLanguages(langA, langB, text) {
-
   // SORT THE LIST:
   // 4. exact language code match
   // 3. language code starts-with match
@@ -392,6 +579,7 @@ function sortLanguages(langA, langB, text) {
 
 /**
  * Gets the list of language items from https://door43.org:9096
+ *
  * @param {Object} $textBox
  * @param {function|Spy} [callback]  Optional. Initially added for unit testing
  */
@@ -411,6 +599,14 @@ function getLanguageListItems($textBox, callback) {
   }
 }
 
+/**
+ * For adding keys to a message
+ *
+ * @param entry
+ * @param key
+ * @param line
+ * @returns {*}
+ */
 function addKey(entry, key, line) {
     if (entry[key]) {
         line += ", " + key + "=" + entry[key];
@@ -418,6 +614,14 @@ function addKey(entry, key, line) {
     return line;
 }
 
+/**
+ * Displays error messages
+ *
+ * @param err
+ * @param entries
+ * @param search_for
+ * @returns {string}
+ */
 function getMessageString(err, entries, search_for) {
     var message = "Search error";
     if (err) {
@@ -445,10 +649,14 @@ function updateUrl(newUrl) {
     history.pushState(null, null, newUrl);
 }
 
-function updateUrlWithSearchParams(url, langSearch, fullTextSearch) {
+function updateUrlWithSearchParams(url, langCodes, fullTextSearch) {
+    url = (typeof url === 'undefined' ? window.location.href : url);
+    langCodes = (typeof langCodes === 'undefined' ? getLanguageCodesToFilter() : langCodes);
+    fullTextSearch = (typeof fullTextSearch === 'undefined' ? $('#search-for').val() : fullTextSearch);
+
     var searchStr = "";
-    if (langSearch && langSearch.length > 0) {
-        searchStr = "lc=" + langSearch.join("&lc=");
+    if (langCodes && langCodes.length > 0) {
+        searchStr = "lc=" + langCodes.join("&lc=");
     }
     if(fullTextSearch) {
         if(searchStr) {
@@ -509,65 +717,38 @@ function getLanguageCodesToFilter(){
   return lcs;
 }
 
-/**
- *
- * @param searchStr
- * @param languageCodes
- */
-function searchAndDisplayResults(searchStr, languageCodes) {
-    updateUrlWithSearchParams(window.location.href, languageCodes, searchStr);
+$(document).ready(function () {
+    setupLanguageSelector();
+    populateSearchFieldFromUrl();
+    searchProjects();
 
-    if(!searchStr && (!languageCodes || !languageCodes.length)) {
-        searchManifestPopularAndRecent(resultFields,
-            function (err, entries) {
-                updateResults(err, entries);
-            }
-        );
-    }
+    $('#search-td').on('click', function () {
+        updateUrlWithSearchParams();
+        searchProjects();
+    });
 
-    var resultFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
-    searchManifest(100, languageCodes, null, null, null, null, null, null, null, searchStr, resultFields,
-        function (err, entries) {
-            updateResults(err, entries);
-        }
-    );
-}
-
-function doAutoStartup() {
-    window.setTimeout(searchForResources(window.location.href), 500);
-    window.setTimeout(setupLanguageSelector(), 500);
-}
-
-$().ready(function () {
-    if(doAutoStartup) { doAutoStartup(); }
-
-  $('#search-td').on('click', function (){
-    searchAndDisplayResults($('#search-for').val(), getLanguageCodesToFilter());
-  });
-
-  $('#browse-td').on('click', function (){
-
-    // TODO: put actual browse code here.
-    alert('Browse code goes here.');
-  });
+    $('#browse-td').on('click', function () {
+        // TODO: put actual browse code here.
+        alert('Browse code goes here.');
+    });
 });
 
-function searchContinue(docClient, params, retData, matchLimit, onFinished) {
+function searchContinue(docClient, params, retData, matchLimit, callback) {
     docClient.scan(params, onScan);
 
     function onScan(err, data) {
         if (err) {
-            onFinished(err, retData);
+            callback(err, retData);
         } else {
             if('Items' in data) {
                 retData = retData.concat(data.Items);
             }
             var itemCount = retData.length;
             if((itemCount >= matchLimit) || !('LastEvaluatedKey' in data)) {
-                onFinished(err, retData);
+                callback(err, retData);
             } else { // more in list that we need to get
                 params.ExclusiveStartKey = data.LastEvaluatedKey;
-                searchContinue(docClient, params, retData, matchLimit, onFinished);
+                searchContinue(docClient, params, retData, matchLimit, callback);
             }
         }
     }
@@ -603,27 +784,15 @@ function generateQuerySet(languages, expressionAttributeValues) {
 /***
  * kicks off a search for entries in the manifest table (case insensitive). Search parameters are ANDed together to
  *              refine search.
- * @param languages - array of language code strings or null for any language
- * @param matchLimit - limit the number of matches to return. This is not an exact limit, but has to do with responses
- *                          being returned a page at a time.  Once number of entries gets to or is above this count
- *                          then no more pages will be fetched.
- * @param user_name - text to find in user_name (if not null)
- * @param repo_name - text to find in repo_name (if not null)
- * @param resID - text to match in resource_id (if not null)
- * @param resType - text to match in resource_type (if not null)
- * @param title - text to find in title (if not null)
- * @param time - text to find in time (if not null)
- * @param manifest - text to find in manifest (if not null)
- * @param full_text - text to find in any field (if not null)
- * @param returnedFields - comma delimited list of fields to return.  If null it will default to
- *                              all fields
- * @param onFinished - call back function onScan(err, entries) - where:
+ * 
+ * @params SearchCriteria - the search criteria
+ * @param callback - call back function onScan(err, entries) - where:
  *                                              err - an error message string
  *                                              entries - an array of table entry objects that match the search params.
  *                                                where each object contains returnedFields
  * @return boolean - true if search initiated, if false then search error
  */
-function searchManifest(matchLimit, languages, user_name, repo_name, resID, resType, title, time, manifest, full_text, returnedFields, onFinished) {
+function searchManifestTable(criteria, callback) {
     try {
         var tableName = getManifestTable();
         var expressionAttributeValues = {};
@@ -631,165 +800,103 @@ function searchManifest(matchLimit, languages, user_name, repo_name, resID, resT
         var expressionAttributeNames = {};
         var projectionExpression = null;
 
-        if (languages && languages.length) {
-            var set = generateQuerySet(languages, expressionAttributeValues);
+        if(criteria.minViews > 0) {
+            expressionAttributeNames["#views"] = "views";
+            expressionAttributeValues[":views"] = criteria.minViews;
+            filterExpression = appendFilter(filterExpression, "#views >= :views", true);
+            if (criteria.daysForRecent) {
+                var currentDate = new Date();
+                var recentMS = currentDate.valueOf() - criteria.daysForRecent * 24 * 60 * 60 * 1000; // go back daysForRecent days in milliseconds
+                expressionAttributeNames["#date"] = "last_updated";
+                expressionAttributeValues[":recent"] = new Date(recentMS).toISOString();
+                filterExpression = appendFilter(filterExpression, "#date >= :recent", true);
+            }
+        }
+
+        if (criteria.languages && criteria.languages.length) {
+            var set = generateQuerySet(criteria.languages, expressionAttributeValues);
             filterExpression = appendFilter(filterExpression, "(#lc in (" + set + "))");
             expressionAttributeNames["#lc"] = "lang_code";
         }
 
-        if(user_name) {
-            expressionAttributeValues[":user"] = user_name.toLowerCase();
+        if(criteria.user_name) {
+            expressionAttributeValues[":user"] = criteria.user_name.toLowerCase();
             filterExpression = appendFilter(filterExpression, "contains(#u, :user)");
             expressionAttributeNames["#u"] = "user_name_lower";
         }
 
-        if(repo_name) {
-            expressionAttributeValues[":repo"] = repo_name.toLowerCase();
+        if(criteria.repo_name) {
+            expressionAttributeValues[":repo"] = criteria.repo_name.toLowerCase();
             filterExpression = appendFilter(filterExpression, "contains(#r, :repo)");
             expressionAttributeNames["#r"] = "repo_name_lower";
         }
 
-        if(title) {
-            expressionAttributeValues[":title"] = title;
+        if(criteria.title) {
+            expressionAttributeValues[":title"] = criteria.title;
             filterExpression = appendFilter(filterExpression, "contains(#title, :title)");
             expressionAttributeNames["#title"] = "title";
         }
 
-        if(time) {
-            expressionAttributeValues[":time"] = time;
+        if(criteria.time) {
+            expressionAttributeValues[":time"] = criteria.time;
             filterExpression = appendFilter(filterExpression, "contains(#time, :time)");
             expressionAttributeNames["#time"] = "last_updated";
         }
 
-        if(manifest) {
-            expressionAttributeValues[":manifest"] = manifest.toLowerCase();
+        if(criteria.manifest) {
+            expressionAttributeValues[":manifest"] = criteria.manifest.toLowerCase();
             filterExpression = appendFilter(filterExpression, "contains(#m, :manifest)");
             expressionAttributeNames["#m"] = "manifest_lower";
         }
 
-        if(resID) {
-            expressionAttributeValues[":resID"] = resID.toLowerCase();
+        if(criteria.resID) {
+            expressionAttributeValues[":resID"] = criteria.resID.toLowerCase();
             filterExpression = appendFilter(filterExpression, "#id = :resID");
             expressionAttributeNames["#id"] = "resource_id";
         }
 
-        if(resType) {
-            expressionAttributeValues[":type"] = resType.toLowerCase();
+        if(criteria.resType) {
+            expressionAttributeValues[":type"] = criteria.resType.toLowerCase();
             filterExpression = appendFilter(filterExpression, "#t = :type");
             expressionAttributeNames["#t"] = "resource_type";
         }
 
-        if(full_text) {
-            expressionAttributeValues[":match"] = full_text.toLowerCase();
+        if(criteria.full_text) {
+            expressionAttributeValues[":match"] = criteria.full_text.toLowerCase();
             filterExpression = appendFilter(filterExpression, "(contains(#m, :match) OR contains(#r, :match) OR contains(#u, :match))");
             expressionAttributeNames["#m"] = "manifest_lower";
             expressionAttributeNames["#r"] = "repo_name_lower";
             expressionAttributeNames["#u"] = "user_name_lower";
         }
 
-        var attributes = _.keys(expressionAttributeNames).length;
-        if(!attributes) { // if empty search, return nothing
-            onFinished(null, []);
-            return true;
-        }
-
-        if (returnedFields) {
-            returnedFields = substituteReserved(returnedFields, 'views', expressionAttributeNames);
-            projectionExpression = returnedFields;
+        if (criteria.returnedFields) {
+            criteria.returnedFields = substituteReserved(criteria.returnedFields, 'views', expressionAttributeNames);
+            projectionExpression = criteria.returnedFields;
         }
 
         var params = {
             TableName: tableName,
-            ExpressionAttributeNames: expressionAttributeNames,
-            FilterExpression: filterExpression,
-            ExpressionAttributeValues: expressionAttributeValues,
-            Limit: 3000 // number of records to check at a time
+            Limit: criteria.matchLimit // number of records to get
         };
 
-        if (projectionExpression) {
-            params.ProjectionExpression = projectionExpression;
+        if(filterExpression) {
+            params.FilterExpression = filterExpression;
+            if (expressionAttributeNames)
+                params.ExpressionAttributeNames = expressionAttributeNames;
+            if (expressionAttributeValues)
+                params.ExpressionAttributeValues = expressionAttributeValues;
+            if (projectionExpression)
+                params.ProjectionExpression = projectionExpression;
         }
 
     } catch(e) {
         var err = "Could not search languages: " + e.message;
-        onFinished(err, null);
+        callback(err, null);
         return false;
     }
 
     var docClient = new AWS.DynamoDB.DocumentClient();
-    searchContinue(docClient, params, [], matchLimit, onFinished);
-    return true;
-}
-
-/***
- * kicks off a search for popular or recent entries in the manifest. Note that this is an OR search to minimize DB calls.
- * @param returnedFields - comma delimited list of fields to return.  If null it will default to
- *                              all fields
- * @param onFinished - call back function onScan(err, entries) - where:
- *                                              err - an error message string
- *                                              entries - an array of table entry objects that match the search params.
- *                                                where each object contains returnedFields
- * @param minimumViews - threshold for popular (default is 50)
- * @param matchLimit - limit the number of matches to return  (default is 1000). This is not an exact limit, but has to do
- *                          with responses being returned a page at a time.  Once number of entries gets to or is above
- *                          this count then no more pages will be fetched.
- * @return boolean - true if search initiated, if false then search error
- */
-function searchManifestPopularAndRecent(returnedFields, onFinished, minimumViews, matchLimit) {
-    matchLimit = matchLimit || 10000;
-    minimumViews = minimumViews || 10;
-    var current = new Date();
-    var recentMS = current.valueOf() - 30*24*60*60*1000; // go back 30 days in milliseconds
-    var recentDate = new Date(recentMS);
-    var recentDateStr = recentDate.toISOString();
-    return searchManifestPopularSub(matchLimit,  minimumViews, recentDateStr, returnedFields, onFinished);
-}
-
-function searchManifestPopularSub(matchLimit, minimumViews, recentDate, returnedFields, onFinished) {
-    try {
-        var expressionAttributeValues = {};
-        var filterExpression = "";
-        var expressionAttributeNames = {};
-        var projectionExpression = null;
-
-        if(minimumViews > 0) {
-            expressionAttributeNames["#views"] = "views";
-            expressionAttributeValues[":views"] = minimumViews;
-            filterExpression = appendFilter(filterExpression, "#views >= :views", true);
-        }
-
-        if (recentDate) {
-            expressionAttributeNames["#date"] = "last_updated";
-            expressionAttributeValues[":recent"] = recentDate;
-            filterExpression = appendFilter(filterExpression, "#date >= :recent", true);
-        }
-
-        if (returnedFields) {
-            returnedFields = substituteReserved(returnedFields, 'views', expressionAttributeNames);
-            projectionExpression = returnedFields;
-        }
-
-        var tableName = getManifestTable();
-        var params = {
-            TableName: tableName,
-            ExpressionAttributeNames: expressionAttributeNames,
-            FilterExpression: filterExpression,
-            ExpressionAttributeValues: expressionAttributeValues,
-            Limit: 3000 // number of records to check at a time
-        };
-
-        if (projectionExpression) {
-            params.ProjectionExpression = projectionExpression;
-        }
-
-    } catch(e) {
-        var err = "Could not search languages: " + e.message;
-        onFinished(err, null);
-        return false;
-    }
-
-    var docClient = new AWS.DynamoDB.DocumentClient();
-    searchContinue(docClient, params, [], matchLimit, onFinished);
+    searchContinue(docClient, params, [], criteria.matchLimit, callback);
     return true;
 }
 

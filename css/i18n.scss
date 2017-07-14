@@ -26,7 +26,6 @@ div.search-results-category {
   }
 
   div.search-listing {
-
     .updated-views-div, .author-div, .language-code-div {
       color: #555;
     }
@@ -77,30 +76,39 @@ div.search-results-category {
 
       }
 
-      .fa-star-o { font-size: 22px; }
+      .fa-star-o {
+        font-size: 22px;
+      }
 
       //noinspection SassScssResolvedByNameOnly
-      &:hover, a:hover  {
+      &:hover, a:hover {
         background-color: $navbar-inverse-link-active-color;
         color: $navbar-inverse-link-color;
 
-        .updated-views-div, .author-div, .language-code-div { color: $navbar-inverse-link-color; }
+        .updated-views-div, .author-div, .language-code-div {
+          color: $navbar-inverse-link-color;
+        }
       }
     }
-  }
 
-  div.more-container {
-    display: inline-block;
-    float: left;
-    margin: 8px;
-    width: 360px;
-    height: 200px;
-    line-height: 200px;
-    text-align: center;
+    div.more-container {
+      display: inline-block;
+      float: left;
+      margin: 8px;
+      width: 200px;
+      height: 340px;
+      line-height: 200px;
+      text-align: center;
 
-    span {
-      vertical-align: middle;
-      line-height: normal;
+      span {
+        vertical-align: middle;
+        line-height: normal;
+      }
+    }
+
+    .no-results {
+      font-style: italic;
+      margin: 20px;
     }
   }
 }
@@ -226,12 +234,12 @@ div.clear {
           height: 160px;
         }
       }
-    }
 
-    div.more-container {
-      width: 450px;
-      height: 160px;
-      line-height: 160px;
+      div.more-container {
+        width: 450px;
+        height: 160px;
+        line-height: 160px;
+      }
     }
   }
 }
@@ -245,15 +253,19 @@ div.clear {
           height: 160px;
         }
 
-        h3 span { font-size: 16px; }
-        .updated-views-div, .author-div, .language-code-div { font-size: 15px; }
+        h3 span {
+          font-size: 16px;
+        }
+        .updated-views-div, .author-div, .language-code-div {
+          font-size: 15px;
+        }
       }
-    }
 
-    div.more-container {
-      width: 340px;
-      height: 160px;
-      line-height: 160px;
+      div.more-container {
+        width: 340px;
+        height: 160px;
+        line-height: 160px;
+      }
     }
   }
 }
