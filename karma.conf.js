@@ -39,7 +39,8 @@ module.exports = function(config) {
             // served fixtures
             { pattern: 'test/fixtures/**/*.html', included: false, served: true },
 
-            './test/spec/*.js'
+            './test/spec/*.js',
+            './test/spec/support/*.js'
         ],
 
         // coverage reporter generates the coverage
