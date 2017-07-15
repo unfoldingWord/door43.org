@@ -373,7 +373,7 @@ describe('Test Manifest Search', function () {
         var criteria = new SearchCriteria();
         criteria.repo_name = "dummy_repo";
         criteria.resID = "dummy_res";
-        criteria.returnFields = "user_name, repo_name";
+        criteria.returnedFields = "user_name, repo_name";
         criteria.matchLimit = 20;
         expectedErr = null;
         expectedData = { Items:[] };
@@ -394,7 +394,7 @@ describe('Test Manifest Search', function () {
         var criteria = new SearchCriteria();
         criteria.full_text = "dummy_text";
         criteria.resType = "dummy_type";
-        criteria.returnFields = "user_name, repo_name";
+        criteria.returnedFields = "user_name, repo_name";
         criteria.matchLimit = 20;
         expectedErr = null;
         expectedData = { Items:[] };
@@ -417,7 +417,7 @@ describe('Test Manifest Search', function () {
         criteria.title = "dummy_title";
         criteria.time = "dummy_time";
         criteria.manifest = "dummy_manifest";
-        criteria.returnFields = "user_name, repo_name, views";
+        criteria.returnedFields = "user_name, repo_name, views";
         criteria.matchLimit = 20;
         expectedErr = null;
         expectedData = { Items:[] };
@@ -475,7 +475,7 @@ describe('Test Manifest Search', function () {
         var expectedItemCount = 0;
         setupDynamoDbMocks(expectedReturn);
         var criteria = new SearchCriteria();
-        criteria.returnFields = "user_name, repo_name";
+        criteria.returnedFields = "user_name, repo_name";
         expectedErr = null;
         expectedData = { Items:[] };
 
@@ -494,7 +494,7 @@ describe('Test Manifest Search', function () {
         var criteria = new SearchCriteria();
         criteria.minViews = 5;
         criteria.daysForRecent = 30;
-        criteria.returnFields = "user_name, repo_name";
+        criteria.returnedFields = "user_name, repo_name";
         expectedErr = null;
         expectedData = { Items:[] };
         var expectedSearchKeys = [ 'minViews', 'daysForRecent' ];
