@@ -180,8 +180,129 @@ describe('Test Manifest Search', function () {
         expect(message).toContain("Matches found");
     });
 
-    //todo: getSearchCriteriaFromUrl(
-    //todo: updateUrlWithSearchParams(
+    it('getSearchCriteriaFromUrl: valid language array, full text, and user', function () {
+        //given
+        var search_url = 'http://127.0.0.1:4000/en/?lc=en&lc=ceb&q=Bible&user=tx-manager-test-data';
+        var expectedBaseUrl = 'http://127.0.0.1:4000';
+        var expectedParams = {
+            matchLimit: MAX_NUMBER_OF_RESULTS_FROM_DB,
+            minViews: 0,
+            languages: [ 'en', 'ceb'],
+            full_text: 'Bible',
+            user_name: 'tx-manager-test-data'
+        };
+
+        //when
+        var criteria = getSearchCriteriaFromUrl(search_url);
+
+        //then
+        validateSearchCriteria(criteria, expectedBaseUrl, expectedParams)
+    });
+
+    it('getSearchCriteriaFromUrl: multiple language array and extra q', function () {
+        //given
+        var search_url = 'http://127.0.0.1:4000/en/?lc=en&q=Bible&q=ceb&user=tx-manager-test-data';
+        var expectedBaseUrl = 'http://127.0.0.1:4000';
+        var expectedParams = {
+            matchLimit: MAX_NUMBER_OF_RESULTS_FROM_DB,
+            minViews: 0,
+            languages: [ 'en' ],
+            full_text: 'Bible',
+            user_name: 'tx-manager-test-data'
+        };
+
+        //when
+        var criteria = getSearchCriteriaFromUrl(search_url);
+
+        //then
+        validateSearchCriteria(criteria, expectedBaseUrl, expectedParams)
+    });
+
+    it('getSearchCriteriaFromUrl: valid language array', function () {
+        //given
+        var search_url = 'http://127.0.0.1:4000/en/?lc=es';
+        var expectedBaseUrl = 'http://127.0.0.1:4000';
+        var expectedParams = {
+            matchLimit: MAX_NUMBER_OF_RESULTS_FROM_DB,
+            minViews: 0,
+            languages: [ 'es' ],
+        };
+
+        //when
+        var criteria = getSearchCriteriaFromUrl(search_url);
+
+        //then
+        validateSearchCriteria(criteria, expectedBaseUrl, expectedParams)
+    });
+
+    it('getSearchCriteriaFromUrl: valid language array and user name', function () {
+        //given
+        var search_url = 'http://127.0.0.1:4000/en/?lc=es&lc=ceb&user=dummy';
+        var expectedBaseUrl = 'http://127.0.0.1:4000';
+        var expectedParams = {
+            matchLimit: MAX_NUMBER_OF_RESULTS_FROM_DB,
+            minViews: 0,
+            languages: [ 'es', 'ceb'],
+            user_name: 'dummy'
+        };
+
+        //when
+        var criteria = getSearchCriteriaFromUrl(search_url);
+
+        //then
+        validateSearchCriteria(criteria, expectedBaseUrl, expectedParams)
+    });
+
+    it('getSearchCriteriaFromUrl: valid repo name and resource', function () {
+        //given
+        var search_url = 'http://127.0.0.1:4000/en/?lc=es&repo=dummy_repo&resource=dummy_res';
+        var expectedBaseUrl = 'http://127.0.0.1:4000';
+        var expectedParams = {
+            matchLimit: MAX_NUMBER_OF_RESULTS_FROM_DB,
+            minViews: 0,
+            languages: [ 'es' ],
+            repo_name: 'dummy_repo',
+            resID: 'dummy_res'
+        };
+
+        //when
+        var criteria = getSearchCriteriaFromUrl(search_url);
+
+        //then
+        validateSearchCriteria(criteria, expectedBaseUrl, expectedParams)
+    });
+
+    it('getSearchCriteriaFromUrl: empty search parameters', function () {
+        //given
+        var search_url = 'http://127.0.0.1:4000/en/?';
+        var expectedBaseUrl = 'http://127.0.0.1:4000';
+        var expectedParams = {
+            matchLimit: MAX_NUMBER_OF_RESULTS_FROM_DB,
+            minViews: 0,
+        };
+
+        //when
+        var criteria = getSearchCriteriaFromUrl(search_url);
+
+        //then
+        validateSearchCriteria(criteria, expectedBaseUrl, expectedParams)
+    });
+
+    it('getSearchCriteriaFromUrl: no search parameters', function () {
+        //given
+        var search_url = 'http://127.0.0.1:4000/en';
+        var expectedBaseUrl = 'http://127.0.0.1:4000';
+        var expectedParams = {
+            matchLimit: MAX_NUMBER_OF_RESULTS_FROM_DB,
+            minViews: 0,
+        };
+
+        //when
+        var criteria = getSearchCriteriaFromUrl(search_url);
+
+        //then
+        validateSearchCriteria(criteria, expectedBaseUrl, expectedParams)
+    });
 
     it('searchManifestTable: valid language array should return success', function () {
         //given
@@ -482,15 +603,56 @@ describe('Test Manifest Search', function () {
             if (param instanceof Array) {
                 expect(param.length).toEqual(expectedParams[key].length);
                 _.each(param, function (item) {
-                    expect(_.contains(expectedParams[key], item)).toBeTruthy();
+                    var value = expectedParams[key];
+                    if (value.indexOf(item) < 0) {
+                        console.log("Miscompare key '" + key + "' '" + item + "' not in '[" + value.join(",") + "]'");
+                        expect(_.contains(expectedParam, param)).toBeTruthy();
+                    }
                 })
             } else {
                 var expectedParam = expectedParams[key];
                 if (expectedParam instanceof Array) {
-                    expect(_.contains(expectedParam, param)).toBeTruthy();
+                    if (expectedParam.indexOf(param) < 0) {
+                        console.log("Miscompare key '" + key + "' '" + param + "' not in '[" + expectedParam.join(",") + "]'");
+                        expect(_.contains(expectedParam, param)).toBeTruthy();
+                    }
                     expect(expectedParam.length).toEqual(1);
                 } else {
-                    expect(param).toEqual(expectedParam);
+                    if(param != expectedParam) {
+                        console.log("Miscompare key '" + key + "' got '" + param + "' but expected '" + expectedParam + "'");
+                        expect(param).toEqual(expectedParam);
+                    }
+                }
+            }
+        });
+    }
+
+    function validateSearchCriteria(criteria, expectedBaseUrl, expectedParams) {
+        expect(baseUrl).toEqual(expectedBaseUrl);
+        expect(criteria.length).toEqual(expectedParams.length);
+        _.each(criteria, function (param, key) {
+            if (param instanceof Array) {
+                expect(param.length).toEqual(expectedParams[key].length);
+                _.each(param, function (item) {
+                    var value = expectedParams[key];
+                    if (value.indexOf(item) < 0) {
+                        console.log("Miscompare key '" + key + "' '" + item + "' not in '[" + value.join(",") + "]'");
+                        expect(_.contains(expectedParam, param)).toBeTruthy();
+                    }
+                })
+            } else {
+                var expectedParam = expectedParams[key];
+                if (expectedParam instanceof Array) {
+                    if (expectedParam.indexOf(param) < 0) {
+                        console.log("Miscompare key '" + key + "' '" + param + "' not in '[" + expectedParam.join(",") + "]'");
+                        expect(_.contains(expectedParam, param)).toBeTruthy();
+                    }
+                    expect(expectedParam.length).toEqual(1);
+                } else {
+                    if(param != expectedParam) {
+                        console.log("Miscompare key '" + key + "' got '" + param + "' but expected '" + expectedParam + "'");
+                        expect(param).toEqual(expectedParam);
+                    }
                 }
             }
         });
