@@ -511,6 +511,7 @@ describe('Test Manifest Search', function () {
         var search_url = 'http://127.0.0.1:4000/en/?lc=es&q=Bible&user=tx-manager-test-data';
         var expectedReturn = true;
         var expectedItemCount = 2;
+        SearchCriteria.matchLimit = 2;
         setupDynamoDbMocks(expectedReturn);
         expectedErr = null;
         expectedData = {
@@ -520,7 +521,7 @@ describe('Test Manifest Search', function () {
         var expectedSearchKeys = [ 'lang_code' ];
 
         //when
-        var results = searchProjects(search_url);
+        var results = searchProjects(search_url, 2);
 
         //then
         validateResults(results, expectedReturn, expectedItemCount, expectedSearchKeys);
