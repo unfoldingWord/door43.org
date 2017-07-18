@@ -344,8 +344,6 @@ function updateUrl(newUrl) {
 function setupSearchFieldFromUrl(searchUrl) {
     searchUrl = (typeof searchUrl === 'undefined') ? window.location.href : searchUrl;
     var criteria = getSearchCriteriaFromUrl(searchUrl);
-    if (_.isEqual(criteria, new SearchCriteria()))
-        return; // Nothing to populate so returning;
     var searchFieldArr = [];
     if (criteria.full_text) searchFieldArr.push(criteria.full_text);
     // if (criteria.repo_name) searchFieldArr.push('repo:'+criteria.repo_name);
