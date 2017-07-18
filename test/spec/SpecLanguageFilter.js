@@ -156,17 +156,19 @@ describe('Test Language Filters and the Selector Autocomplete', function () {
   });
 
   it('Test setupSearchFieldFromUrl()', function(){
+    // given
     var search_url = 'http://127.0.0.1:4000/en/?lc=en&lc=ceb&q=bible';
     var $search_field = $('#search-field');
     var $language_filter = $('#language-filter');
+    var expectedVal = 'bible';
+    var expectedLength = 2;
 
+    // when
     setupSearchFieldFromUrl(search_url);
 
-    var expectedVal = 'bible';
+    // then
     expect($search_field.val()).toEqual(expectedVal);
-
-    var expectedLength = 2;
-    expect($language_filter.find('li').length).toEqual(expectedLength);
+    expect($language_filter.find('.lc-filter').length).toEqual(expectedLength);
     expect($language_filter.find('#lc-filter-en')).toBeTruthy();
     expect($language_filter.find('#lc-filter-ce')).toBeTruthy();
   });
