@@ -156,13 +156,13 @@ describe('Test Language Filters and the Selector Autocomplete', function () {
   });
 
   it('Test setupSearchFieldFromUrl()', function(){
-    var search_url = 'http://127.0.0.1:4000/en/?lc=en&lc=ceb&q=Bible&user=tx-manager-test-data';
+    var search_url = 'http://127.0.0.1:4000/en/?lc=en&lc=ceb&q=bible';
     var $search_field = $('#search-field');
     var $language_filter = $('#language-filter');
 
     setupSearchFieldFromUrl(search_url);
 
-    var expectedVal = 'tx-manager-test-data';
+    var expectedVal = 'bible';
     expect($search_field.val()).toEqual(expectedVal);
 
     var expectedLength = 2;
