@@ -510,13 +510,10 @@ function getArrayItem(params, key) {
  * Searches for the selected search keys in the url
  *
  * @param {string} [searchUrl] - The URL to use to search the projects. Uses page URL if none given.
- * @param {number} [matchLimit] - max number to match
  */
-function searchProjects(searchUrl, matchLimit) {
+function searchProjects(searchUrl) {
     searchUrl = (typeof searchUrl === 'undefined') ? window.location.href : searchUrl;
-    matchLimit = (typeof matchLimit === 'undefined') ? MAX_NUMBER_OF_RESULTS_FROM_DB : matchLimit;
     var criteria = getSearchCriteriaFromUrl(searchUrl);
-    criteria.matchLimit = matchLimit;
     if (_.isEqual(criteria, new SearchCriteria())) {
         // Nothing was set in the criteria, so is the default page, setting minViews and daysFoRecent
         criteria.minViews = DEFAULT_PAGE_MINIMUM_VIEWS;
