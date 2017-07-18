@@ -527,27 +527,6 @@ describe('Test Manifest Search', function () {
         validateResults(results, expectedReturn, expectedItemCount, expectedSearchKeys);
    });
 
-   it('searchProjects for default page', function () {
-        //given
-        var search_url = 'http://127.0.0.1:4000/en/';
-        var expectedReturn = true;
-        var expectedItemCount = 2;
-        SearchCriteria.matchLimit = 2;
-        setupDynamoDbMocks(expectedReturn);
-        expectedErr = null;
-        expectedData = {
-            Items:[ { 'object': "" }],
-            LastEvaluatedKey: { dummy: "dummy data" }
-        };
-        var expectedSearchKeys = [ 'lang_code' ];
-
-        //when
-        var results = searchProjects(search_url, 2);
-
-        //then
-        validateResults(results, expectedReturn, expectedItemCount, expectedSearchKeys);
-   });
-
     //
     // helpers
     //
