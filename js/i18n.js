@@ -8,7 +8,7 @@ var pageLoaded = false;
  */
 function onReady() {
     setupLanguageSelector();
-    populateSearchFieldFromUrl();
+    setupSearchFieldFromUrl();
     searchProjects();
     pageLoaded = true;
 
@@ -341,7 +341,7 @@ function updateUrl(newUrl) {
  *
  * @param {string} [searchUrl] - The URL to populate the search field. Uses page URL if none given.
  */
-function populateSearchFieldFromUrl(searchUrl) {
+function setupSearchFieldFromUrl(searchUrl) {
     searchUrl = (typeof searchUrl === 'undefined') ? window.location.href : searchUrl;
     var criteria = getSearchCriteriaFromUrl(searchUrl);
     if (_.isEqual(criteria, new SearchCriteria()))
