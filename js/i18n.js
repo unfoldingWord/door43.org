@@ -58,16 +58,16 @@ if (!String.prototype.startsWith) {
 function setupLanguageSelector() {
     var $searchField = $('#search-field');
 
-    var autocomplete_instance = $searchField.autocomplete({
+    $searchField.autocomplete({
         minLength: 2,
         select: function (event, ui) {
             removeLastSearchTerm();
             addLanguageFilter(ui.item);
             return false;
         }
-    }).autocomplete('instance');
-    if (autocomplete_instance) {
-        autocomplete_instance._renderItem = function (ul, item) {
+    });
+    if ($searchField.autocomplete('instance')) {
+        $searchField.autocomplete('instance')._renderItem = function (ul, item) {
             return $('<li style="font-size: 0.9em;">')
                 .append(item['ln'] + (item['ang'] && item['ang'] !== item['ln'] ? ' - ' + item['ang'] : '') + ' (' + item['lc'] + ')<br><span style="font-size: 0.9em;">Region: ' + item['lr'] + '</span>')
                 .appendTo(ul);
