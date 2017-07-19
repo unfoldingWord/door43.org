@@ -1,3 +1,5 @@
+loadingText = ""; // make sure defined so no exceptions on onReady()
+
 describe('Test Badges', function () {
 
     const MINUTE = 60;
