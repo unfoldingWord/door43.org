@@ -622,8 +622,12 @@ function searchManifestTable(criteria, callback) {
         }
 
         if (criteria.full_text) {
-            expressionAttributeValues[":match"] = criteria.full_text.toLowerCase();
-            filterExpression = appendFilter(filterExpression, "(contains(#m, :match) OR contains(#r, :match) OR contains(#u, :match))");
+            var tokens = criteria.full_text.match(/\w+|"[^"]+"/g); // tokenize by spaces, but keep words grouped by double quotes as one token
+            $.each(tokens, function (idx, token) {
+                token = token.replace(/^"+|"+$/g, '');  // remove double quotes from around token
+                expressionAttributeValues[":match" + idx] = token.toLowerCase();
+                filterExpression = appendFilter(filterExpression, "(contains(#m, :match" + idx + ") OR contains(#r, :match" + idx + ") OR contains(#u, :match" + idx + "))");
+            });
             expressionAttributeNames["#m"] = "manifest_lower";
             expressionAttributeNames["#r"] = "repo_name_lower";
             expressionAttributeNames["#u"] = "user_name_lower";
