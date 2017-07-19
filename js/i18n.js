@@ -58,18 +58,21 @@ if (!String.prototype.startsWith) {
 function setupLanguageSelector() {
     var $searchField = $('#search-field');
 
-    $searchField.autocomplete({
+    var autocomplete_instance = $searchField.autocomplete({
         minLength: 2,
         select: function (event, ui) {
             removeLastSearchTerm();
             addLanguageFilter(ui.item);
             return false;
         }
-    }).autocomplete('instance')._renderItem = function (ul, item) {
-        return $('<li style="font-size: 0.9em;">')
-            .append(item['ln'] + (item['ang'] && item['ang'] !== item['ln'] ? ' - ' + item['ang'] : '') + ' (' + item['lc'] + ')<br><span style="font-size: 0.9em;">Region: ' + item['lr'] + '</span>')
-            .appendTo(ul);
-    };
+    }).autocomplete('instance');
+    if (autocomplete_instance) {
+        autocomplete_instance._renderItem = function (ul, item) {
+            return $('<li style="font-size: 0.9em;">')
+                .append(item['ln'] + (item['ang'] && item['ang'] !== item['ln'] ? ' - ' + item['ang'] : '') + ' (' + item['lc'] + ')<br><span style="font-size: 0.9em;">Region: ' + item['lr'] + '</span>')
+                .appendTo(ul);
+        };
+    }
 
     $searchField.on('keyup', function (event, testEvent) {
         if (typeof testEvent !== 'undefined') {
