@@ -57,33 +57,35 @@ if (!String.prototype.startsWith) {
  */
 function setupLanguageSelector() {
     var $searchField = $('#search-field');
+    var $body = $('body');
 
-    $searchField.autocomplete({
-        minLength: 2,
-        select: function (event, ui) {
-            removeLastSearchTerm();
-            addLanguageFilter(ui.item);
-            return false;
-        }
-    });
-    if ($searchField.autocomplete('instance')) {
-        $searchField.autocomplete('instance')._renderItem = function (ul, item) {
+    if($searchField.length) {
+        $searchField.autocomplete({
+            minLength: 2,
+            select: function (event, ui) {
+                removeLastSearchTerm();
+                addLanguageFilter(ui.item);
+                return false;
+            }
+        }).autocomplete('instance')._renderItem = function (ul, item) {
             return $('<li style="font-size: 0.9em;">')
                 .append(item['ln'] + (item['ang'] && item['ang'] !== item['ln'] ? ' - ' + item['ang'] : '') + ' (' + item['lc'] + ')<br><span style="font-size: 0.9em;">Region: ' + item['lr'] + '</span>')
                 .appendTo(ul);
         };
+
+        $searchField.on('keyup', function (event, testEvent) {
+            if (typeof testEvent !== 'undefined') {
+                event = testEvent;
+            }
+            languageSelectorKeyUp(event);
+        });
     }
 
-    $searchField.on('keyup', function (event, testEvent) {
-        if (typeof testEvent !== 'undefined') {
-            event = testEvent;
-        }
-        languageSelectorKeyUp(event);
-    });
-
-    $('body').on('click', '.lc-filter, .remove-lc.x', function (event) {
-        removeLanguageFilter(event.target);
-    });
+    if($body.length) {
+        $('body').on('click', '.lc-filter, .remove-lc.x', function (event) {
+            removeLanguageFilter(event.target);
+        });
+    }
 }
 
 /**
@@ -266,12 +268,16 @@ function sortLanguages(langA, langB, text) {
  * @param {Object} item
  */
 function addLanguageFilter(item) {
-    var lc = item['lc'];
-    var title = item['ln'] + (item['ang'] && item['ang'] !== item['ln'] ? ' - ' + item['ang'] : '') + ' (' + lc + ')';
-    if (!$('#lc-filter-' + lc).length) {
-        var $lc_filter = $('<span id="lc-filter-' + lc + '" class="lc-filter" title="' + title + '">' + lc + '<span class="remove-lc-x">x</span></span>');
-        $lc_filter.data('lc', lc);
-        $('#language-filter').append($lc_filter);
+    var $language_filter = $('#language-filter');
+
+    if($language_filter.length) {
+        var lc = item['lc'];
+        var title = item['ln'] + (item['ang'] && item['ang'] !== item['ln'] ? ' - ' + item['ang'] : '') + ' (' + lc + ')';
+        if (!$('#lc-filter-' + lc).length) {
+            var $lc_filter = $('<span id="lc-filter-' + lc + '" class="lc-filter" title="' + title + '">' + lc + '<span class="remove-lc-x">x</span></span>');
+            $lc_filter.data('lc', lc);
+            $language_filter.append($lc_filter);
+        }
     }
 }
 
@@ -310,11 +316,13 @@ function getLanguageCodesToFilter() {
  * @returns {string}
  */
 function updateUrlWithSearchParams(url, langCodes, fullTextSearch) {
+    var $search_field = $('#search-field');
+    var searchStr = "";
+
     url = (typeof url === 'undefined' ? window.location.href : url);
     langCodes = (typeof langCodes === 'undefined' ? getLanguageCodesToFilter() : langCodes);
-    fullTextSearch = (typeof fullTextSearch === 'undefined' ? $('#search-field').val() : fullTextSearch);
+    fullTextSearch = (typeof fullTextSearch === 'undefined'  ? $search_field.val() : fullTextSearch);
 
-    var searchStr = "";
     if (langCodes && langCodes.length > 0) {
         searchStr = "lc=" + langCodes.join("&lc=");
     }
@@ -346,22 +354,26 @@ function updateUrl(newUrl) {
  */
 function setupSearchFieldFromUrl(searchUrl) {
     searchUrl = (typeof searchUrl === 'undefined') ? window.location.href : searchUrl;
-    var criteria = getSearchCriteriaFromUrl(searchUrl);
-    var searchFieldArr = [];
-    if (criteria.full_text) searchFieldArr.push(criteria.full_text);
-    // if (criteria.repo_name) searchFieldArr.push('repo:'+criteria.repo_name);
-    // if (criteria.user_name) searchFieldArr.push('user:'+criteria.user_name);
-    // if (criteria.resID) searchFieldArr.push('resource:'+criteria.resID);
-    // if (criteria.resType) searchFieldArr.push('type:'+criteria.resType);
-    // if (criteria.title) searchFieldArr.push('title:'+criteria.title);
-    // if (criteria.time) searchFieldArr.push('time:'+criteria.time);
-    // if (criteria.manifest) searchFieldArr.push('manifest:'+criteria.manifest);
-    $('#search-field').val(searchFieldArr.join(' '));
-    if (criteria.languages) {
-        $.each(criteria.languages, function (index) {
-            var lc = criteria.languages[index];
-            addLanguageFilter({'lc': lc, 'ln': lc, 'ang': lc});
-        });
+    var $search_field = $('#search-field');
+
+    if($search_field.length) {
+        var criteria = getSearchCriteriaFromUrl(searchUrl);
+        var searchFieldArr = [];
+        if (criteria.full_text) searchFieldArr.push(criteria.full_text);
+        // if (criteria.repo_name) searchFieldArr.push('repo:'+criteria.repo_name);
+        // if (criteria.user_name) searchFieldArr.push('user:'+criteria.user_name);
+        // if (criteria.resID) searchFieldArr.push('resource:'+criteria.resID);
+        // if (criteria.resType) searchFieldArr.push('type:'+criteria.resType);
+        // if (criteria.title) searchFieldArr.push('title:'+criteria.title);
+        // if (criteria.time) searchFieldArr.push('time:'+criteria.time);
+        // if (criteria.manifest) searchFieldArr.push('manifest:'+criteria.manifest);
+        $search_field.val(searchFieldArr.join(' '));
+        if (criteria.languages) {
+            $.each(criteria.languages, function (index) {
+                var lc = criteria.languages[index];
+                addLanguageFilter({'lc': lc, 'ln': lc, 'ang': lc});
+            });
+        }
     }
 }
 
