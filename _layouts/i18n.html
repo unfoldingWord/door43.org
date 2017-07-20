@@ -30,7 +30,7 @@
 
 <script type="html/template" id="more-template">
   <div class="more-container">
-    <span><a href="" class="bold">{{ site.data[page.language_code].l10n.view_more }}</a></span>
+    <span><a href="#" class="bold">{{ site.data[page.language_code].l10n.view_more }}</a></span>
   </div>
 </script>
 
@@ -46,9 +46,11 @@
     <div class="float-right">
       <table>
         <tr>
-          <td><input type="text" id="search-for" placeholder="{{ site.data[page.language_code].l10n.search }}"></td>
-          <td id="search-td"><i class="fa fa-search"></i></td>
-          <td id="browse-td"><i class="fa fa-globe"></i> {{ site.data[page.language_code].l10n.browse }}</td>
+          <td><span id="language-filter"></span> <input type="text" id="search-field" placeholder="{{ site.data[page.language_code].l10n.search }}"></td>
+          <td id="search-button"><i class="fa fa-search"></i></td>
+          <!-- Commented out since not used yet -RHM
+          <td id="browse-button"><i class="fa fa-globe"></i> {{ site.data[page.language_code].l10n.browse }}</td>
+          -->
         </tr>
       </table>
     </div>

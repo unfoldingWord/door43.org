@@ -13,38 +13,38 @@ describe('Test Language Filters and the Selector Autocomplete', function () {
   });
 
   it('Test keyup in search field', function(){
-    var $search_for = $('#search-for');
+    var $search_field = $('#search-field');
 
-    $search_for.val('e');
+    $search_field.val('e');
 
     var event = {
-      target: $search_for[0],
+      target: $search_field[0],
       which: 13
     };
 
     // expect not to search on enter (13)
-    $search_for.trigger('keyup', event);
+    $search_field.trigger('keyup', event);
   });
 
   it('Test autocomplete in the search field. Search for "en" should work', function (done) {
-    var $search_for = $('#search-for');
+    var $search_field = $('#search-field');
 
-    $search_for.val('e');
+    $search_field.val('e');
 
     var event = {
-      target: $search_for[0],
+      target: $search_field[0],
       which: 'e'.charCodeAt(0),
       unitTest: true
     };
 
     // expect not to search on fist key press
-    $search_for.trigger('keyup', event);
+    $search_field.trigger('keyup', event);
 
-    $search_for.val('en');
+    $search_field.val('en');
     event.which = 'n'.charCodeAt(0);
-    $search_for.trigger('keyup', event);
+    $search_field.trigger('keyup', event);
 
-    getLanguageListItems($search_for, function(languages) {
+    getLanguageListItems($search_field, function(languages) {
       // the first item should be 'English (en)'
       var expectedLength = 0;
       expect(languages.length).toBeGreaterThan(expectedLength);
@@ -58,15 +58,15 @@ describe('Test Language Filters and the Selector Autocomplete', function () {
       });
       $('ul.ui-autocomplete li:first-child').first().trigger('click');
       var expectedVal = '';
-      expect($search_for.val()).toEqual(expectedVal);
+      expect($search_field.val()).toEqual(expectedVal);
       var expectedLcs = ['en'];
       expect(getLanguageCodesToFilter()).toEqual(expectedLcs);
 
       expect(languageSearchResults['en'] !== undefined).toBeTruthy();
 
       // calling getLanguageListItems a second time should not have to do an ajax call
-      $search_for.autocomplete('instance').term = null;
-      getLanguageListItems($search_for);
+      $search_field.autocomplete('instance').term = null;
+      getLanguageListItems($search_field);
       expect($('ul.ui-autocomplete li').length).toBeGreaterThan(0);
       done();
     });
@@ -118,27 +118,27 @@ describe('Test Language Filters and the Selector Autocomplete', function () {
   });
 
   it('Test functions for getting terms from the search field', function () {
-    var $searchFor = $('#search-for');
-    $searchFor.val('test1 test2 test3');
+    var $searchField = $('#search-field');
+    $searchField.val('test1 test2 test3');
 
     var expectedTerm = 'test3';
     expect(extractLastSearchTerm()).toEqual(expectedTerm);
 
     removeLastSearchTerm();
     expectedTerm = 'test1 test2';
-    expect($searchFor.val()).toEqual(expectedTerm);
+    expect($searchField.val()).toEqual(expectedTerm);
 
     removeLastSearchTerm();
     expectedTerm = 'test1';
-    expect($searchFor.val()).toEqual(expectedTerm);
+    expect($searchField.val()).toEqual(expectedTerm);
 
     removeLastSearchTerm();
     expectedTerm = '';
-    expect($searchFor.val()).toEqual(expectedTerm);
+    expect($searchField.val()).toEqual(expectedTerm);
 
     removeLastSearchTerm();
     expectedTerm = '';
-    expect($searchFor.val()).toEqual(expectedTerm);
+    expect($searchField.val()).toEqual(expectedTerm);
 
     expectedTerm = '';
     expect(extractLastSearchTerm()).toEqual(expectedTerm);
@@ -153,5 +153,23 @@ describe('Test Language Filters and the Selector Autocomplete', function () {
     expect(splitSearchTerms('')).toEqual(expectedTerms);
     expectedTerms = [];
     expect(splitSearchTerms(undefined)).toEqual(expectedTerms);
+  });
+
+  it('Test setupSearchFieldFromUrl()', function(){
+    // given
+    var search_url = 'http://127.0.0.1:4000/en/?lc=en&lc=ceb&q=bible';
+    var $search_field = $('#search-field');
+    var $language_filter = $('#language-filter');
+    var expectedVal = 'bible';
+    var expectedLength = 2;
+
+    // when
+    setupSearchFieldFromUrl(search_url);
+
+    // then
+    expect($search_field.val()).toEqual(expectedVal);
+    expect($language_filter.find('.lc-filter').length).toEqual(expectedLength);
+    expect($language_filter.find('#lc-filter-en')).toBeTruthy();
+    expect($language_filter.find('#lc-filter-ce')).toBeTruthy();
   });
 });

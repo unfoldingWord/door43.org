@@ -17,3 +17,5 @@ node_modules/
 coverage/
 js/db_keys.js
 karma.log
+npm-debug.log
+
