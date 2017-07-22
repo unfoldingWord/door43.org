@@ -286,6 +286,21 @@ function getDownloadUrl(pageUrl) {
 }
 
 /**
+ * open page to download file and capture error.
+ * @param pageUrl
+ */
+function openDownloadFile(pageUrl) {
+    var downloadUrl = getDownloadUrl();
+
+    window.onerror = function(msg, url, line) {
+        console.log("Captured download error for:  " + downloadUrl);
+        alert("Download File does not exist: " + downloadUrl);
+    };
+
+    window.open(downloadUrl);
+}
+
+/**
  * get download link from build log
  * @param myLog
  */
