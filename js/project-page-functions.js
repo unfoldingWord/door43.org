@@ -271,7 +271,7 @@ var source_download = null;
  * @returns {*}
  */
 function getDownloadUrl(pageUrl) {
-    if(pageUrl == undefined) {
+    if(pageUrl === undefined) {
         pageUrl=window.location.href
     }
 
@@ -290,10 +290,10 @@ function getDownloadUrl(pageUrl) {
  * @param pageUrl
  */
 function openDownloadFile(pageUrl) {
-    var downloadUrl = getDownloadUrl();
+    var downloadUrl = getDownloadUrl(pageUrl);
 
     window.onerror = function(msg, url, line) {
-        console.log("Captured download error for:  " + downloadUrl);
+        console.log("Captured download error for " + downloadUrl + ":\n" + msg);
         alert("Download File does not exist: " + downloadUrl);
     };
 
@@ -317,7 +317,7 @@ function saveDownloadLink(myLog) {
 
 function beginsWith(pageUrl, match) {
     const pos = pageUrl.indexOf(match);
-    return pos == 0;
+    return pos === 0;
 }
 
 function getSiteFromPage(pageUrl) {
