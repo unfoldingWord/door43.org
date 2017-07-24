@@ -586,7 +586,6 @@ describe('Test Manifest Search', function () {
         expectedSearchKeys.forEach(function (key) {
             var value = possibleKeys[key];
             if (value ) {
-                var value = possibleKeys[key];
                 expectedKeyData[key] = value;
                 delete unExpectedKeyData[key];
             } else if(key !== 'full_text') {
