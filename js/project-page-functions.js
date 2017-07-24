@@ -311,6 +311,7 @@ function setDownloadButtonState(button, commitID, pageUrl) {
                         button.prop('disabled', false)
                     }
                 }
+                return data;
         },
         error: function (jqXHR, textStatus, errorThrown) {
             const error = 'Error: ' + textStatus + '\n' + errorThrown;
