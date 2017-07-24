@@ -596,9 +596,9 @@ describe('Test Manifest Search', function () {
 
         if(expectedSearchKeys.indexOf('full_text') >= 0) {
             var full_text = {
-                manifest: ["#m", "manifest_lower", ":match"],
-                user_name: ["#r", "repo_name_lower", ":match"],
-                repo_name: ["#u", "user_name_lower", ":match"],
+                manifest: ["#m", "manifest_lower", ":match0"],
+                user_name: ["#r", "repo_name_lower", ":match0"],
+                repo_name: ["#u", "user_name_lower", ":match0"],
             };
 
             _.each(full_text,  function (value, key) {
