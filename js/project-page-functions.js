@@ -281,8 +281,6 @@ function getCommid(commitID, pageUrl) {
     return commitID;
 }
 
-const CHECK_DOWNLOAD_LOCATION = "https://{0}api.door43.org/check_download?commit_id={1}";
-
 function getCheckDownloadsUrl(commitID, pageUrl) {
     var prefix = getSiteFromPage(pageUrl);
     return 'https://' + prefix + 'api.door43.org/check_download?commit_id=' + commitID;
