@@ -322,6 +322,12 @@ function getSiteFromPage(pageUrl) {
     }
     return prefix;
 }
+
+function getLanguagePageViewUrl(pageUrl) {
+    var prefix = getSiteFromPage(pageUrl);
+    return 'https://' + prefix + 'api.door43.org/language_view_count';
+}
+
 function getPageViewUrl(pageUrl) {
     var prefix = getSiteFromPage(pageUrl);
     return 'https://' + prefix + 'api.door43.org/page_view_count';
@@ -345,15 +351,14 @@ function processPageViewSuccessResponse(data) {
     return response;
 }
 
-function setPageViews(span, pageUrl, increment) {
-    var url = getPageViewUrl(pageUrl);
+function getAndUpdatePageViews(span, pageCountUrl, pageUrl, increment) {
     var params = {
         path: pageUrl,
         increment: increment
     };
 
     $.ajax({
-        url: url,
+        url: pageCountUrl,
         type: 'GET',
         cache: "false",
         data: params,
@@ -374,6 +379,15 @@ function setPageViews(span, pageUrl, increment) {
             return error;
         }
     });
-
     return false;
+}
+
+function setPageViews(span, pageUrl, increment) {
+    var url = getPageViewUrl(pageUrl);
+    return getAndUpdatePageViews(span, url, pageUrl, increment);
+}
+
+function setLanguagePageViews(span, pageUrl, increment) {
+    var url = getLanguagePageViewUrl(pageUrl);
+    return getAndUpdatePageViews(span, url, pageUrl, increment);
 }
