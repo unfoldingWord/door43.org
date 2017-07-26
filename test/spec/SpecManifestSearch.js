@@ -586,7 +586,6 @@ describe('Test Manifest Search', function () {
         expectedSearchKeys.forEach(function (key) {
             var value = possibleKeys[key];
             if (value ) {
-                var value = possibleKeys[key];
                 expectedKeyData[key] = value;
                 delete unExpectedKeyData[key];
             } else if(key !== 'full_text') {
@@ -596,9 +595,9 @@ describe('Test Manifest Search', function () {
 
         if(expectedSearchKeys.indexOf('full_text') >= 0) {
             var full_text = {
-                manifest: ["#m", "manifest_lower", ":match"],
-                user_name: ["#r", "repo_name_lower", ":match"],
-                repo_name: ["#u", "user_name_lower", ":match"],
+                manifest: ["#m", "manifest_lower", ":match0"],
+                user_name: ["#r", "repo_name_lower", ":match0"],
+                repo_name: ["#u", "user_name_lower", ":match0"],
             };
 
             _.each(full_text,  function (value, key) {
