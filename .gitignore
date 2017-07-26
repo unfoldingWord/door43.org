@@ -15,7 +15,7 @@ s3cfg-prod
 secrets.tar
 node_modules/
 coverage/
-js/db_keys.js
+js/db_keys*
 karma.log
 npm-debug.log
 

@@ -25,6 +25,7 @@ function onProjectPageLoaded() {
     $('#last-updated').html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
 
     saveDownloadLink(myLog);
+    setDownloadButtonState($('#download_menu_button'));
 
     var $buildStatusIcon = $('#build-status-icon');
     $buildStatusIcon.find('i').attr("class", "fa " + faSpinnerClass); // default to spinner
@@ -262,8 +263,79 @@ function setDcsHref(location) {
   $('#see-on-dcs').attr('href', href);
 }
 
+/**
+ * get commitID for download
+ * @param [commitID] if not set will try to use myCommitId and then try to extract from pageUrl
+ * @param [pageUrl] if not set will use page href
+ * @returns commitID
+ */
+function getCommid(commitID, pageUrl) {
+    if(!commitID) { // if found in build_log.json
+        if (myCommitId) { // if found in build_log.json
+            commitID = myCommitId;
+        } else {
+            commitID = extractCommitFromUrl(pageUrl);
+        }
+    }
+
+    return commitID;
+}
+
+function getCheckDownloadsUrl(commitID, pageUrl) {
+    var prefix = getSiteFromPage(pageUrl);
+    return 'https://' + prefix + 'api.door43.org/check_download?commit_id=' + commitID;
+}
+
+function setDownloadButtonState(button, commitID, pageUrl) {
+    if (pageUrl === undefined) {
+        pageUrl = window.location.href
+    }
+    var commitID_ = getCommid(commitID, pageUrl);
+    var url = getCheckDownloadsUrl(commitID_, pageUrl);
+
+    if(button) {
+        button.prop('disabled', true)
+    }
+    downloadable = false;
+    $.ajax({
+        url: url,
+        type: 'GET',
+        cache: "false",
+        dataType: 'jsonp',
+        success: function (data, status) {
+                console.log(data);
+                if(data.download_exists) {
+                    if(button) {
+                        button.prop('disabled', false)
+                    }
+                }
+                return data;
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            const error = 'Error: ' + textStatus + '\n' + errorThrown;
+            console.log(error);
+            return error;
+        }
+    });
+}
+
 const DEFAULT_DOWNLOAD_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
 var source_download = null;
+
+/**
+ * parse page url to get commit key
+ * @param pageUrl
+ * @return {{pageUrl: *, commit: *}}
+ */
+function extractCommitFromUrl(pageUrl) {
+    if (pageUrl === undefined) {
+        pageUrl = window.location.href
+    }
+
+    var parts = pageUrl.split("/");
+    var commitID = parts[6];
+    return commitID;
+}
 
 /**
  * get URL for download
@@ -271,17 +343,11 @@ var source_download = null;
  * @returns {*}
  */
 function getDownloadUrl(pageUrl) {
-    if(pageUrl == undefined) {
-        pageUrl=window.location.href
-    }
-
     if(source_download) { // if found in build_log.json
         return source_download;
     }
-
-    var parts = pageUrl.split("/");
-    var commit = parts[6];
-    var download = DEFAULT_DOWNLOAD_LOCATION + commit + ".zip";
+    var commitID = extractCommitFromUrl(pageUrl);
+    var download = DEFAULT_DOWNLOAD_LOCATION + commitID + ".zip";
     return download;
 }
 
@@ -302,7 +368,7 @@ function saveDownloadLink(myLog) {
 
 function beginsWith(pageUrl, match) {
     const pos = pageUrl.indexOf(match);
-    return pos == 0;
+    return pos === 0;
 }
 
 function getSiteFromPage(pageUrl) {

@@ -1,4 +1,121 @@
 describe('Test Download Link', function () {
+
+    it('setDownloadButtonState() download exists should enable button', function () {
+        //given
+        const expectedCommit = '123456789';
+        const dummyPage = 'http://location/u/user/repo/' + expectedCommit + '/01.html';
+        const expectedDownloadExists = true;
+        var data = {
+            download_exists: expectedDownloadExists
+        };
+        var response = {};
+        spyOn($, "ajax").and.callFake(function(e) { // mock ajax call
+            response = e.success(data);
+        });
+        var propertySet = null;
+        var propertyStateSet = null;
+        var button = {
+            prop: function(property, state) {
+                propertySet = property;
+                propertyStateSet = state;
+            }
+        };
+        var expectedError = false;
+
+        //when
+        setDownloadButtonState(button, expectedCommit, dummyPage);
+
+        //then
+        validateResults(response, expectedDownloadExists, expectedError, propertySet, propertyStateSet);
+    });
+
+    it('setDownloadButtonState() download does not exist should disable button', function () {
+        //given
+        const expectedCommit = '123456789';
+        const dummyPage = 'http://location/u/user/repo/' + expectedCommit + '/01.html';
+        const expectedDownloadExists = false;
+        var data = {
+            download_exists: expectedDownloadExists
+        };
+        var response = {};
+        spyOn($, "ajax").and.callFake(function(e) { // mock ajax call
+            response = e.success(data);
+        });
+        var propertySet = null;
+        var propertyStateSet = null;
+        var button = {
+            prop: function(property, state) {
+                propertySet = property;
+                propertyStateSet = state;
+            }
+        };
+        var expectedError = false;
+
+        //when
+        setDownloadButtonState(button, expectedCommit, dummyPage);
+
+        //then
+        validateResults(response, expectedDownloadExists, expectedError, propertySet, propertyStateSet);
+    });
+
+    it('setDownloadButtonState() download check error should disable button', function () {
+        //given
+        const expectedCommit = '';
+        const dummyPage = 'http://location/u/user/repo/' + expectedCommit + '/01.html';
+        const expectedDownloadExists = undefined;
+        var expectedError = true;
+        var data = {
+            'ErrorMessage': 'error'
+        };
+        var response = {};
+        spyOn($, "ajax").and.callFake(function(e) { // mock ajax call
+            response = e.success(data);
+        });
+        var propertySet = null;
+        var propertyStateSet = null;
+        var button = {
+            prop: function(property, state) {
+                propertySet = property;
+                propertyStateSet = state;
+            }
+        };
+
+        //when
+        setDownloadButtonState(button, expectedCommit, dummyPage);
+
+        //then
+        validateResults(response, expectedDownloadExists, expectedError, propertySet, propertyStateSet);
+    });
+
+    it('setDownloadButtonState() download get error should disable button', function () {
+        //given
+        const expectedCommit = '123456789';
+        const dummyPage = 'http://location/u/user/repo/' + expectedCommit + '/01.html';
+        const expectedDownloadExists = undefined;
+        var expectedResponseErrorMessage = false;
+        var response = {};
+        const errorStatus = 'error status';
+        const errorThrown = 'error thrown';
+        const expectedCommError = 'Error: ';
+        spyOn($, "ajax").and.callFake(function(e) { // mock ajax call
+            response = e.error(null, errorStatus, errorThrown);
+        });
+        var propertySet = null;
+        var propertyStateSet = null;
+        var button = {
+            prop: function(property, state) {
+                propertySet = property;
+                propertyStateSet = state;
+            }
+        };
+
+        //when
+        setDownloadButtonState(button, expectedCommit, dummyPage);
+
+        //then
+        validateResults(response, expectedDownloadExists, expectedResponseErrorMessage, propertySet, propertyStateSet, expectedCommError);
+    });
+
     it('getDownloadUrl() should pick up cached source', function () {
         //given
         const expectedURL = 'http://SOMETHING/SAVED';
@@ -95,5 +212,20 @@ describe('Test Download Link', function () {
         //then
         expect(source_download).toBeNull();
     });
+
+    //
+    // helpers
+    //
+
+    function validateResults(response, expectedDownloadExists, expectedResponseErrorMessage, propertySet, propertyStateSet, expectedCommError) {
+        if(!expectedCommError) {
+            expect(response['download_exists']).toEqual(expectedDownloadExists);
+            expect(response.hasOwnProperty('ErrorMessage')).toEqual(expectedResponseErrorMessage);
+        } else {
+            expect(response.indexOf(expectedCommError)).toEqual(0);
+        }
+        expect(propertySet).toEqual('disabled');
+        expect(propertyStateSet).toEqual(!expectedDownloadExists); // not disabled if download exists
+    }
 
 });
