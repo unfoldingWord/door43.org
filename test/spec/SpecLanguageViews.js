@@ -1,4 +1,4 @@
-describe('PageViews', function () {
+describe('LanguageViews', function () {
 
     describe('Test setLanguagePageViews()', function () {
         it('setLanguagePageViews() valid view_count should generate message', function () {
