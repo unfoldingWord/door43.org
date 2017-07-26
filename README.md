@@ -57,7 +57,7 @@ The master branch is available at https://live.door43.org (soon to be at https:/
 
 #### Pre Production Testing
 
-You may run `make test`, or `make build`, or `make serve` to test and review your changes locally.  Once the `cibuild.sh` script passes successfully locally, push `test` branch.  Follow setup instructions in `s3_test_push.sh` and then run the script  `s3_test_push.sh`.  Your changes will then be uploaded to `http://test-door43.org.s3-website-us-west-2.amazonaws.com`
+You may run `make test`, or `make build`, or `make serve` to test and review your changes locally.  Once the `cibuild.sh` script passes successfully locally, deploy to `test` by following setup instructions in `s3_test_push.sh` and then run the script  `s3_test_push.sh`.  Your changes will then be uploaded to `http://test-door43.org.s3-website-us-west-2.amazonaws.com`
 
 #### Develop Testing
 
