@@ -55,6 +55,10 @@ The develop branch may be seen online at http://test-door43.org.s3-website-us-we
 
 The master branch is available at https://live.door43.org (soon to be at https://door43.org).
 
+#### Adding language pages
+
+To create a new language landing page, add a directory for it under `pages`, like `pages/en`, and add an `index.md` file to it. It needs the same yaml headers, localized for the new language, as the one in the `en` directory.
+
 #### Pre Production Testing
 
 You may run `make test`, or `make build`, or `make serve` to test and review your changes locally.  Once the `cibuild.sh` script passes successfully locally, deploy to `test` by following setup instructions in `s3_test_push.sh` and then run the script  `s3_test_push.sh`.  Your changes will then be uploaded to `http://test-door43.org.s3-website-us-west-2.amazonaws.com`
