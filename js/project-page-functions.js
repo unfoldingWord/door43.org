@@ -300,7 +300,7 @@ function updateTextForDownloadItem(inputFormat) {
  * @return {*} jQuery item or null if not found
  */
 function getSpanForDownloadMenuItem() {
-    var $downloadMenuItem = $('#download_menu_item'); // quickest way
+    var $downloadMenuItem = $('#download_menu_source_item'); // quickest way
     if (! $downloadMenuItem.length) { // if not found on older pages, try to drill down in menu
         $downloadMenuItem = $("#download_menu ul li span");
         if (! $downloadMenuItem.length) { // if still not found, return null
