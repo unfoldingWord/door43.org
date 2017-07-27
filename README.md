@@ -57,7 +57,7 @@ The master branch is available at https://live.door43.org (soon to be at https:/
 
 #### Adding language pages
 
-To create a new language landing page, add a directory for it under `pages`, like `pages/en`, and add an `index.md` file to it. It needs the same yaml headers, localized for the new language, as the one in the `en` directory.
+To create a new language landing page, add a directory for it under `_data` (like `data/en`), with the `*.yml` files localized for the new language. Also add a directory for it under `pages` (like `pages/en`) and add an `index.md` file to it. Update the links in the `*.md` files to include the new language code in the paths.
 
 #### Pre Production Testing
 
