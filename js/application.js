@@ -142,6 +142,7 @@ function changeMissingtextForLanguageCode(lang_code, subPath) {
 /**
  * if href is 404 page and a language page, return language code and path part of href
  * @param href
+ * @param $links - links in header
  * @return {{lang_code: *, subPath: *}}
  */
 function checkForUndefinedLanguagePage(href, $links) {
@@ -178,6 +179,7 @@ function checkForUndefinedLanguagePage(href, $links) {
 /**
  * if href if 404 page and a language page, update displayed text with more options
  * @param href
+ * @param $links - links in header
  */
 function updateTextOnUndefinedLanguagePage(href, $links) {
     var __ret = checkForUndefinedLanguagePage(href, $links);
@@ -185,6 +187,9 @@ function updateTextOnUndefinedLanguagePage(href, $links) {
     var subPath = __ret.subPath;
     if (lang_code) {
         changeMissingtextForLanguageCode(lang_code, subPath);
+        $.getScript('/js/project-page-functions.js', function() {
+            setLanguagePageViews(null,href,1);
+        })
     }
 }
 
