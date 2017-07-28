@@ -151,8 +151,14 @@ function getSubPath(href) {
 function getValidLanguageCode(href) {
     var parts = href.split('/');
     var lang_code = decodeURI(parts[3]).toLowerCase();
-    if (! /^[a-z]{2,3}(-x-[a-z]+)?$/.test(lang_code)) { // validate lang_code
-        lang_code = null; // Validation failed
+    var langCode = /^[a-z]{2,3}(-[a-z0-9]{2,3})?$/;
+    var matched = langCode.test(lang_code);
+    if (!matched) { // validate lang_code
+        var extendedlangCode = /^[a-z]{2,3}(-x-[a-z0-9]+)?$/;
+        matched = extendedlangCode.test(lang_code);
+        if (!matched) { // validate lang_code
+            lang_code = null; // Validation failed
+        }
     }
     return lang_code;
 }

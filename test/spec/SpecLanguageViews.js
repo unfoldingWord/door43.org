@@ -109,6 +109,32 @@ describe('LanguageViews', function () {
             expect(lang_code).toEqual(expectedLangCode);
         });
 
+        it('getValidLanguageCode() "pt-BR" language code should return lang_code', function () {
+            //given
+            const code = "pt-BR";
+            const expectedLangCode = code.toLowerCase();
+            const href = "http://door43.org/" + code;
+
+            //when
+            var lang_code = getValidLanguageCode(href);
+
+            //then
+            expect(lang_code).toEqual(expectedLangCode);
+        });
+
+        it('getValidLanguageCode() "es-419" language code should return lang_code', function () {
+            //given
+            const code = "es-419";
+            const expectedLangCode = code.toLowerCase();
+            const href = "http://door43.org/" + code;
+
+            //when
+            var lang_code = getValidLanguageCode(href);
+
+            //then
+            expect(lang_code).toEqual(expectedLangCode);
+        });
+
         it('getValidLanguageCode() "ru-b" language code should return null lang_code', function () {
             //given
             const code = "ru-b";
