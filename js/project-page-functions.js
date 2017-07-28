@@ -1,4 +1,5 @@
 var myCommitId, myRepoName, myOwner, margin_top;
+
 /**
  * Called to initialize the project page
  */
@@ -19,56 +20,11 @@ function onProjectPageLoaded() {
   $('#left-sidebar').find('#page-nav option[value="' + filename + '"]').attr('selected', 'selected');
 
   $.getJSON("build_log.json", function (myLog) {
-    myCommitId = myLog.commit_id.substring(0, 10);
-    myOwner = myLog.repo_owner;
-    myRepoName = myLog.repo_name;
-    $('#last-updated').html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
-
-    saveDownloadLink(myLog);
-    setDownloadButtonState($('#download_menu_button'));
-
-    var $buildStatusIcon = $('#build-status-icon');
-    $buildStatusIcon.find('i').attr("class", "fa " + faSpinnerClass); // default to spinner
-    setOverallConversionStatus(myLog.status);
-    if (myLog.errors.length > 0)
-      $buildStatusIcon.attr("title", myLog.errors.join("\n"));
-    else if (myLog.warnings.length > 0)
-      $buildStatusIcon.attr("title", myLog.warnings.join("\n"));
-    else if (myLog.message)
-      $buildStatusIcon.attr("title", myLog.message);
-
-    console.log("Building sidebar for " + myCommitId);
-
     var $revisions = $('#left-sidebar').find('#revisions');
-
-    $revisions.empty();
+    processBuildLogJson(myLog, $('#download_menu_button'), $('#build-status-icon'), $('#last-updated'), $revisions);
 
     $.getJSON("../project.json", function (project) {
-      var counter = 1;
-      $.each(project.commits.reverse(), function (index, commit) {
-        var date = new Date(commit.created_at);
-        var options = {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          timeZone: "UTC"
-        };
-
-        var display = (counter++ > 10) ? 'style="display: none"' : '';
-        var iconHtml = getCommitConversionStatusIcon(commit.status);
-        var dateStr = date.toLocaleString("en-US", options);
-
-        if (commit.id !== myCommitId) {
-          dateStr = '<a href="../' + commit.id + '/index.html">' + dateStr + '</a>';
-        }
-
-        $revisions.append('<tr ' + display + '><td>' + dateStr + '</td><td>' + iconHtml + '</td></tr>');
-      }); // End each
-
-      if (counter > 10)
-        $revisions.append('<tr id="view_more_tr"><td colspan="2" class="borderless"><a href="javascript:showTenMore();">View More...</a></tr>');
+        processProjectJson(project, $revisions);
     })
       .done(function () {
         console.log("processed project.json");
@@ -137,6 +93,56 @@ function onProjectPageLoaded() {
   });
 
   setPageViews($('#num-of-views'),window.location.href,1);
+}
+
+function processProjectJson(project, $revisions) {
+    var counter = 1;
+    $.each(project.commits.reverse(), function (index, commit) {
+        var date = new Date(commit.created_at);
+        var options = {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            timeZone: "UTC"
+        };
+
+        var display = (counter++ > 10) ? 'style="display: none"' : '';
+        var iconHtml = getCommitConversionStatusIcon(commit.status);
+        var dateStr = date.toLocaleString("en-US", options);
+
+        if (commit.id !== myCommitId) {
+            dateStr = '<a href="../' + commit.id + '/index.html">' + dateStr + '</a>';
+        }
+
+        $revisions.append('<tr ' + display + '><td>' + dateStr + '</td><td>' + iconHtml + '</td></tr>');
+    }); // End each
+
+    if (counter > 10)
+        $revisions.append('<tr id="view_more_tr"><td colspan="2" class="borderless"><a href="javascript:showTenMore();">View More...</a></tr>');
+}
+
+function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $lastUpdated, $revisions) {
+    myCommitId = myLog.commit_id.substring(0, 10);
+    myOwner = myLog.repo_owner;
+    myRepoName = myLog.repo_name;
+    $lastUpdated.html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
+
+    saveDownloadLink(myLog);
+    setDownloadButtonState($downloadMenuButton);
+
+    $buildStatusIcon.find('i').attr("class", "fa " + faSpinnerClass); // default to spinner
+    setOverallConversionStatus(myLog.status);
+    if (myLog.errors.length > 0)
+        $buildStatusIcon.attr("title", myLog.errors.join("\n"));
+    else if (myLog.warnings.length > 0)
+        $buildStatusIcon.attr("title", myLog.warnings.join("\n"));
+    else if (myLog.message)
+        $buildStatusIcon.attr("title", myLog.message);
+
+    console.log("Building sidebar for " + myCommitId);
+    $revisions.empty();
 }
 
 /**
@@ -281,20 +287,57 @@ function getCommid(commitID, pageUrl) {
     return commitID;
 }
 
+/**
+ * update download menu item with appropriate text based on input_format - markdown for md, and USFM otherwise
+ * @param inputFormat
+ */
+function updateTextForDownloadItem(inputFormat) {
+    var $downloadMenuItem = getSpanForDownloadMenuItem();
+    if ($downloadMenuItem) {
+        var downloadItemText = getTextForDownloadItem(inputFormat);
+        $downloadMenuItem.html(downloadItemText);
+    }
+}
+
+/**
+ * get span that has text for download menu item
+ * @return {*} jQuery item or null if not found
+ */
+function getSpanForDownloadMenuItem() {
+    var $downloadMenuItem = $('#download_menu_source_item'); // quickest way
+    if (! $downloadMenuItem.length) { // if not found on older pages, try to drill down in menu
+        $downloadMenuItem = $("#download_menu ul li span");
+        if (! $downloadMenuItem.length) { // if still not found, return null
+            return null;
+        }
+    }
+    return $downloadMenuItem;
+}
+
+/**
+ * get text to show based on input_format - markdown for md, and USFM otherwise
+ * @param inputFormat
+ * @return {string}
+ */
+function getTextForDownloadItem(inputFormat) {
+    var downloadItemText = (inputFormat === 'md') ? "Markdown" : 'USFM';
+    return downloadItemText;
+}
+
 function getCheckDownloadsUrl(commitID, pageUrl) {
     var prefix = getSiteFromPage(pageUrl);
     return 'https://' + prefix + 'api.door43.org/check_download?commit_id=' + commitID;
 }
 
-function setDownloadButtonState(button, commitID, pageUrl) {
+function setDownloadButtonState($button, commitID, pageUrl) {
     if (pageUrl === undefined) {
         pageUrl = window.location.href
     }
     var commitID_ = getCommid(commitID, pageUrl);
     var url = getCheckDownloadsUrl(commitID_, pageUrl);
 
-    if(button) {
-        button.prop('disabled', true)
+    if($button) {
+        $button.prop('disabled', true)
     }
     downloadable = false;
     $.ajax({
@@ -305,8 +348,8 @@ function setDownloadButtonState(button, commitID, pageUrl) {
         success: function (data, status) {
                 console.log(data);
                 if(data.download_exists) {
-                    if(button) {
-                        button.prop('disabled', false)
+                    if($button) {
+                        $button.prop('disabled', false)
                     }
                 }
                 return data;
