@@ -1,5 +1,48 @@
 describe('LanguageViews', function () {
 
+    describe('Test updateTextOnUndefinedLanguagePage()', function () {
+        beforeEach(function () {
+            jasmine.getFixtures().fixturesPath = 'base/test/fixtures';
+            loadFixtures('404-fixture.html');
+
+            // verify the fixture loaded successfully
+            var $div = jQuery('.content-container');
+            expect($div.length).toBeTruthy();
+
+            spyOn($, "getScript").and.callFake(function(path, fnction) { // mock ajax call
+                fnction();
+            });
+
+            spyOn(window, "setLanguagePageViews").and.returnValue("dummy");
+        });
+
+        it('updateTextOnUndefinedLanguagePage() should setup language options', function () {
+            //given
+            const expectedLangCode = "ru";
+            const expectedSubPath = expectedLangCode + "/index.html";
+            const href = "http://door43.org/" + expectedSubPath;
+            const $links = [
+                {
+                    href: "http://door43.org/" + expectedSubPath
+                },
+                {
+                    href: "http://door43.org/404.html"
+                }
+            ];
+
+            //when
+            updateTextOnUndefinedLanguagePage(href, $links);
+
+            //then
+            var $li = $('.content-container .page-content div ul li');
+            expect($li.length).toEqual(4);
+            expect($li[0].innerHTML).toContain("/en?lc=" + expectedLangCode);
+            expect($li[1].innerHTML).toContain("history.go(-1)");
+            expect($li[2].innerHTML).toContain("http://dw.door43.org/" + expectedSubPath);
+            expect($li[3].innerHTML).toContain("<a href=\"/en/contact\">Contact Us</a> to let us know");
+        });
+    });
+
     describe('Test getValidLanguageCode()', function () {
         it('getValidLanguageCode() two letter language code should return lang_code', function () {
             //given
