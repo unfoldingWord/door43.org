@@ -130,7 +130,7 @@ function changeMissingtextForLanguageCode(lang_code, subPath) {
         var $ul = $div.find('ul');
         if ($ul.length) {
             var search_link = buildAnchor("/en?lc=" + lang_code, "'" + lang_code + "' content");
-            appendLineItem($ul, "Try searching for <a href=\"/en/contact\">" + search_link + "</a>.");
+            appendLineItem($ul, "Try searching for " + search_link + ".");
             appendLineItem($ul, "<a href=\"javascript: history.go(-1)\">Go Back</a> to previous page.");
             var old_link = buildAnchor("http://dw.door43.org/" + subPath, "old door43.org site");
             appendLineItem($ul, "View this page on the " + old_link + ".");

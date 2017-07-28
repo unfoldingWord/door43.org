@@ -1,5 +1,33 @@
 describe('LanguageViews', function () {
 
+    describe('Test changeMissingtextForLanguageCode()', function () {
+        beforeEach(function () {
+            jasmine.getFixtures().fixturesPath = 'base/test/fixtures';
+            loadFixtures('404-fixture.html');
+
+            // verify the fixture loaded successfully
+            var $div = jQuery('.content-container');
+            expect($div.length).toBeTruthy();
+        });
+
+        it('changeMissingtextForLanguageCode() should setup language options', function () {
+            //given
+            const subPath = 'ru/index.html';
+            const lang_code = 'ru';
+
+            //when
+            changeMissingtextForLanguageCode(lang_code, subPath);
+
+            //then
+            var $li = $('.content-container .page-content div ul li');
+            expect($li.length).toEqual(4);
+            expect($li[0].innerHTML).toContain("/en?lc=" + lang_code);
+            expect($li[1].innerHTML).toContain("history.go(-1)");
+            expect($li[2].innerHTML).toContain("http://dw.door43.org/" + subPath);
+            expect($li[3].innerHTML).toContain("<a href=\"/en/contact\">Contact Us</a> to let us know");
+        });
+    });
+
     describe('Test setLanguagePageViews()', function () {
         it('setLanguagePageViews() valid view_count should generate message', function () {
             //given
