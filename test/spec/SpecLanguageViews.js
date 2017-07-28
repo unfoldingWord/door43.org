@@ -1,5 +1,204 @@
 describe('LanguageViews', function () {
 
+    describe('Test getValidLanguageCode()', function () {
+        it('getValidLanguageCode() two letter language code should return lang_code', function () {
+            //given
+            const code = "ru";
+            const expectedLangCode = code;
+            const href = "http://door43.org/" + code;
+
+            //when
+            var lang_code = getValidLanguageCode(href);
+
+            //then
+            expect(lang_code).toEqual(expectedLangCode);
+        });
+
+        it('getValidLanguageCode() three letter language code should return lang_code', function () {
+            //given
+            const code = "rub";
+            const expectedLangCode = code;
+            const href = "http://door43.org/" + code;
+
+            //when
+            var lang_code = getValidLanguageCode(href);
+
+            //then
+            expect(lang_code).toEqual(expectedLangCode);
+        });
+
+        it('getValidLanguageCode() one letter language code should return null lang_code', function () {
+            //given
+            const code = "r";
+            const expectedLangCode = null;
+            const href = "http://door43.org/" + code;
+
+            //when
+            var lang_code = getValidLanguageCode(href);
+
+            //then
+            expect(lang_code).toEqual(expectedLangCode);
+        });
+
+        it('getValidLanguageCode() no language code should return null lang_code', function () {
+            //given
+            const code = "";
+            const expectedLangCode = null;
+            const href = "http://door43.org/" + code;
+
+            //when
+            var lang_code = getValidLanguageCode(href);
+
+            //then
+            expect(lang_code).toEqual(expectedLangCode);
+        });
+
+        it('getValidLanguageCode() "ru-" language code should return null lang_code', function () {
+            //given
+            const code = "ru-";
+            const expectedLangCode = null;
+            const href = "http://door43.org/" + code;
+
+            //when
+            var lang_code = getValidLanguageCode(href);
+
+            //then
+            expect(lang_code).toEqual(expectedLangCode);
+        });
+
+        it('getValidLanguageCode() "ru-b" language code should return null lang_code', function () {
+            //given
+            const code = "ru-b";
+            const expectedLangCode = null;
+            const href = "http://door43.org/" + code;
+
+            //when
+            var lang_code = getValidLanguageCode(href);
+
+            //then
+            expect(lang_code).toEqual(expectedLangCode);
+        });
+
+        it('getValidLanguageCode() "ru-x" language code should return null lang_code', function () {
+            //given
+            const code = "ru-x";
+            const expectedLangCode = null;
+            const href = "http://door43.org/" + code;
+
+            //when
+            var lang_code = getValidLanguageCode(href);
+
+            //then
+            expect(lang_code).toEqual(expectedLangCode);
+        });
+
+        it('getValidLanguageCode() "ru-x-" language code should return null lang_code', function () {
+            //given
+            const code = "ru-x-";
+            const expectedLangCode = null;
+            const href = "http://door43.org/" + code;
+
+            //when
+            var lang_code = getValidLanguageCode(href);
+
+            //then
+            expect(lang_code).toEqual(expectedLangCode);
+        });
+
+        it('getValidLanguageCode() "ru-x-a" language code should return lang_code', function () {
+            //given
+            const code = "ru-x-a";
+            const expectedLangCode = code;
+            const href = "http://door43.org/" + code;
+
+            //when
+            var lang_code = getValidLanguageCode(href);
+
+            //then
+            expect(lang_code).toEqual(expectedLangCode);
+        });
+    });
+
+    describe('Test checkForUndefinedLanguagePage()', function () {
+       it('checkForUndefinedLanguagePage() unsupported language page should return lang_code', function () {
+           //given
+           const expectedLangCode = "ru";
+           const expectedSubPath = expectedLangCode + "/index.html";
+           const href = "http://door43.org/" + expectedSubPath;
+           const $links = [
+               {
+                   href: "http://door43.org/" + expectedSubPath
+               },
+               {
+                   href: "http://door43.org/404.html"
+               }
+           ];
+
+           //when
+           var lang_code = checkForUndefinedLanguagePage(href, $links);
+
+           //then
+           expect(lang_code).toEqual(expectedLangCode);
+       });
+
+        it('checkForUndefinedLanguagePage() unsupported user page should return null lang_code', function () {
+            //given
+            const expectedLangCode = null;
+            const href = "http://door43.org/u/stuff";
+            const $links = [
+                {
+                    href: href
+                },
+                {
+                    href: "http://door43.org/404.html"
+                }
+            ];
+
+            //when
+            var lang_code = checkForUndefinedLanguagePage(href, $links);
+
+            //then
+            expect(lang_code).toEqual(expectedLangCode);
+        });
+
+        it('checkForUndefinedLanguagePage() unsupported unknown page should return null lang_code', function () {
+            //given
+            const expectedLangCode = null;
+            const href = "http://door43.org/dummy";
+            const $links = [
+                {
+                    href: href
+                },
+                {
+                    href: "http://door43.org/404.html"
+                }
+            ];
+
+            //when
+            var lang_code = checkForUndefinedLanguagePage(href, $links);
+
+            //then
+            expect(lang_code).toEqual(expectedLangCode);
+        });
+
+        it('checkForUndefinedLanguagePage() supported page should return null lang_code', function () {
+            //given
+            const expectedLangCode = null;
+            const href = "http://door43.org/en";
+            const $links = [
+                {
+                    href: href
+                }
+            ];
+
+            //when
+            var lang_code = checkForUndefinedLanguagePage(href, $links);
+
+            //then
+            expect(lang_code).toEqual(expectedLangCode);
+        });
+    });
+    
     describe('Test changeMissingtextForLanguageCode()', function () {
         beforeEach(function () {
             jasmine.getFixtures().fixturesPath = 'base/test/fixtures';

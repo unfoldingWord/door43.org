@@ -139,41 +139,42 @@ function changeMissingtextForLanguageCode(lang_code, subPath) {
     }
 }
 
+function getSubPath(href) {
+    return href.split('/').splice(3).join('/');
+}
+
 /**
- * if href is 404 page and a language page, return language code and path part of href
+ * parse href for language code and validate it.  If valid return it otherwise return null
+ * @param href
+ * @return {string}
+ */
+function getValidLanguageCode(href) {
+    var parts = href.split('/');
+    var lang_code = decodeURI(parts[3]).toLowerCase();
+    if (! /^[a-z]{2,3}(-x-[a-z]+)?$/.test(lang_code)) { // validate lang_code
+        lang_code = null; // Validation failed
+    }
+    return lang_code;
+}
+
+/**
+ * if href is 404 page and a language page, return language code else return null
  * @param href
  * @param $links - links in header
- * @return {{lang_code: *, subPath: *}}
+ * @return {string}
  */
 function checkForUndefinedLanguagePage(href, $links) {
-    var lang_code = null;
-    var subPath = null;
-    var foundlanguage404 = false;
+    var found404 = false;
     $.each($links, function (index, $link) {
         var pos = $link.href.indexOf('/404.html');
         if (pos >= 0) {
-            foundlanguage404 = true;
+            found404 = true;
         }
     });
-    if (foundlanguage404) { // further check for valid language code
-        var parts = href.split('/');
-        lang_code = parts[3];
-        var lang_code_parts = lang_code.split('-');
-        var lang_code_prefix = lang_code_parts[0];
-        if ((lang_code_prefix.length < 2) || (lang_code_prefix.length > 3)) {
-            lang_code = null;
-        } else {
-            subPath = parts.splice(3).join('/');
-
-            if (lang_code_parts.length >= 2) { // if there is an extension, check that
-                var lang_code_extension = lang_code_parts.slice(1).join('-');
-                if (lang_code_extension.length < 1) {
-                    lang_code = null;
-                }
-            }
-        }
+    if (found404) { // further check for valid language code
+        return getValidLanguageCode(href);
     }
-    return {lang_code: lang_code, subPath: subPath};
+    return null;
 }
 
 /**
@@ -182,10 +183,9 @@ function checkForUndefinedLanguagePage(href, $links) {
  * @param $links - links in header
  */
 function updateTextOnUndefinedLanguagePage(href, $links) {
-    var __ret = checkForUndefinedLanguagePage(href, $links);
-    var lang_code = __ret.lang_code;
-    var subPath = __ret.subPath;
+    var lang_code = checkForUndefinedLanguagePage(href, $links);
     if (lang_code) {
+        var subPath = getSubPath(href);
         changeMissingtextForLanguageCode(lang_code, subPath);
         $.getScript('/js/project-page-functions.js', function() {
             setLanguagePageViews(null,href,1);
