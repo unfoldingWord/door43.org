@@ -111,7 +111,7 @@ function buildAnchor(href, text) {
  * @param lang_code
  * @param subPath
  */
-function changeMissingtextForLanguageCode(lang_code, subPath) {
+function changeMissingTextForLanguageCode(lang_code, subPath) {
     var $div = $('.content-container .page-content div');
     if ($div.length) {
         var script_text = "";
@@ -192,7 +192,7 @@ function updateTextOnUndefinedLanguagePage(href, $links) {
     var lang_code = checkForUndefinedLanguagePage(href, $links);
     if (lang_code) {
         var subPath = getSubPath(href);
-        changeMissingtextForLanguageCode(lang_code, subPath);
+        changeMissingTextForLanguageCode(lang_code, subPath);
         $.getScript('/js/project-page-functions.js', function() {
             setLanguagePageViews(null,href,1);
         })

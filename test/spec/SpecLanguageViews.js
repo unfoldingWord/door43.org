@@ -268,7 +268,7 @@ describe('LanguageViews', function () {
         });
     });
     
-    describe('Test changeMissingtextForLanguageCode()', function () {
+    describe('Test changeMissingTextForLanguageCode()', function () {
         beforeEach(function () {
             jasmine.getFixtures().fixturesPath = 'base/test/fixtures';
             loadFixtures('404-fixture.html');
@@ -278,13 +278,13 @@ describe('LanguageViews', function () {
             expect($div.length).toBeTruthy();
         });
 
-        it('changeMissingtextForLanguageCode() should setup language options', function () {
+        it('changeMissingTextForLanguageCode() should setup language options', function () {
             //given
             const subPath = 'ru/index.html';
             const lang_code = 'ru';
 
             //when
-            changeMissingtextForLanguageCode(lang_code, subPath);
+            changeMissingTextForLanguageCode(lang_code, subPath);
 
             //then
             var $li = $('.content-container .page-content div ul li');
