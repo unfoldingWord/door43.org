@@ -287,6 +287,43 @@ function getCommid(commitID, pageUrl) {
     return commitID;
 }
 
+/**
+ * update download menu item with appropriate text based on input_format - markdown for md, and USFM otherwise
+ * @param inputFormat
+ */
+function updateTextForDownloadItem(inputFormat) {
+    var $downloadMenuItem = getSpanForDownloadMenuItem();
+    if ($downloadMenuItem) {
+        var downloadItemText = getTextForDownloadItem(inputFormat);
+        $downloadMenuItem.html(downloadItemText);
+    }
+}
+
+/**
+ * get span that has text for download menu item
+ * @return {*} jQuery item or null if not found
+ */
+function getSpanForDownloadMenuItem() {
+    var $downloadMenuItem = $('#download_menu_source_item'); // quickest way
+    if (! $downloadMenuItem.length) { // if not found on older pages, try to drill down in menu
+        $downloadMenuItem = $("#download_menu ul li span");
+        if (! $downloadMenuItem.length) { // if still not found, return null
+            return null;
+        }
+    }
+    return $downloadMenuItem;
+}
+
+/**
+ * get text to show based on input_format - markdown for md, and USFM otherwise
+ * @param inputFormat
+ * @return {string}
+ */
+function getTextForDownloadItem(inputFormat) {
+    var downloadItemText = (inputFormat === 'md') ? "Markdown" : 'USFM';
+    return downloadItemText;
+}
+
 function getCheckDownloadsUrl(commitID, pageUrl) {
     var prefix = getSiteFromPage(pageUrl);
     return 'https://' + prefix + 'api.door43.org/check_download?commit_id=' + commitID;
