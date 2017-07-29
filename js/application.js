@@ -161,7 +161,7 @@ function getValidLanguageCode(href) {
             matched = extendedlangCodeRegEx2.test(lang_code); // validate extended lang_code
             if (!matched) {
                 const specialCase = "kmv-x-patuá"; // since javascript regex may not support unicode extension, we will support this specially
-                if (lang_code != specialCase) {
+                if (lang_code !== specialCase) {
                     lang_code = null; // Validation failed
                 }
             }
