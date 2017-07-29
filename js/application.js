@@ -157,7 +157,7 @@ function getValidLanguageCode(href) {
         const extendedlangCodeRegEx = /^[a-z]{2,3}(-x-[a-z0-9]+)?$/; // e.g. abc-x-abcdefg
         matched = extendedlangCodeRegEx.test(lang_code); // validate extended lang_code
         if (!matched) {
-            const extendedlangCodeRegEx2 = /^(-x-[a-z0-9\p{Ll}]+){1}$/; // e.g. -x-abcdefg
+            const extendedlangCodeRegEx2 = /^(-x-[a-z0-9]+){1}$/; // e.g. -x-abcdefg
             matched = extendedlangCodeRegEx2.test(lang_code); // validate extended lang_code
             if (!matched) {
                 const specialCase = "kmv-x-patuá"; // since javascript regex may not support unicode extension, we will support this specially
