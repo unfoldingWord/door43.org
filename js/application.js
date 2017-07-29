@@ -149,15 +149,22 @@ function getSubPath(href) {
  * @return {string}
  */
 function getValidLanguageCode(href) {
-    var parts = href.split('/');
+    const parts = href.split('/');
     var lang_code = decodeURI(parts[3]).toLowerCase();
-    var langCode = /^[a-z]{2,3}(-[a-z0-9]{2,3})?$/;
-    var matched = langCode.test(lang_code);
-    if (!matched) { // validate lang_code
-        var extendedlangCode = /^[a-z]{2,3}(-x-[a-z0-9]+)?$/;
-        matched = extendedlangCode.test(lang_code);
-        if (!matched) { // validate lang_code
-            lang_code = null; // Validation failed
+    const langCodeRegEx = /^[a-z]{2,3}(-[a-z0-9]{2,4})?$/; // e.g. ab, abc, pt-br, es-419, sr-latn
+    var matched = langCodeRegEx.test(lang_code); // validate lang_code
+    if (!matched) {
+        const extendedlangCodeRegEx = /^[a-z]{2,3}(-x-[a-z0-9]+)?$/; // e.g. abc-x-abcdefg
+        matched = extendedlangCodeRegEx.test(lang_code); // validate extended lang_code
+        if (!matched) {
+            const extendedlangCodeRegEx2 = /^(-x-[a-z0-9\p{Ll}]+){1}$/; // e.g. -x-abcdefg
+            matched = extendedlangCodeRegEx2.test(lang_code); // validate extended lang_code
+            if (!matched) {
+                const specialCase = "kmv-x-patuá"; // since javascript regex may not support unicode extension, we will support this specially
+                if (lang_code != specialCase) {
+                    lang_code = null; // Validation failed
+                }
+            }
         }
     }
     return lang_code;

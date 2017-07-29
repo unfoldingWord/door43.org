@@ -109,30 +109,48 @@ describe('LanguageViews', function () {
             expect(lang_code).toEqual(expectedLangCode);
         });
 
-        it('getValidLanguageCode() "pt-BR" language code should return lang_code', function () {
-            //given
-            const code = "pt-BR";
-            const expectedLangCode = code.toLowerCase();
-            const href = "http://door43.org/" + code;
+        it('getValidLanguageCode() all valid language codes should return lang_code', function () {
+            jasmine.getJSONFixtures().fixturesPath = 'base/test/fixtures';
+            var languages = getJSONFixture('langnames.json');
+            for(var i = 0; i < languages.length; i++) {
+                var language = languages[i];
 
-            //when
-            var lang_code = getValidLanguageCode(href);
+                //given
+                var code = language.lc;
+                var expectedLangCode = code.toLowerCase();
+                var href = "http://door43.org/" + code;
 
-            //then
-            expect(lang_code).toEqual(expectedLangCode);
+                //when
+                var lang_code = getValidLanguageCode(href);
+
+                //then
+                if(lang_code !== expectedLangCode) {
+                    console.log("Mismatch for '" + language.ln + "' - expected '" + expectedLangCode + "', but got '" + lang_code + "'");
+                    expect(lang_code).toEqual(expectedLangCode);
+                }
+            }
         });
 
-        it('getValidLanguageCode() "es-419" language code should return lang_code', function () {
-            //given
-            const code = "es-419";
-            const expectedLangCode = code.toLowerCase();
-            const href = "http://door43.org/" + code;
+        it('getValidLanguageCode() all valid temp language codes should return lang_code', function () {
+            jasmine.getJSONFixtures().fixturesPath = 'base/test/fixtures';
+            var languages = getJSONFixture('templanguages.json');
+            for(var i = 0; i < languages.length; i++) {
+                var language = languages[i];
 
-            //when
-            var lang_code = getValidLanguageCode(href);
+                //given
+                var code = language.lc;
+                var expectedLangCode = code.toLowerCase();
+                var href = "http://door43.org/" + code;
 
-            //then
-            expect(lang_code).toEqual(expectedLangCode);
+                //when
+                var lang_code = getValidLanguageCode(href);
+
+                //then
+                if(lang_code !== expectedLangCode) {
+                    console.log("Mismatch for '" + language.ln + "' - expected '" + expectedLangCode + "', but got '" + lang_code + "'");
+                    expect(lang_code).toEqual(expectedLangCode);
+                }
+            }
         });
 
         it('getValidLanguageCode() "ru-b" language code should return null lang_code', function () {
