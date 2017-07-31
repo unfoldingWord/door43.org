@@ -39,7 +39,16 @@
     <div class="float-left">
       <table>
         <tr>
-          <td><a class="bold" href="#" onclick="return scrollToResults('popular-div');">{{ site.data[page.language_code].l10n.popular }}</a>&emsp;<a class="bold" href="#" onclick="return scrollToResults('recent-div');">{{ site.data[page.language_code].l10n.recent }}</a></td>
+          <td>
+            <a class="bold" href="#" onclick="return scrollToResults('popular-div');">Popular</a>&emsp;
+            <a class="bold" href="#" onclick="return scrollToResults('recent-div');">Recent</a>
+          </td>
+
+          <td>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <span id="views"><i class="fa fa-eye"></i></span>
+            <span id="num-of-views"># views</span>
+          </td>
         </tr>
       </table>
     </div>
