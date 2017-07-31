@@ -93,6 +93,9 @@ function onProjectPageLoaded() {
   });
 
   setPageViews($('#num-of-views'),window.location.href,1);
+
+  var $footer = $("[property='dct:title']");
+  updateFooter($footer, $("title"));
 }
 
 function processProjectJson(project, $revisions) {
@@ -485,4 +488,24 @@ function setPageViews(span, pageUrl, increment) {
     });
 
     return false;
+}
+
+/**
+ * if 'HEADING' was left in footer, need to replace it with page title text
+ * @param $footer
+ * @param $title
+ */
+function updateFooter($footer, $title) {
+    if ($footer.length) {
+        var footerText = $footer[0].innerHTML;
+        if ($title.length) {
+            var replaceText = $title[0].innerText;
+            var matchText = "{{ HEADING }}";
+            var pos = footerText.indexOf(matchText);
+            if (pos >= 0) {
+                var newText = footerText.replace(matchText, replaceText);
+                $footer.html(newText);
+            }
+        }
+    }
 }
