@@ -1,10 +1,17 @@
 var myCommitId, myRepoName, myOwner, margin_top;
+var projectPageLoaded = false;
+
+$(document).ready(function(){
+    onProjectPageLoaded();
+});
 
 /**
  * Called to initialize the project page
  */
 function onProjectPageLoaded() {
-
+  if(projectPageLoaded)
+    return;
+  projectPageLoaded = true;
   $('#starred-icon').click(function () {
     if ($(this).hasClass('starred')) {
       $(this).removeClass('starred');
@@ -52,7 +59,7 @@ function onProjectPageLoaded() {
 
   /* set up scrollspy */
   var navHeight = $('.navbar').outerHeight(true);
-  $('#sidebar-nav, #revisions-div').affix({
+  $('.sidebar').affix({
     offset: {
       top: navHeight + margin_top
     }
@@ -96,6 +103,8 @@ function onProjectPageLoaded() {
 
   var $footer = $("[property='dct:title']");
   updateFooter($footer, $("title"));
+
+  setupMobileContentNavigation();
 }
 
 function processProjectJson(project, $revisions) {
@@ -522,4 +531,14 @@ function updateFooter($footer, $title) {
             }
         }
     }
+}
+
+function setupMobileContentNavigation(){
+    var $navDiv = $('<div id="mobile-content-nav" class="content-nav"></div>');
+    $navDiv.appendTo($('#pinned-header')).hide().html($('#right-sidebar-nav').html());
+
+    $('#mobile-content-nav-toggle, #mobile-content-nav a[href]').click(function() {
+        if(! $(this).hasClass('accordion-toggle'))
+            $('#mobile-content-nav').slideToggle();
+    });
 }

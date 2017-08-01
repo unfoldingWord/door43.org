@@ -31,3 +31,56 @@
     }
   }
 }
+
+
+@media (max-width: 990px) {
+  #pinned-header {
+    &.pin-to-top {
+      #sub-header {
+        position: static;
+        display: block;
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+@media (max-width: 840px) {
+  #pinned-header {
+    margin-top: 30px;
+    #header-title {
+      h1 {
+        font-size: 30px;
+        #build-status-icon {
+          i {
+            font-size: 26px;
+          }
+        }
+      }
+    }
+    &.pin-to-top {
+      top: 60px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  #pinned-header {
+  +  #header-title {
+      h1 {
+        font-size: 24px;
+        #build-status-icon {
+          i {
+            font-size: 20px;
+          }
+        }
+      }
+    }
+
+    #mobile-content-nav-toggle {
+      border: none;
+      display: inline-block;
+      background-color: transparent;
+    }
+  }
+}
