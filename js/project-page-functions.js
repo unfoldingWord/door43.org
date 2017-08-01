@@ -510,13 +510,13 @@ function setLanguagePageViews(span, pageUrl, increment) {
  * @param $title
  */
 function updateFooter($footer, $title) {
-    if ($footer.length) {
+    if ($footer && $footer.length) {
         var footerText = $footer[0].innerHTML;
-        if ($title.length) {
-            var replaceText = $title[0].innerText;
+        if ($title && $title.length) {
             var matchText = "{{ HEADING }}";
             var pos = footerText.indexOf(matchText);
             if (pos >= 0) {
+                var replaceText = $title[0].innerText;
                 var newText = footerText.replace(matchText, replaceText);
                 $footer.html(newText);
             }
