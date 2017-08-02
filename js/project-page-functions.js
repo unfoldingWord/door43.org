@@ -535,7 +535,8 @@ function updateFooter($footer, $title) {
 
 function setupMobileContentNavigation(){
     var header = $('pinned-header');
-    var sidebar_nav = $('#right-sidebar-nav')
+    var sidebar_nav = $('#right-sidebar-nav');
+    sidebar_nav.addClass('content-nav');
     header.prepend($('<button type="button" id="mobile-content-nav-toggle"><i class="fa fa-chevron-down"></i></button>'));
     $('<div id="mobile-content-nav" class="content-nav"></div>').appendTo(header).html(sidebar_nav.html()).hide();
     header.find('#mobile-content-nav-toggle, #mobile-content-nav a[href]').click(function() {
