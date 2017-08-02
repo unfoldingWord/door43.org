@@ -116,10 +116,15 @@ function onProjectPageLoaded() {
         setupMobileContentNavigation();
     }
     $(window).resize(function () {
-        if($(window).width() <= 990 && ! $('#content-header').length)
-            setupMobileContentNavigation();
+        if($(window).width() <= 990) {
+            if (!$('#mobile-content-nav').length)
+                setupMobileContentNavigation();
+        }
+        else {
+            if($('#mobile-content-nav').length)
+                teardownMobileContentNavigation();
+        }
     });
-
 }
 
 function processProjectJson(project, $revisions) {
@@ -565,7 +570,7 @@ function setupMobileContentNavigation() {
     content_nav.appendTo(content_header);
 
     var content = $('#content');
-    content.wrapInner('<div class="content-body"></div>');
+    content.wrapInner('<div id="content-body"></div>');
 
     content_header.prependTo(content);
 
@@ -576,6 +581,25 @@ function setupMobileContentNavigation() {
         if (!$(this).hasClass('accordion-toggle'))
             closeMobileContentNav();
     });
+}
+
+function teardownMobileContentNavigation() {
+    var content = $('#content');
+    var content_header = $('#content-header');
+
+    $('#mobile-content-nav-toggle').remove();
+    var header = content_header.find('h1:first');
+    header.appendTo(content);
+
+    var content_nav = $('#mobile-content-nav');
+    content_nav.addClass('hidden-sm hidden-xs').attr('id', 'right-sidebar-nav');
+    content_nav.show();
+    content_nav.prependTo($('#right-sidebar'));
+    content_header.remove();
+
+    var content_body = $('#content-body');
+    content_body.children().appendTo(content);
+    content_body.remove();
 }
 
 function toggleMobileContentNav(){

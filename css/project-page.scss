@@ -79,6 +79,10 @@ header {
     }
 }
 
+.container {
+  width: 98% !important;
+}
+
 #revisions {
 
   font-size: 14px;
@@ -104,17 +108,13 @@ header {
  * Sidebar Nav
  */
 @media (min-width: 979px) {
-  #right-sidebar-nav, #revisions-div {
-    width: 250px;
-  }
-
   #right-sidebar-nav.affix, #revisions-div.affix {
     position: fixed;
     top: 80px;
     bottom: 0;
     margin-bottom: 0;
     overflow-y: auto;
-    width: 250px;
+    width: 24%;
 
     &.pin-to-top {
       top: 130px !important;
@@ -147,11 +147,12 @@ header {
   #mobile-content-nav {
     border-bottom: solid #ccc;
 
-    > ul > li {
-      font-size: 36px;
-      > h1 {
-        display: none;
-      }
+    li, h1, h2, h3, h4, h5 h6 {
+      font-size: 28px !important;
+    }
+
+    > ul > li > h1 {
+      display: none; /* For OBS to remove "Navigation" */
     }
   }
 }
@@ -163,15 +164,19 @@ header {
       padding: 0;
     }
   }
+
+  li.active {
+    > a {
+      font-weight: normal;
+      color: #000;
+      margin: 0;
+    }
+  }
 }
 
 @media (max-width: 1199px) {
-  #right-sidebar-nav, #revisions-div {
-    width: 212px;
-  }
-
   #right-sidebar-nav.affix, #revisions-div.affix {
-    width: 212px;
+    width: 24%;
   }
 }
 
@@ -491,22 +496,59 @@ body.ta {
     ul li {
       list-style-type: none;
       margin-bottom: 5px;
+
+      a {
+        display: inline !important;
+      }
+
+      a.content-nav-expand {
+        float: right;
+      }
     }
 
     h4 {
       font-size: 18px;
     }
+
+    > ul > li {
+      margin-left: 15px !important;
+
+      .content-nav-expand:after {
+        font-family: 'Glyphicons Halflings';
+        content: "\e114"; /* arrow */
+        float: right;
+        color: #ccc;
+      }
+      .content-nav-expand.collapsed:after {
+        content: "\e080"; /* arrow */
+      }
+    }
   }
 
-  .content-nav > ul > li {
-    margin-left: 10px;
+  .content-nav > ul > li.active > ul > li.active > a,
+  .content-nav > ul > li.active > ul > li.active > a:hover,
+  .content-nav > ul > li.active > ul > li.active > a:focus {
+    font-weight: normal;
+    color: #000000;
+    margin: 0;
+  }
+
+  .content-nav > ul > li.active > ul > li.active {
+    border-left: 1px solid #000000;
+  }
+
+  .content-nav > ul > li > ul > li {
+    list-style-type: none;
+    padding-left: 30px;
   }
 }
 
-.content-nav > li.active > a {
-  font-weight: normal;
-  color: #000000;
-  margin: 0;
+.content-nav {
+  li.active > a {
+    font-weight: normal;
+    color: #000000;
+    margin: 0;
+  }
 }
 
 // pin the header below the menu rather than scroll out of view
