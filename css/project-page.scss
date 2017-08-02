@@ -522,6 +522,10 @@ body.ta {
       .content-nav-expand.collapsed:after {
         content: "\e080"; /* arrow */
       }
+
+      > ul {
+        padding: 0;
+      }
     }
   }
 
