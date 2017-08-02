@@ -4,10 +4,6 @@
 //noinspection CssInvalidCharsetRule
 @charset "utf-8";
 
-// Import partials from `sass_dir` (defaults to `_sass`)
-//noinspection CssUnknownTarget
-@import "pinned_header";
-
 /**
  * Style for project commit pages
  */
@@ -66,11 +62,6 @@ header {
               padding: 0 20px;
             }
         }
-    }
-
-    #mobile-content-nav-toggle {
-      float: right;
-      display: none;
     }
 }
 
@@ -131,6 +122,40 @@ header {
   }
 }
 
+#content-header {
+  background-color: #fff;
+  width: 100%;
+  display: block;
+  z-index: 100;
+  overflow-y: auto;
+
+  h1 {
+    border-bottom: thin solid #ccc;
+  }
+
+  &.affix {
+    position: fixed;
+    left: 0;
+  }
+
+  #mobile-content-nav-toggle {
+    float: right;
+    border: none;
+    background-color: transparent;
+  }
+
+  #mobile-content-nav {
+    border-bottom: solid #ccc;
+
+    > ul > li {
+      font-size: 36px;
+      > h1 {
+        display: none;
+      }
+    }
+  }
+}
+
 .content-nav {
   li {
     margin: 0;
@@ -147,53 +172,6 @@ header {
 
   #right-sidebar-nav.affix, #revisions-div.affix {
     width: 212px;
-  }
-}
-
-@media (max-width: 990px) {
-  #pinned-header {
-    &.pin-to-top {
-      #sub-header {
-        position: static;
-        display: block;
-        margin-bottom: 0;
-      }
-    }
-  }
-
-}
-
-@media (max-width: 840px) {
-  #pinned-header {
-    margin-top: 30px;
-    #header-title {
-      h1 {
-        font-size: 30px;
-        #build-status-icon {
-          i {
-            font-size: 26px;
-          }
-        }
-      }
-    }
-    &.pin-to-top {
-      top: 60px;
-    }
-  }
-}
-
-@media (max-width: 767px) {
-  #pinned-header {
-    #header-title {
-      h1 {
-        font-size: 24px;
-        #build-status-icon {
-          i {
-            font-size: 20px;
-          }
-        }
-      }
-    }
   }
 }
 
@@ -529,4 +507,40 @@ body.ta {
   font-weight: normal;
   color: #000000;
   margin: 0;
+}
+
+// pin the header below the menu rather than scroll out of view
+@media (min-width: 991px) {
+  #pinned-header {
+    width: 100%;
+    margin-top: 130px;
+    z-index: 100;
+    background-color: #fff;
+
+    &.pin-to-top {
+      position: fixed;
+      margin-top: 0;
+      top: 65px;
+      box-shadow: 0 0 8px 1px #777;
+      #build-status-icon {
+        max-width: 35px;
+        overflow: hidden;
+      }
+      .hide-on-pinned {
+        display: none;
+      }
+      #header-title, #sub-header {
+        display: inline-block;
+      }
+      #sub-header {
+        position: fixed;
+        right: 20px;
+        top: 80px
+      }
+      .container {
+        padding-top: 6px;
+        padding-bottom: 12px;
+      }
+    }
+  }
 }
