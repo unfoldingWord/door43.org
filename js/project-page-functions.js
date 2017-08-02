@@ -15,6 +15,8 @@ function onProjectPageLoaded() {
     return;
   projectPageLoaded = true;
 
+  nav_height = $('.navbar').outerHeight(true);
+
   $('#starred-icon').click(function () {
     if ($(this).hasClass('starred')) {
       $(this).removeClass('starred');
@@ -57,16 +59,16 @@ function onProjectPageLoaded() {
     onDocumentScroll(window);
   });
 
-  /* set up scrollspy */
-  nav_height = $('.navbar').outerHeight(true);
+  /* setup affix for revision and content-nav */
   $('#revisions-div, #right-sidebar-nav').affix({
     offset: {
       top: nav_height + margin_top
     }
   });
 
+  /* set up scrollspy */
   var $body = $('body');
-  $body.scrollspy({'target': '#right-sidebar-nav', 'offset':nav_height});
+  $body.scrollspy({'target': '.content-nav', 'offset':nav_height});
   // Offset in the above for some reason doesn't work, so we fix it this way with a little hack:
   var data = $body.data('bs.scrollspy');
   if (data) {
