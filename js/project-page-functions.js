@@ -534,10 +534,11 @@ function updateFooter($footer, $title) {
 }
 
 function setupMobileContentNavigation(){
-    var $navDiv = $('<div id="mobile-content-nav" class="content-nav"></div>');
-    $navDiv.appendTo($('#pinned-header')).hide().html($('#right-sidebar-nav').html());
-
-    $('#mobile-content-nav-toggle, #mobile-content-nav a[href]').click(function() {
+    var header = $('pinned-header');
+    var sidebar_nav = $('#right-sidebar-nav')
+    header.prepend($('<button type="button" id="mobile-content-nav-toggle"><i class="fa fa-chevron-down"></i></button>'));
+    $('<div id="mobile-content-nav" class="content-nav"></div>').appendTo(header).html(sidebar_nav.html()).hide();
+    header.find('#mobile-content-nav-toggle, #mobile-content-nav a[href]').click(function() {
         if(! $(this).hasClass('accordion-toggle'))
             $('#mobile-content-nav').slideToggle();
     });
