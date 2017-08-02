@@ -108,7 +108,7 @@ header {
  * Sidebar Nav
  */
 @media (min-width: 979px) {
-  #right-sidebar-nav.affix, #revisions-div.affix {
+  #left-sidebar-nav.affix, #right-sidebar-nav.affix {
     position: fixed;
     top: 80px;
     bottom: 0;
@@ -176,7 +176,7 @@ header {
 }
 
 @media (max-width: 1199px) {
-  #right-sidebar-nav.affix, #revisions-div.affix {
+  #left-sidebar-nav.affix, #right-sidebar-nav.affix {
     width: 24%;
   }
 }

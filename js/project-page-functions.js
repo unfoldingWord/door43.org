@@ -60,9 +60,9 @@ function onProjectPageLoaded() {
   });
 
   /* setup affix for revision and content-nav */
-  $('#revisions-div, #right-sidebar-nav').affix({
+  $('#left-sidebar-nav, #right-sidebar-nav').affix({
     offset: {
-      top: nav_height + margin_top
+      top: (nav_height + margin_top) - 10
     }
   });
 
@@ -104,7 +104,7 @@ function onProjectPageLoaded() {
   }
 
   $(window).on('scroll resize', function () {
-    $('#revisions-div, #right-sidebar-nav').css('bottom', getVisibleHeight('footer'));
+    $('#left-sidebar-nav, #right-sidebar-nav').css('bottom', getVisibleHeight('footer'));
   });
 
   setPageViews($('#num-of-views'),window.location.href,1);
@@ -191,17 +191,18 @@ function onDocumentScroll(theWindow) {
   var scroll_top = theWindow.scrollY;
   var $outer = $document.find('#outer-content');
   var $pinned = $document.find('#pinned-header');
+  var top = margin_top + nav_height;
 
-  if (scroll_top > margin_top - 10 && $(window).width() > 990) {
+  if (scroll_top > (top) - 20 && $(window).width() > 990) {
     $pinned.addClass('pin-to-top');
-    $('#revisions-div, #right-sidebar-nav, #content-header').addClass('pin-to-top');
+    $('#left-sidebar-nav, #right-sidebar-nav, #content-header').addClass('pin-to-top');
 
-    if ($outer.css('marginTop') !== '240px')
-      $outer.css('marginTop', '240px');
+    if ($outer.css('marginTop') != top+'px')
+      $outer.css('marginTop', top+'px');
   }
   else {
     $pinned.removeClass('pin-to-top');
-    $('#revisions-div, #right-sidebar-nav, #content-header').removeClass('pin-to-top');
+    $('#left-sidebar-nav, #right-sidebar-nav, #content-header').removeClass('pin-to-top');
 
     if ($outer.css('marginTop') !== '0px')
       $outer.css('marginTop', '0px');
@@ -554,7 +555,7 @@ function updateFooter($footer, $title) {
 function setupMobileContentNavigation() {
     var content_header = $('<div id="content-header"></div>').affix({
         offset: {
-            top: nav_height + margin_top
+            top: (nav_height + margin_top) - 10
         }
     }).css('min-height', margin_top).css('top', nav_height+'px');
 
