@@ -1,21 +1,9 @@
-var myCommitId, myRepoName, myOwner, nav_height;
-var projectPageLoaded = false;
-
-var margin_top = 65;
-
-$(document).ready(function(){
-    onProjectPageLoaded();
-});
+var myCommitId, myRepoName, myOwner, margin_top;
 
 /**
  * Called to initialize the project page
  */
 function onProjectPageLoaded() {
-  if(projectPageLoaded)
-    return;
-  projectPageLoaded = true;
-
-  nav_height = $('.navbar').outerHeight(true);
 
   $('#starred-icon').click(function () {
     if ($(this).hasClass('starred')) {
@@ -55,40 +43,39 @@ function onProjectPageLoaded() {
       setDcsHref(window.location)
     }); // End getJSON
 
+  // pin the header below the menu rather than scroll out of view
+  margin_top = parseInt($('#pinned-header').css('margin-top'));
+
   $(document).on('scroll', function () {
     onDocumentScroll(window);
   });
 
-  /* setup affix for revision and content-nav */
-  $('#left-sidebar-nav, #right-sidebar-nav').affix({
+  /* set up scrollspy */
+  var navHeight = $('.navbar').outerHeight(true);
+  $('#sidebar-nav, #revisions-div').affix({
     offset: {
-      top: (nav_height + margin_top) - 10
+      top: navHeight + margin_top
     }
   });
-
-  /* set up scrollspy */
   var $body = $('body');
-  $body.scrollspy({'target': '.content-nav', 'offset':nav_height});
+  $body.scrollspy({'target': '#right-sidebar-nav', 'offset':navHeight});
   // Offset in the above for some reason doesn't work, so we fix it this way with a little hack:
   var data = $body.data('bs.scrollspy');
   if (data) {
-      data.options.offset = nav_height+100;
+      data.options.offset = navHeight+100;
       $body.data('bs.scrollspy', data);
       $body.scrollspy('refresh');
   }
-
   /* smooth scrolling to sections with room for navbar */
-  $('#right-sidebar-nav').addClass('content-nav'); // ensure it has this class
-  var $contentNav = $(".content-nav");
-  $contentNav.find("li a[href^='#']").on('click', function (e) {
+  var $rightSidebarNav = $("#right-sidebar-nav");
+  $rightSidebarNav.find("li a[href^='#']").on('click', function (e) {
     // prevent default anchor click behavior
     e.preventDefault();
     // store hash
     var hash = this.hash;
-    var hashLocation = $(hash).offset().top - nav_height - margin_top - 5;
     // animate
     $('html, body').animate({
-      scrollTop: hashLocation
+      scrollTop: $(hash).offset().top - navHeight - 5
     }, 300, function () {
       // when done, add hash to url
       // (default click behaviour)
@@ -98,33 +85,17 @@ function onProjectPageLoaded() {
 
   /* Scroll to current section if URL has hash */
   if (window.location.hash) {
-    var hash = window.location.hash;
-    var $link = $contentNav.find("li a[href='" + hash + "']");
-    $link.trigger('click');
+    $rightSidebarNav.find("li a[href='#" + window.location.hash + "']").trigger('click');
   }
 
   $(window).on('scroll resize', function () {
-    $('#left-sidebar-nav, #right-sidebar-nav').css('bottom', getVisibleHeight('footer'));
+    $('#sidebar-nav, #revisions-div').css('bottom', getVisibleHeight('footer'));
   });
 
   setPageViews($('#num-of-views'),window.location.href,1);
 
   var $footer = $("[property='dct:title']");
   updateFooter($footer, $("title"));
-
-    if($(window).width() <= 990) {
-        setupMobileContentNavigation();
-    }
-    $(window).resize(function () {
-        if($(window).width() <= 990) {
-            if (!$('#mobile-content-nav').length)
-                setupMobileContentNavigation();
-        }
-        else {
-            if($('#mobile-content-nav').length)
-                teardownMobileContentNavigation();
-        }
-    });
 }
 
 function processProjectJson(project, $revisions) {
@@ -191,18 +162,17 @@ function onDocumentScroll(theWindow) {
   var scroll_top = theWindow.scrollY;
   var $outer = $document.find('#outer-content');
   var $pinned = $document.find('#pinned-header');
-  var top = margin_top + nav_height;
 
-  if (scroll_top > (top) - 20 && $(window).width() > 990) {
+  if (scroll_top > margin_top - 10) {
     $pinned.addClass('pin-to-top');
-    $('#left-sidebar-nav, #right-sidebar-nav, #content-header').addClass('pin-to-top');
+    $('#sidebar-nav, #revisions-div').addClass('pin-to-top');
 
-    if ($outer.css('marginTop') != top+'px')
-      $outer.css('marginTop', top+'px');
+    if ($outer.css('marginTop') !== '240px')
+      $outer.css('marginTop', '240px');
   }
   else {
     $pinned.removeClass('pin-to-top');
-    $('#left-sidebar-nav, #right-sidebar-nav, #content-header').removeClass('pin-to-top');
+    $('#sidebar-nav, #revisions-div').removeClass('pin-to-top');
 
     if ($outer.css('marginTop') !== '0px')
       $outer.css('marginTop', '0px');
@@ -225,6 +195,7 @@ function getVisibleHeight(selector) {
 
 //noinspection JSUnusedGlobalSymbols
 function showTenMore(){
+
   var $revisions = $('#left-sidebar').find('#revisions');
   var counter = 0;
 
@@ -371,6 +342,7 @@ function setDownloadButtonState($button, commitID, pageUrl) {
     if($button) {
         $button.prop('disabled', true)
     }
+    downloadable = false;
     $.ajax({
         url: url,
         type: 'GET',
@@ -550,73 +522,4 @@ function updateFooter($footer, $title) {
             }
         }
     }
-}
-
-function setupMobileContentNavigation() {
-    var content_header = $('<div id="content-header"></div>').affix({
-        offset: {
-            top: (nav_height + margin_top) - 10
-        }
-    }).css('min-height', margin_top).css('top', nav_height+'px');
-
-    var header = $('#content > h1:first');
-    header.appendTo(content_header);
-
-    var toggle_button = $('<button type="button" id="mobile-content-nav-toggle"><i class="fa fa-angle-down"></i></button>');
-    toggle_button.appendTo(header);
-
-    var content_nav = $('#right-sidebar-nav');
-    content_nav.removeClass('hidden-sm hidden-xs').attr('id', 'mobile-content-nav');
-    content_nav.hide();
-    content_nav.appendTo(content_header);
-
-    var content = $('#content');
-    content.wrapInner('<div id="content-body"></div>');
-
-    content_header.prependTo(content);
-
-    $('#mobile-content-nav-toggle').click(function () {
-        toggleMobileContentNav();
-    });
-    $('#mobile-content-nav a').click(function () {
-        if (!$(this).hasClass('accordion-toggle'))
-            closeMobileContentNav();
-    });
-}
-
-function teardownMobileContentNavigation() {
-    var content = $('#content');
-    var content_header = $('#content-header');
-
-    $('#mobile-content-nav-toggle').remove();
-    var header = content_header.find('h1:first');
-    header.appendTo(content);
-
-    var content_nav = $('#mobile-content-nav');
-    content_nav.addClass('hidden-sm hidden-xs').attr('id', 'right-sidebar-nav');
-    content_nav.show();
-    content_nav.prependTo($('#right-sidebar'));
-    content_header.remove();
-
-    var content_body = $('#content-body');
-    content_body.children().appendTo(content);
-    content_body.remove();
-}
-
-function toggleMobileContentNav(){
-    if($('#mobile-content-nav').is(':visible')) {
-        closeMobileContentNav();
-    } else {
-        openMobileContentNav();
-    }
-}
-
-function openMobileContentNav(){
-    $('#mobile-content-nav').slideDown();
-    $('#content-header').css('bottom', 0);
-}
-
-function closeMobileContentNav(){
-    $('#mobile-content-nav').slideUp();
-    $('#content-header').css('bottom', '');
 }
