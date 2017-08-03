@@ -1,7 +1,5 @@
-var myCommitId, myRepoName, myOwner, nav_height;
+var myCommitId, myRepoName, myOwner, nav_height, header_height;
 var projectPageLoaded = false;
-
-var margin_top = 65;
 
 $(document).ready(function(){
     onProjectPageLoaded();
@@ -15,7 +13,7 @@ function onProjectPageLoaded() {
     return;
   projectPageLoaded = true;
 
-  nav_height = $('.navbar').outerHeight(true);
+  onProjectPageChange();
 
   $('#starred-icon').click(function () {
     if ($(this).hasClass('starred')) {
@@ -59,14 +57,6 @@ function onProjectPageLoaded() {
     onDocumentScroll(window);
   }).trigger('scroll');
 
-  /* setup affix for revision and content-nav */
-  $('#left-sidebar-nav, #right-sidebar-nav').affix({
-    offset: {
-      top: nav_height + margin_top
-
-    }
-  });
-
   /* set up scrollspy */
   var $body = $('body');
   $body.scrollspy({'target': '.content-nav', 'offset':nav_height});
@@ -86,7 +76,7 @@ function onProjectPageLoaded() {
     e.preventDefault();
     // store hash
     var hash = this.hash;
-    var hashLocation = $(hash).offset().top - nav_height - margin_top - 5;
+    var hashLocation = $(hash).offset().top - nav_height - header_height - 5;
     // animate
     $('html, body').animate({
       scrollTop: hashLocation
@@ -117,7 +107,7 @@ function onProjectPageLoaded() {
         setupMobileContentNavigation();
     }
     $(window).resize(function () {
-        nav_height = $('.navbar').outerHeight(true);
+        onProjectPageChange();
 
         if($(window).width() <= 990) {
             if (!$('#mobile-content-nav').length)
@@ -191,18 +181,21 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
 function onDocumentScroll(theWindow) {
     var $document = $(theWindow.document);
     var scroll_top = theWindow.scrollY;
-    var $page = $document.find('.page-content');
     var $pinned = $document.find('#pinned-header');
 
     if ($(window).width() > 990) {
         if (scroll_top > 1) {
-            $pinned.addClass('pin-to-top').css('top', nav_height+'px');
-            if ($page.css('margin-top') !== top + 'px')
-                $page.css('margin-top', top + 'px');
+            if (!$pinned.hasClass('pin-to-top')) {
+                $pinned.addClass('pin-to-top').css('top', nav_height + 'px');
+                $('.page-content').css('margin-top', (nav_height + header_height) + 'px');
+                onProjectPageChange();
+            }
         } else {
-            $pinned.removeClass('pin-to-top').css('top', '');
-            if ($page.css('margin-top') !== '0px')
-                $page.css('margin-top', '0px');
+            if ($pinned.hasClass('pin-to-top')) {
+                $pinned.removeClass('pin-to-top').css('top', '');
+                $('.page-content').css('margin-top', 0);
+                onProjectPageChange();
+            }
         }
     }
 }
@@ -550,12 +543,30 @@ function updateFooter($footer, $title) {
     }
 }
 
+function onProjectPageChange(){
+    nav_height = $('.navbar').outerHeight(true);
+    header_height = $('#pinned-header').outerHeight(true);
+    console.log('nav: '+nav_height);
+    console.log('header: '+header_height);
+    /* Set/update the affix offset for left, right and content (if mobile) */
+    $('#left-sidebar-nav, #right-sidebar-nav').affix({
+        offset: {
+            top: nav_height + header_height - 100
+        }
+    }).css('top', (nav_height + header_height)+'px');
+    $('#content-header').affix({
+        offset: {
+            top: nav_height
+        }
+    }).css('top', nav_height+'px');
+}
+
 function setupMobileContentNavigation() {
     var content_header = $('<div id="content-header"></div>').affix({
         offset: {
-            top: (nav_height + margin_top)
+            top: nav_height
         }
-    }).css('min-height', margin_top).css('top', nav_height+'px');
+    }).css('top', nav_height+'px');
 
     var header = $('#content > h1:first');
     header.appendTo(content_header);
@@ -580,6 +591,8 @@ function setupMobileContentNavigation() {
         if (!$(this).hasClass('accordion-toggle'))
             closeMobileContentNav();
     });
+
+    onProjectPageChange();
 }
 
 function teardownMobileContentNavigation() {
