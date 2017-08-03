@@ -571,7 +571,7 @@ function setupMobileContentNavigation() {
     var header = $('#content > h1:first');
     header.appendTo(content_header);
 
-    var toggle_button = $('<button type="button" id="mobile-content-nav-toggle"><i class="fa fa-angle-down"></i></button>');
+    var toggle_button = $('<a id="mobile-content-nav-toggle" href="#"></a>');
     toggle_button.appendTo(header);
 
     var content_nav = $('#right-sidebar-nav');
@@ -584,7 +584,7 @@ function setupMobileContentNavigation() {
 
     content_header.prependTo(content);
 
-    $('#mobile-content-nav-toggle').click(function () {
+    toggle_button.click(function () {
         toggleMobileContentNav();
     });
     $('#mobile-content-nav a').click(function () {
@@ -625,9 +625,11 @@ function toggleMobileContentNav(){
 function openMobileContentNav(){
     $('#mobile-content-nav').slideDown();
     $('#content-header').css('bottom', 0);
+    $('#mobile-content-nav-toggle').addClass('expanded');
 }
 
 function closeMobileContentNav(){
     $('#mobile-content-nav').slideUp();
     $('#content-header').css('bottom', '');
+    $('#mobile-content-nav-toggle').removeClass('expanded');
 }

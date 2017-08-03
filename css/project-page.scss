@@ -144,6 +144,17 @@ header {
     float: right;
     border: none;
     background-color: transparent;
+
+    &:after {
+      font-family: 'Glyphicons Halflings';
+      font-size: 0.8em;
+      content: "\e258";
+      color: #000;
+    }
+
+    &.expanded:after {
+      content: "\e259";
+    }
   }
 
   #mobile-content-nav {
@@ -222,15 +233,17 @@ body.bible {
     }
 
     .panel-heading {
-      .accordion-toggle:after {
-        font-family: 'Glyphicons Halflings';
-        content: "\e114";
-        float: right;
-        color: grey;
-      }
-      .accordion-toggle.collapsed:after {
-        /* symbol for "collapsed" panels */
-        content: "\e080"; /* adjust as needed, taken from bootstrap.css */
+      .accordion-toggle {
+        &:after {
+          font-family: 'Glyphicons Halflings';
+          content: "\e259"; /* expanded */
+          font-size: 0.8em;
+          float: right;
+          color: #999;
+        }
+        &.collapsed:after {
+          content: "\e258"; /* collapsed */
+        }
       }
     }
   }
@@ -516,14 +529,17 @@ body.ta {
     > ul > li {
       margin-left: 15px !important;
 
-      .content-nav-expand:after {
-        font-family: 'Glyphicons Halflings';
-        content: "\e114"; /* arrow */
-        float: right;
-        color: #ccc;
-      }
-      .content-nav-expand.collapsed:after {
-        content: "\e080"; /* arrow */
+      .content-nav-expand {
+        &:after {
+          font-family: 'Glyphicons Halflings';
+          content: "\e259"; /* expanded */
+          font-size: 0.8em;
+          float: right;
+          color: #999;
+        }
+        &.collapsed:after {
+          content: "\e258"; /* collapsed */
+        }
       }
 
       > ul {
