@@ -57,7 +57,7 @@ function onProjectPageLoaded() {
 
   $(document).on('scroll', function () {
     onDocumentScroll(window);
-  });
+  }).trigger('scroll');
 
   /* setup affix for revision and content-nav */
   $('#left-sidebar-nav, #right-sidebar-nav').affix({
@@ -117,6 +117,8 @@ function onProjectPageLoaded() {
         setupMobileContentNavigation();
     }
     $(window).resize(function () {
+        nav_height = $('.navbar').outerHeight(true);
+
         if($(window).width() <= 990) {
             if (!$('#mobile-content-nav').length)
                 setupMobileContentNavigation();
@@ -191,22 +193,16 @@ function onDocumentScroll(theWindow) {
     var scroll_top = theWindow.scrollY;
     var $page = $document.find('.page-content');
     var $pinned = $document.find('#pinned-header');
-    var top = margin_top + nav_height - 10;
 
     if ($(window).width() > 990) {
         if (scroll_top > 1) {
-            $pinned.addClass('pin-to-top');
+            $pinned.addClass('pin-to-top').css('top', nav_height+'px');
             if ($page.css('margin-top') !== top + 'px')
                 $page.css('margin-top', top + 'px');
         } else {
-            $pinned.removeClass('pin-to-top');
+            $pinned.removeClass('pin-to-top').css('top', '');
             if ($page.css('margin-top') !== '0px')
                 $page.css('margin-top', '0px');
-        }
-        if (false || scroll_top > top) {
-            $('#left-sidebar-nav, #right-sidebar-nav, #content-header').addClass('pin-to-top');
-        } else {
-            $('#left-sidebar-nav, #right-sidebar-nav, #content-header').removeClass('pin-to-top');
         }
     }
 }

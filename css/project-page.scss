@@ -567,7 +567,7 @@ body.ta {
     &.pin-to-top {
       position: fixed;
       margin-top: 0;
-      top: 65px;
+      top: 60px;
       box-shadow: 0 0 8px 1px #777;
       #build-status-icon {
         max-width: 35px;
@@ -576,13 +576,16 @@ body.ta {
       .hide-on-pinned {
         display: none;
       }
-      #header-title, #sub-header {
-        display: inline-block;
+      #header-title {
+        padding-bottom: 10px;
       }
       #sub-header {
         position: fixed;
         right: 20px;
         top: 80px
+      }
+      #header-title, #sub-header {
+        display: inline-block;
       }
       .container {
         padding-top: 6px;
