@@ -62,7 +62,8 @@ function onProjectPageLoaded() {
   /* setup affix for revision and content-nav */
   $('#left-sidebar-nav, #right-sidebar-nav').affix({
     offset: {
-      top: (nav_height + margin_top) - 10
+      top: nav_height + margin_top
+
     }
   });
 
@@ -186,27 +187,28 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
  * @param theWindow
  */
 function onDocumentScroll(theWindow) {
+    var $document = $(theWindow.document);
+    var scroll_top = theWindow.scrollY;
+    var $page = $document.find('.page-content');
+    var $pinned = $document.find('#pinned-header');
+    var top = margin_top + nav_height - 10;
 
-  var $document = $(theWindow.document);
-  var scroll_top = theWindow.scrollY;
-  var $outer = $document.find('#outer-content');
-  var $pinned = $document.find('#pinned-header');
-  var top = margin_top + nav_height;
-
-  if (scroll_top > (top) - 20 && $(window).width() > 990) {
-    $pinned.addClass('pin-to-top');
-    $('#left-sidebar-nav, #right-sidebar-nav, #content-header').addClass('pin-to-top');
-
-    if ($outer.css('marginTop') != top+'px')
-      $outer.css('marginTop', top+'px');
-  }
-  else {
-    $pinned.removeClass('pin-to-top');
-    $('#left-sidebar-nav, #right-sidebar-nav, #content-header').removeClass('pin-to-top');
-
-    if ($outer.css('marginTop') !== '0px')
-      $outer.css('marginTop', '0px');
-  }
+    if ($(window).width() > 990) {
+        if (scroll_top > 1) {
+            $pinned.addClass('pin-to-top');
+            if ($page.css('margin-top') !== top + 'px')
+                $page.css('margin-top', top + 'px');
+        } else {
+            $pinned.removeClass('pin-to-top');
+            if ($page.css('margin-top') !== '0px')
+                $page.css('margin-top', '0px');
+        }
+        if (false || scroll_top > top) {
+            $('#left-sidebar-nav, #right-sidebar-nav, #content-header').addClass('pin-to-top');
+        } else {
+            $('#left-sidebar-nav, #right-sidebar-nav, #content-header').removeClass('pin-to-top');
+        }
+    }
 }
 
 function getVisibleHeight(selector) {
@@ -555,7 +557,7 @@ function updateFooter($footer, $title) {
 function setupMobileContentNavigation() {
     var content_header = $('<div id="content-header"></div>').affix({
         offset: {
-            top: (nav_height + margin_top) - 10
+            top: (nav_height + margin_top)
         }
     }).css('min-height', margin_top).css('top', nav_height+'px');
 
