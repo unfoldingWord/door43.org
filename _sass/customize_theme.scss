@@ -82,9 +82,11 @@ ul > li {
     margin-bottom: 0;
 }
 table.navbar-brand {
+    float: left;
     display: block;
     height: 60px;
-    text-indent: 0px;
+    text-indent: 0;
+    text-align: left;
     width: 270px;
     padding: 0;
     line-height: 10px;
@@ -98,9 +100,9 @@ table.navbar-brand {
     margin-left: 0 !important;
 }
 .navbar-brand-title {
-    height: 28px;
-    font-size: 26px;
-    line-height: 24px;
+    height: 32px;
+    font-size: 28px;
+    line-height: 28px;
 }
 .navbar-brand-subtitle {
     height: 18px;
@@ -120,7 +122,18 @@ table.navbar-brand {
             margin-left: 0;
             text-align: left;
             width: 230px;
-            display: inline-block;
+        }
+        .navbar-brand-title {
+            padding-top: 0;
+            margin-top: 0;
+            height: 18px;
+            font-size: 18px;
+            line-height: 16px;
+        }
+        .navbar-brand-subtitle {
+            height: 14px;
+            font-size: 12px;
+            line-height: 12px;
         }
     }
 }
@@ -176,18 +189,6 @@ table.navbar-brand {
         table.navbar-brand {
             float: right;
             padding-right: 0;
-        }
-        .navbar-brand-title {
-            padding-top: 0;
-            margin-top: 0;
-            height: 20px;
-            font-size: 18px;
-            line-height: 18px;
-        }
-        .navbar-brand-subtitle {
-            height: 14px;
-            font-size: 12px;
-            line-height: 14px;
         }
     }
 }
