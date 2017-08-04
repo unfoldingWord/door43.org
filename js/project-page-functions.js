@@ -156,6 +156,7 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
 
     saveDownloadLink(myLog);
     setDownloadButtonState($downloadMenuButton);
+    updateTextForDownloadItem(myLog.input_format);
 
     $buildStatusIcon.find('i').attr("class", "fa " + faSpinnerClass); // default to spinner
     setOverallConversionStatus(myLog.status);
