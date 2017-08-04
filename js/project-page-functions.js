@@ -183,7 +183,7 @@ function onDocumentScroll(theWindow) {
     var scroll_top = theWindow.scrollY;
     var $pinned = $document.find('#pinned-header');
 
-    if ($(window).width() > 990) {
+    if (get_window_width() > 990) {
         if (scroll_top > 1) {
             if (!$pinned.hasClass('pin-to-top')) {
                 $pinned.addClass('pin-to-top').css('top', nav_height + 'px');
@@ -630,4 +630,8 @@ function closeMobileContentNav(){
     $('#mobile-content-nav').slideUp();
     $('#content-header').css('bottom', '');
     $('#mobile-content-nav-toggle').removeClass('expanded');
+}
+
+function get_window_width(){
+    return $(window).width();
 }
