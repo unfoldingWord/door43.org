@@ -546,8 +546,6 @@ function updateFooter($footer, $title) {
 function onProjectPageChange(){
     nav_height = $('.navbar').outerHeight(true);
     header_height = $('#pinned-header').outerHeight(true);
-    console.log('nav: '+nav_height);
-    console.log('header: '+header_height);
     /* Set/update the affix offset for left, right and content (if mobile) */
     $('#left-sidebar-nav, #right-sidebar-nav').affix({
         offset: {

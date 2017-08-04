@@ -15,7 +15,7 @@ describe('Test Project Sidebars', function () {
     $body.append('<div class="col-md-6" id="outer-content" role="main" style="height: 4000px">Content</div>');
     $body.append('<nav class="affix-top hidden-print hidden-xs hidden-sm" id="right-sidebar-nav">Right Nav Bar</nav>');
     $body.append('<footer class="site-footer" itemscope="itemscope" itemtype="http://schema.org/WPFooter" role="contentinfo">');
-
+999
     var $right_nav = $body.find('#right-side-nav');
     $right_nav.append('<ul class="nav nav-stacked books panel-group" id="sidebar-nav"></ul>');
   });
@@ -43,6 +43,7 @@ describe('Test Project Sidebars', function () {
 
     // scroll down
     window.scrollY = 2000;
+    window.width = 1000;
     onDocumentScroll(window);
     expect($outer.css('marginTop')).toEqual('240px');
 

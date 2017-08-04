@@ -5,15 +5,14 @@ describe('Test Mobile Nav Setup and TearDown', function () {
             jasmine.getFixtures().fixturesPath = 'base/test/fixtures';
 
             loadFixtures('obs-project-page-fixture.html');
-
-            spyOn(window, 'getSpanForDownloadMenuItem').and.callFake(function () {
-                return $downloadMenuItem
-            });
-            htmlSet = null;
         });
 
         it('setupMobileContentNav() valid, #content-header and #content-body should be created', function () {
             setupMobileContentNavigation();
+            expect($('#content-header').length).toEqual(1);
+            expect($('#content-header #mobile-content-nav-toggle').length).toEqual(1);
+            expect($('#content-header #mobile-content-nav').length).toEqual(1);
+            expect($('#content-body').length).toEqual(1);
         });
     });
 });
