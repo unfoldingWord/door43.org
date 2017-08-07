@@ -103,13 +103,13 @@ function onProjectPageLoaded() {
   var $footer = $("[property='dct:title']");
   updateFooter($footer, $("title"));
 
-    if($(window).width() <= 990) {
+    if(get_window_width() <= 990) {
         setupMobileContentNavigation();
     }
     $(window).resize(function () {
         onProjectPageChange();
 
-        if($(window).width() <= 990) {
+        if(get_window_width() <= 990) {
             if (!$('#mobile-content-nav').length)
                 setupMobileContentNavigation();
         }

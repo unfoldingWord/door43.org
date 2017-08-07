@@ -36,5 +36,26 @@ describe('Test Mobile Nav Setup and TearDown', function () {
             $('#content-header #mobile-content-nav-toggle').trigger('click'); // Open
             $('#content-header #mobile-content-nav a').trigger('click'); // Close and go to another page
         });
+
+        it('Test that window resize also sets up the mobile containers', function () {
+            onProjectPageChange();
+            spyOn(window, 'get_window_width').and.callFake(function () {
+                return 640;
+            });
+            $(window).toggle('resize');
+            expect($('#content-header').length).toEqual(1);
+            expect($('#content-header #mobile-content-nav-toggle').length).toEqual(1);
+            expect($('#content-header #mobile-content-nav').length).toEqual(1);
+            expect($('#content-body').length).toEqual(1);
+
+            spyOn(window, 'get_window_width').and.callFake(function () {
+                return 1024;
+            });
+            $(window).toggle('resize')
+            expect($('#content-header').length).toEqual(0);
+            expect($('#content-header #mobile-content-nav-toggle').length).toEqual(0);
+            expect($('#content-header #mobile-content-nav').length).toEqual(0);
+            expect($('#content-body').length).toEqual(0);
+        });
     });
 });
