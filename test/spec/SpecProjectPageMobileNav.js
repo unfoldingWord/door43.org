@@ -28,9 +28,13 @@ describe('Test Mobile Nav Setup and TearDown', function () {
             expect($('#content-body').length).toEqual(1);
 
             // Not sure how to test as they use slideUp/SlideDown which causes being shown/hidden to happen async
-            openMobileContentNav();
-            closeMobileContentNav();
-            toggleMobileContentNav();
+            openMobileContentNav(); // Open
+            closeMobileContentNav(); // Close
+            toggleMobileContentNav(); // Open
+            toggleMobileContentNav(); // Close
+
+            $('#content-header #mobile-content-nav-toggle').trigger('click'); // Open
+            $('#content-header #mobile-content-nav a').trigger('click'); // Close and go to another page
         });
     });
 });
