@@ -39,9 +39,7 @@ describe('Test Mobile Nav Setup and TearDown', function () {
 
         it('Test onWindowResize', function () {
             onProjectPageLoaded();
-            spyOn(window, 'get_window_width').and.callFake(function () {
-                return 640;
-            });
+            spyOn(window, 'get_window_width').and.returnValue(640);
             onWindowResize();
             expect($('#content-header').length).toEqual(1);
             expect($('#content-header #mobile-content-nav-toggle').length).toEqual(1);
@@ -51,6 +49,7 @@ describe('Test Mobile Nav Setup and TearDown', function () {
             spyOn(window, 'get_window_width').and.callFake(function () {
                 return 1024;
             });
+            window.get_window_width = jasmine.createSpy().and.returnValue(1024)
             onWindowResize();
             expect($('#content-header').length).toEqual(0);
             expect($('#content-header #mobile-content-nav-toggle').length).toEqual(0);
