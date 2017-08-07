@@ -38,7 +38,7 @@ describe('Test Mobile Nav Setup and TearDown', function () {
         });
 
         it('Test that window resize also sets up the mobile containers', function () {
-            onProjectPageChange();
+            onProjectPageLoaded();
             spyOn(window, 'get_window_width').and.callFake(function () {
                 return 640;
             });
