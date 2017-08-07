@@ -37,12 +37,12 @@ describe('Test Mobile Nav Setup and TearDown', function () {
             $('#content-header #mobile-content-nav a').trigger('click'); // Close and go to another page
         });
 
-        it('Test that window resize also sets up the mobile containers', function () {
+        it('Test onWindowResize', function () {
             onProjectPageLoaded();
             spyOn(window, 'get_window_width').and.callFake(function () {
                 return 640;
             });
-            $(window).toggle('resize');
+            onWindowResize();
             expect($('#content-header').length).toEqual(1);
             expect($('#content-header #mobile-content-nav-toggle').length).toEqual(1);
             expect($('#content-header #mobile-content-nav').length).toEqual(1);
@@ -51,7 +51,7 @@ describe('Test Mobile Nav Setup and TearDown', function () {
             spyOn(window, 'get_window_width').and.callFake(function () {
                 return 1024;
             });
-            $(window).toggle('resize')
+            onWindowResize();
             expect($('#content-header').length).toEqual(0);
             expect($('#content-header #mobile-content-nav-toggle').length).toEqual(0);
             expect($('#content-header #mobile-content-nav').length).toEqual(0);

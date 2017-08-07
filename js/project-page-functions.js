@@ -106,18 +106,7 @@ function onProjectPageLoaded() {
     if(get_window_width() <= 990) {
         setupMobileContentNavigation();
     }
-    $(window).resize(function () {
-        onProjectPageChange();
-
-        if(get_window_width() <= 990) {
-            if (!$('#mobile-content-nav').length)
-                setupMobileContentNavigation();
-        }
-        else {
-            if($('#mobile-content-nav').length)
-                teardownMobileContentNavigation();
-        }
-    });
+    $(window).resize(onWindowResize());
 }
 
 function processProjectJson(project, $revisions) {
@@ -635,4 +624,17 @@ function closeMobileContentNav(){
 
 function get_window_width(){
     return $(window).width();
+}
+
+function onWindowResize() {
+    onProjectPageChange();
+
+    if (get_window_width() <= 990) {
+        if (!$('#mobile-content-nav').length)
+            setupMobileContentNavigation();
+    }
+    else {
+        if ($('#mobile-content-nav').length)
+            teardownMobileContentNavigation();
+    }
 }
