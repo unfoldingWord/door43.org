@@ -573,9 +573,15 @@ ul#sidebar-nav > li.active > a {
           box-shadow: 5px 5px 3px #888888;
         }
 
+        .btn-primary {
+          font-size: 16px;
+          background-color: #3ebcfe;
+          color: #fff;
+        }
+
         .btn-secondary {
           font-size: 16px;
-          color: #00bcff;
+          color: #3ebcfe;
           background-color: #fff;
         }
       }
