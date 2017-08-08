@@ -139,48 +139,41 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
     $buildStatusIcon.find('i').attr("class", "fa " + faSpinnerClass); // default to spinner
     setOverallConversionStatus(myLog.status);
 
-    var modal_html = '';
-    var modal_items = [];
-    if (myLog.errors.length)
-        modal_items = modal_items.concat(myLog.errors);
-    else if (myLog.warnings.length)
-        modal_items = modal_items.concat(myLog.warnings);
-
-    if(modal_items.length) {
-        modal_html = '<ul><li>'+modal_items.join("</li><li>")+'</li></ul>';
-        console.log(modal_html);
-        console.log($buildStatusIcon);
+    if(myLog.warnings.length) {
+        var modal_html = '<ul><li>'+myLog.warnings.join("</li><li>")+'</li></ul>';
         $buildStatusIcon.on('click', function () {
-            showWarningModal(modal_html);
+            showWarningModal(modal_html, myLog.repo_owner, myLog.repo_name);
         });
     }
 
     $revisions.empty();
 }
 
-function showWarningModal(modal_body){
-    html =  '<div id="dynamicModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirm-modal" aria-hidden="true">';
-    html += '<div class="modal-dialog">';
-    html += '<div class="modal-content" style="text-align: center">';
-    html += '<div class="modal-header">';
-    html += '<a class="close" data-dismiss="modal">×</a>';
-    html += '<div class="warning-circle"><i class="fa fa-exclamation"></i></div>';
-    html += '<h4 class="warning-modal-header">Warning!</h4>';
-    html += '</div>';
-    html += '<div class="modal-body" style="display:inline-block">';
-    html += modal_body;
-    html += '</div>';
-    html += '<div class="modal-footer" style="text-align: center">';
-    html += '<span class="btn btn-primary raised" data-dismiss="modal">Ok, Got it!</span> <span class="btn btn-secondary raised" data-dismiss="modal">Ask the Help Desk</span>';
-    html += '</div>';  // content
-    html += '</div>';  // dialog
-    html += '</div>';  // footer
-    html += '</div>';  // modalWindow
+function showWarningModal(modal_body, owner, repo){
+    html =  '<div id="warning-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirm-modal" aria-hidden="true">'+
+            '  <div class="modal-dialog">'+
+            '    <div class="modal-content">'+
+            '      <div class="modal-header">'+
+            '        <a class="close" data-dismiss="modal">×</a>'+
+            '        <div class="warning-circle"><i class="fa fa-exclamation"></i></div>'+
+            '        <h3 class="warning-header">Warning!</h3>'+
+            '      </div>'+
+            '      <div class="modal-body">'+
+            modal_body +
+            '      </div>'+
+            '      <div class="modal-footer">'+
+            '        <a href="mailto:help@door43.org'+
+            '?subject='+encodeURIComponent('Build Warning: '+owner+'/'+repo)+
+            '&body='+encodeURIComponent("Type your question here\n\nSee the failure at "+window.location.href+"\n\n")+
+            '" class="btn btn-secondary raised">Ask the Help Desk</a>'+
+            '        <span class="btn btn-primary raised" data-dismiss="modal">Ok, Got it!</span>'+
+            '      </div>'+  // content
+            '    </div>'+  // dialog
+            '  </div>'+  // footer
+            '</div>';  // modalWindow
 
     $('body').append(html);
-    $("#dynamicModal").modal();
-    $("#dynamicModal").modal('show');
-    $('#dynamicModal').on('hidden.bs.modal', function (e) {
+    $("#warning-modal").modal().modal('show').on('hidden.bs.modal', function() {
         $(this).remove();
     });
 }
