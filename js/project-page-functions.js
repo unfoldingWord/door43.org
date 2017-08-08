@@ -1,9 +1,19 @@
-var myCommitId, myRepoName, myOwner, margin_top;
+var myCommitId, myRepoName, myOwner, nav_height, header_height;
+var projectPageLoaded = false;
+
+$(document).ready(function(){
+    onProjectPageLoaded();
+});
 
 /**
  * Called to initialize the project page
  */
 function onProjectPageLoaded() {
+  if(projectPageLoaded)
+    return;
+  projectPageLoaded = true;
+
+  onProjectPageChange();
 
   $('#starred-icon').click(function () {
     if ($(this).hasClass('starred')) {
@@ -43,39 +53,33 @@ function onProjectPageLoaded() {
       setDcsHref(window.location)
     }); // End getJSON
 
-  // pin the header below the menu rather than scroll out of view
-  margin_top = parseInt($('#pinned-header').css('margin-top'));
-
   $(document).on('scroll', function () {
     onDocumentScroll(window);
-  });
+  }).trigger('scroll');
 
   /* set up scrollspy */
-  var navHeight = $('.navbar').outerHeight(true);
-  $('#sidebar-nav, #revisions-div').affix({
-    offset: {
-      top: navHeight + margin_top
-    }
-  });
   var $body = $('body');
-  $body.scrollspy({'target': '#right-sidebar-nav', 'offset':navHeight});
+  $body.scrollspy({'target': '.content-nav', 'offset':nav_height});
   // Offset in the above for some reason doesn't work, so we fix it this way with a little hack:
   var data = $body.data('bs.scrollspy');
   if (data) {
-      data.options.offset = navHeight+100;
+      data.options.offset = nav_height+100;
       $body.data('bs.scrollspy', data);
       $body.scrollspy('refresh');
   }
+
   /* smooth scrolling to sections with room for navbar */
-  var $rightSidebarNav = $("#right-sidebar-nav");
-  $rightSidebarNav.find("li a[href^='#']").on('click', function (e) {
+  $('#right-sidebar-nav').addClass('content-nav'); // ensure it has this class
+  var $contentNav = $(".content-nav");
+  $contentNav.find("li a[href^='#']").on('click', function (e) {
     // prevent default anchor click behavior
     e.preventDefault();
     // store hash
     var hash = this.hash;
+    var hashLocation = $(hash).offset().top - nav_height - header_height - 5;
     // animate
     $('html, body').animate({
-      scrollTop: $(hash).offset().top - navHeight - 5
+      scrollTop: hashLocation
     }, 300, function () {
       // when done, add hash to url
       // (default click behaviour)
@@ -85,17 +89,24 @@ function onProjectPageLoaded() {
 
   /* Scroll to current section if URL has hash */
   if (window.location.hash) {
-    $rightSidebarNav.find("li a[href='#" + window.location.hash + "']").trigger('click');
+    var hash = window.location.hash;
+    var $link = $contentNav.find("li a[href='" + hash + "']");
+    $link.trigger('click');
   }
 
   $(window).on('scroll resize', function () {
-    $('#sidebar-nav, #revisions-div').css('bottom', getVisibleHeight('footer'));
+    $('#left-sidebar-nav, #right-sidebar-nav').css('bottom', getVisibleHeight('footer'));
   });
 
   setPageViews($('#num-of-views'),window.location.href,1);
 
   var $footer = $("[property='dct:title']");
   updateFooter($footer, $("title"));
+
+    if(get_window_width() <= 990) {
+        setupMobileContentNavigation();
+    }
+    $(window).resize(onWindowResize());
 }
 
 function processProjectJson(project, $revisions) {
@@ -158,34 +169,34 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
  * @param theWindow
  */
 function onDocumentScroll(theWindow) {
+    var $document = $(theWindow.document);
+    var scroll_top = theWindow.scrollY;
+    var $pinned = $document.find('#pinned-header');
 
-  var $document = $(theWindow.document);
-  var scroll_top = theWindow.scrollY;
-  var $outer = $document.find('#outer-content');
-  var $pinned = $document.find('#pinned-header');
-
-  if (scroll_top > margin_top - 10) {
-    $pinned.addClass('pin-to-top');
-    $('#sidebar-nav, #revisions-div').addClass('pin-to-top');
-
-    if ($outer.css('marginTop') !== '240px')
-      $outer.css('marginTop', '240px');
-  }
-  else {
-    $pinned.removeClass('pin-to-top');
-    $('#sidebar-nav, #revisions-div').removeClass('pin-to-top');
-
-    if ($outer.css('marginTop') !== '0px')
-      $outer.css('marginTop', '0px');
-  }
+    if (get_window_width() > 990) {
+        if (scroll_top > 1) {
+            if (!$pinned.hasClass('pin-to-top')) {
+                $pinned.addClass('pin-to-top').css('top', nav_height + 'px');
+                $('.page-content').css('margin-top', (nav_height + header_height) + 'px');
+                onProjectPageChange();
+            }
+        } else {
+            if ($pinned.hasClass('pin-to-top')) {
+                $pinned.removeClass('pin-to-top').css('top', '');
+                $('.page-content').css('margin-top', 0);
+                onProjectPageChange();
+            }
+        }
+    }
 }
 
 function getVisibleHeight(selector) {
   var $el = $(selector),
     scrollTop = $(this).scrollTop(),
-    scrollBot = scrollTop + $(this).height(),
-    elTop = $el.offset().top,
-    elBottom = elTop + $el.outerHeight(),
+    scrollBot = scrollTop + $(this).height();
+  var $el_offset = $el.offset();
+  var elTop = $el_offset ? $el_offset.top : 0;
+  var elBottom = elTop + $el.outerHeight(),
     visibleTop = elTop < scrollTop ? scrollTop : elTop,
     visibleBottom = elBottom > scrollBot ? scrollBot : elBottom;
   if ((visibleBottom - visibleTop) > 0)
@@ -196,7 +207,6 @@ function getVisibleHeight(selector) {
 
 //noinspection JSUnusedGlobalSymbols
 function showTenMore(){
-
   var $revisions = $('#left-sidebar').find('#revisions');
   var counter = 0;
 
@@ -343,7 +353,6 @@ function setDownloadButtonState($button, commitID, pageUrl) {
     if($button) {
         $button.prop('disabled', true)
     }
-    downloadable = false;
     $.ajax({
         url: url,
         type: 'GET',
@@ -522,5 +531,111 @@ function updateFooter($footer, $title) {
                 $footer.html(newText);
             }
         }
+    }
+}
+
+function onProjectPageChange(){
+    nav_height = $('.navbar').outerHeight(true);
+    header_height = $('#pinned-header').outerHeight(true);
+    /* Set/update the affix offset for left, right and content (if mobile) */
+    $('#left-sidebar-nav, #right-sidebar-nav').affix({
+        offset: {
+            top: nav_height + header_height - 100
+        }
+    }).css('top', (nav_height + header_height)+'px');
+    $('#content-header').affix({
+        offset: {
+            top: nav_height
+        }
+    }).css('top', nav_height+'px');
+}
+
+function setupMobileContentNavigation() {
+    var content_header = $('<div id="content-header"></div>').affix({
+        offset: {
+            top: nav_height
+        }
+    }).css('top', nav_height+'px');
+
+    var header = $('#content > h1:first');
+    header.appendTo(content_header);
+
+    var toggle_button = $('<a id="mobile-content-nav-toggle" href="#"></a>');
+    toggle_button.appendTo(header);
+
+    var content_nav = $('#right-sidebar-nav');
+    content_nav.removeClass('hidden-sm hidden-xs').attr('id', 'mobile-content-nav');
+    content_nav.hide();
+    content_nav.appendTo(content_header);
+
+    var content = $('#content');
+    content.wrapInner('<div id="content-body"></div>');
+
+    content_header.prependTo(content);
+
+    toggle_button.click(function () {
+        toggleMobileContentNav();
+    });
+    $('#mobile-content-nav a').click(function () {
+        if (!$(this).hasClass('accordion-toggle'))
+            closeMobileContentNav();
+    });
+
+    onProjectPageChange();
+}
+
+function teardownMobileContentNavigation() {
+    var content = $('#content');
+    var content_header = $('#content-header');
+
+    $('#mobile-content-nav-toggle').remove();
+    var header = content_header.find('h1:first');
+    header.appendTo(content);
+
+    var content_nav = $('#mobile-content-nav');
+    content_nav.addClass('hidden-sm hidden-xs').attr('id', 'right-sidebar-nav');
+    content_nav.show();
+    content_nav.prependTo($('#right-sidebar'));
+    content_header.remove();
+
+    var content_body = $('#content-body');
+    content_body.children().appendTo(content);
+    content_body.remove();
+}
+
+function toggleMobileContentNav(){
+    if($('#mobile-content-nav').is(':visible')) {
+        closeMobileContentNav();
+    } else {
+        openMobileContentNav();
+    }
+}
+
+function openMobileContentNav(){
+    $('#mobile-content-nav').slideDown();
+    $('#content-header').css('bottom', 0);
+    $('#mobile-content-nav-toggle').addClass('expanded');
+}
+
+function closeMobileContentNav(){
+    $('#mobile-content-nav').slideUp();
+    $('#content-header').css('bottom', '');
+    $('#mobile-content-nav-toggle').removeClass('expanded');
+}
+
+function get_window_width(){
+    return $(window).width();
+}
+
+function onWindowResize() {
+    onProjectPageChange();
+
+    if (get_window_width() <= 990) {
+        if (!$('#mobile-content-nav').length)
+            setupMobileContentNavigation();
+    }
+    else {
+        if ($('#mobile-content-nav').length)
+            teardownMobileContentNavigation();
     }
 }
