@@ -608,3 +608,65 @@ body.ta {
     }
   }
 }
+
+#warning-modal {
+  .modal-dialog {
+    overflow-y: initial;
+
+    .modal-content {
+      text-align: center;
+
+      .modal-header {
+        text-align: center;
+
+        .warning-header {
+          font-weight: bold;
+        }
+
+        .warning-circle {
+          border-radius: 50%;
+          width: 85px;
+          height: 85px;
+          background: #fff;
+          border: 5px solid #FF9900;
+          color: #FF9900;
+          text-align: center;
+          font-size: 60px;
+          margin: 0 auto;
+          padding: 12px;
+          line-height: 0;
+        }
+      }
+
+      .modal-body {
+        text-align: left;
+        display: inline-block;
+        position: relative;
+        overflow-y: auto;
+        max-height: 250px;
+        padding: 15px;
+      }
+
+      .modal-footer {
+        text-align: center !important;
+
+        .btn.raised {
+          border: 1px solid #AAAAAA;
+          box-shadow: 5px 5px 3px #888888;
+        }
+
+        .btn-primary {
+          font-size: 16px;
+          background-color: #3ebcfe;
+          color: #fff;
+        }
+
+        .btn-secondary {
+          font-size: 16px;
+          color: #3ebcfe;
+          background-color: #fff;
+        }
+      }
+    }
+  }
+}

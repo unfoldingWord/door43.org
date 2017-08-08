@@ -149,15 +149,44 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
 
     $buildStatusIcon.find('i').attr("class", "fa " + faSpinnerClass); // default to spinner
     setOverallConversionStatus(myLog.status);
-    if (myLog.errors.length > 0)
-        $buildStatusIcon.attr("title", myLog.errors.join("\n"));
-    else if (myLog.warnings.length > 0)
-        $buildStatusIcon.attr("title", myLog.warnings.join("\n"));
-    else if (myLog.message)
-        $buildStatusIcon.attr("title", myLog.message);
 
-    console.log("Building sidebar for " + myCommitId);
+    if(myLog.warnings.length) {
+        var modal_html = '<ul><li>'+myLog.warnings.join("</li><li>")+'</li></ul>';
+        $buildStatusIcon.on('click', function () {
+            showWarningModal(modal_html);
+        }).attr('title', 'Click to see warnings');
+    }
+
     $revisions.empty();
+}
+
+function showWarningModal(modal_body){
+    html =  '<div id="warning-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirm-modal" aria-hidden="true">'+
+            '  <div class="modal-dialog">'+
+            '    <div class="modal-content">'+
+            '      <div class="modal-header">'+
+            '        <a class="close" data-dismiss="modal">×</a>'+
+            '        <div class="warning-circle"><i class="fa fa-exclamation"></i></div>'+
+            '        <h3 class="warning-header">Warning!</h3>'+
+            '      </div>'+
+            '      <div class="modal-body">'+
+            modal_body +
+            '      </div>'+
+            '      <div class="modal-footer">'+
+            '        <a href="mailto:help@door43.org'+
+            '?subject='+encodeURIComponent('Build Warning: '+myOwner+'/'+myRepoName)+
+            '&body='+encodeURIComponent("Type your question here\n\nSee the failure at "+window.location.href+"\n\n")+
+            '" class="btn btn-secondary raised">Ask the Help Desk</a>'+
+            '        <span class="btn btn-primary raised" data-dismiss="modal">Ok, Got it!</span>'+
+            '      </div>'+
+            '    </div>'+
+            '  </div>'+
+            '</div>';
+
+    $('body').append(html);
+    $("#warning-modal").modal().modal('show').on('hidden.bs.modal', function() {
+        $(this).remove();
+    });
 }
 
 /**
