@@ -138,3 +138,30 @@ if (!String.prototype.startsWith) {
     return this.indexOf(searchString, position) === position;
   };
 }
+
+function checkForBuildCompletionAfterDelay() {
+    setTimeout(function() {
+
+        $.getJSON("build_log.json", function (myLog) {
+            // check status
+        })
+            .done(function () {
+                console.log("polling my own build_log.json");
+            })
+            .fail(function () {
+                console.log("error reading my own build_log.json");
+            }); // End getJSON
+    }, 10000);
+}
+
+function checkForConversionRequested($content) {
+    if(CONV_REQUESTED) {
+        console.log("found conversion requested");
+        clearTimeout(CONV_REQUESTED);
+        // TODO add periodic checking
+        return;
+    }
+    console.log("didn't find conversion requested");
+}
+
+checkForConversionRequested();
