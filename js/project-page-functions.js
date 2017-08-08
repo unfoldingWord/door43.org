@@ -138,15 +138,51 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
 
     $buildStatusIcon.find('i').attr("class", "fa " + faSpinnerClass); // default to spinner
     setOverallConversionStatus(myLog.status);
-    if (myLog.errors.length > 0)
-        $buildStatusIcon.attr("title", myLog.errors.join("\n"));
-    else if (myLog.warnings.length > 0)
-        $buildStatusIcon.attr("title", myLog.warnings.join("\n"));
-    else if (myLog.message)
-        $buildStatusIcon.attr("title", myLog.message);
 
-    console.log("Building sidebar for " + myCommitId);
+    var modal_html = '';
+    var modal_items = [];
+    if (myLog.errors.length)
+        modal_items = modal_items.concat(myLog.errors);
+    else if (myLog.warnings.length)
+        modal_items = modal_items.concat(myLog.warnings);
+
+    if(modal_items.length) {
+        modal_html = '<ul><li>'+modal_items.join("</li><li>")+'</li></ul>';
+        console.log(modal_html);
+        console.log($buildStatusIcon);
+        $buildStatusIcon.on('click', function () {
+            showWarningModal(modal_html);
+        });
+    }
+
     $revisions.empty();
+}
+
+function showWarningModal(modal_body){
+    html =  '<div id="dynamicModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirm-modal" aria-hidden="true">';
+    html += '<div class="modal-dialog">';
+    html += '<div class="modal-content" style="text-align: center">';
+    html += '<div class="modal-header">';
+    html += '<a class="close" data-dismiss="modal">×</a>';
+    html += '<div class="warning-circle"><i class="fa fa-exclamation"></i></div>';
+    html += '<h4 class="warning-modal-header">Warning!</h4>';
+    html += '</div>';
+    html += '<div class="modal-body" style="display:inline-block">';
+    html += modal_body;
+    html += '</div>';
+    html += '<div class="modal-footer" style="text-align: center">';
+    html += '<span class="btn btn-primary raised" data-dismiss="modal">Ok, Got it!</span> <span class="btn btn-secondary raised" data-dismiss="modal">Ask the Help Desk</span>';
+    html += '</div>';  // content
+    html += '</div>';  // dialog
+    html += '</div>';  // footer
+    html += '</div>';  // modalWindow
+
+    $('body').append(html);
+    $("#dynamicModal").modal();
+    $("#dynamicModal").modal('show');
+    $('#dynamicModal').on('hidden.bs.modal', function (e) {
+        $(this).remove();
+    });
 }
 
 /**

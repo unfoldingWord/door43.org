@@ -526,3 +526,35 @@ ul#sidebar-nav > li.active > a {
   color: #000000;
   margin: 0;
 }
+
+/* Makes an orange circle around the text */
+.warning-circle {
+  border-radius: 50%;
+  width: 85px;
+  height: 85px;
+  background: #fff;
+  border: 5px solid #FF9900;
+  color: #FF9900;
+  text-align: center;
+  font-size: 60px;
+  margin: 0 auto;
+  padding: 12px;
+  line-height: 0;
+}
+
+.warning-modal-header {
+  font-weight: bold;
+  text-align: center;
+}
+
+
+.btn.raised {
+  border: 1px solid #AAAAAA;
+  box-shadow: 5px 5px 3px #888888;
+}
+
+.btn-secondary {
+  font-size: 16px;
+  color: #00bcff;
+  background-color: #fff;
+}
