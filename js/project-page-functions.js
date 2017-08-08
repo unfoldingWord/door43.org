@@ -193,9 +193,10 @@ function onDocumentScroll(theWindow) {
 function getVisibleHeight(selector) {
   var $el = $(selector),
     scrollTop = $(this).scrollTop(),
-    scrollBot = scrollTop + $(this).height(),
-    elTop = $el.offset().top,
-    elBottom = elTop + $el.outerHeight(),
+    scrollBot = scrollTop + $(this).height();
+  var $el_offset = $el.offset();
+  var elTop = $el_offset ? $el_offset.top : 0;
+  var elBottom = elTop + $el.outerHeight(),
     visibleTop = elTop < scrollTop ? scrollTop : elTop,
     visibleBottom = elBottom > scrollBot ? scrollBot : elBottom;
   if ((visibleBottom - visibleTop) > 0)
