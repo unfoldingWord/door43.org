@@ -139,26 +139,32 @@ if (!String.prototype.startsWith) {
   };
 }
 
+const RECHECK_DELAY = 10000; // 10 second wait
 function checkForBuildCompletionAfterDelay() {
     setTimeout(function() {
-
         $.getJSON("build_log.json", function (myLog) {
-            // check status
+            var iconType = myLog ? getDisplayIconType(myLog.status) : eConvStatus.IN_PROGRESS;
+            if (iconType != eConvStatus.IN_PROGRESS) {
+                window.location.reload(1); // conversion finished, reload page
+            } else {
+                checkForBuildCompletionAfterDelay(); // check again in 10 seconds
+            }
         })
-            .done(function () {
-                console.log("polling my own build_log.json");
-            })
-            .fail(function () {
-                console.log("error reading my own build_log.json");
-            }); // End getJSON
-    }, 10000);
+        .done(function () {
+            console.log("polling my own build_log.json");
+        })
+        .fail(function () {
+            console.log("error reading my own build_log.json, retry in 10 seconds");
+            checkForBuildCompletionAfterDelay();
+        }); // End getJSON
+    }, RECHECK_DELAY);
 }
 
 function checkForConversionRequested($content) {
     if(CONV_REQUESTED) {
         console.log("found conversion requested");
         clearTimeout(CONV_REQUESTED);
-        // TODO add periodic checking
+        checkForBuildCompletionAfterDelay();
         return;
     }
     console.log("didn't find conversion requested");
