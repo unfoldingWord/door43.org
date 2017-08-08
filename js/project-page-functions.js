@@ -1,9 +1,5 @@
 var myCommitId, myRepoName, myOwner, margin_top;
 
-$(document).ready(function () {
-    onProjectPageLoaded();
-});
-
 /**
  * Called to initialize the project page
  */
