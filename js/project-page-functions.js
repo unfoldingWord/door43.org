@@ -1,5 +1,9 @@
 var myCommitId, myRepoName, myOwner, margin_top;
 
+$(document).ready(function () {
+    onProjectPageLoaded();
+});
+
 /**
  * Called to initialize the project page
  */
@@ -143,7 +147,7 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
         var modal_html = '<ul><li>'+myLog.warnings.join("</li><li>")+'</li></ul>';
         $buildStatusIcon.on('click', function () {
             showWarningModal(modal_html, myLog.repo_owner, myLog.repo_name);
-        });
+        }).attr('title', 'Click to see warnings');
     }
 
     $revisions.empty();
