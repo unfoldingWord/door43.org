@@ -146,14 +146,14 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
     if(myLog.warnings.length) {
         var modal_html = '<ul><li>'+myLog.warnings.join("</li><li>")+'</li></ul>';
         $buildStatusIcon.on('click', function () {
-            showWarningModal(modal_html, myLog.repo_owner, myLog.repo_name);
+            showWarningModal(modal_html);
         }).attr('title', 'Click to see warnings');
     }
 
     $revisions.empty();
 }
 
-function showWarningModal(modal_body, owner, repo){
+function showWarningModal(modal_body){
     html =  '<div id="warning-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirm-modal" aria-hidden="true">'+
             '  <div class="modal-dialog">'+
             '    <div class="modal-content">'+
@@ -167,14 +167,14 @@ function showWarningModal(modal_body, owner, repo){
             '      </div>'+
             '      <div class="modal-footer">'+
             '        <a href="mailto:help@door43.org'+
-            '?subject='+encodeURIComponent('Build Warning: '+owner+'/'+repo)+
+            '?subject='+encodeURIComponent('Build Warning: '+myOwner+'/'+myRepoName)+
             '&body='+encodeURIComponent("Type your question here\n\nSee the failure at "+window.location.href+"\n\n")+
             '" class="btn btn-secondary raised">Ask the Help Desk</a>'+
             '        <span class="btn btn-primary raised" data-dismiss="modal">Ok, Got it!</span>'+
-            '      </div>'+  // content
-            '    </div>'+  // dialog
-            '  </div>'+  // footer
-            '</div>';  // modalWindow
+            '      </div>'+
+            '    </div>'+
+            '  </div>'+
+            '</div>';
 
     $('body').append(html);
     $("#warning-modal").modal().modal('show').on('hidden.bs.modal', function() {
