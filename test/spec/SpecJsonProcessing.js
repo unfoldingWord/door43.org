@@ -152,6 +152,8 @@ describe('Test Processing of Json files', function () {
 
             // then
             validateBuildStatus();
+            $buildStatusIcon.trigger('click');
+            $('#warning-modal').trigger('hidden.bs.modal');
         });
 
         //

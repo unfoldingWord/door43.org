@@ -2,6 +2,11 @@
 describe('Test Project Sidebars', function () {
 
   beforeEach(function () {
+    spyOn(window, 'get_window_width').and.callFake(function () {
+      return 1000;
+    });
+
+    projectPageLoaded = false;
 
     // add the nav tags to the body
     document.body.style.height = '5000px';
@@ -10,7 +15,8 @@ describe('Test Project Sidebars', function () {
     $body.append('<nav class="navbar navbar-inverse navbar-fixed-top" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement" role="navigation">Top Nav Bar</nav>');
     var $navbar = $('.navbar');
     $navbar.css('height', 65);
-    $body.append('<header id="pinned-header" style="margin-top: 130px">Pinned Header</header>');
+    $body.append('<header id="pinned-header" style="margin-top: 130px; top: 0px">Pinned Header</header>');
+    $body.append('<div class="page-content" style="margin-top: 0px">Page Content</div>');
     $body.append('<div class="nav nav-stacked" id="revisions-div">Revisions</div>');
     $body.append('<div class="col-md-6" id="outer-content" role="main" style="height: 4000px">Content</div>');
     $body.append('<nav class="affix-top hidden-print hidden-xs hidden-sm" id="right-sidebar-nav">Right Nav Bar</nav>');
@@ -31,12 +37,13 @@ describe('Test Project Sidebars', function () {
     expect($data.options.offset).toEqual(165);
   });
 
-  it('should set outer-content margin-top', function () {
+    it('should set page-content margin-top', function () {
 
-    var $outer = $('#outer-content');
+    var $page_content = $('.page-content');
 
     // margin-top should be zero
-    expect($outer.css('marginTop')).toEqual('0px');
+    var margin_top = getPixelsFromString($page_content.css('margin-top'));
+    expect(margin_top).toEqual(0);
 
     // NOTE: We have to set window.scrollY = 2000 instead of using window.scroll(0, 2000) because the
     //       PhantomJS browser expands to the size of the document, so scrolling doesn't happen.
@@ -44,11 +51,29 @@ describe('Test Project Sidebars', function () {
     // scroll down
     window.scrollY = 2000;
     onDocumentScroll(window);
-    expect($outer.css('marginTop')).toEqual('240px');
+    margin_top = getPixelsFromString($page_content.css('margin-top'));
+    expect(margin_top).toBeGreaterThanOrEqual(200);
 
     // scroll to top
     window.scrollY = 0;
     onDocumentScroll(window);
-    expect($outer.css('marginTop')).toEqual('0px');
+    margin_top = getPixelsFromString($page_content.css('margin-top'));
+    expect(margin_top).toEqual(0);
   });
+
+    //
+    // helpers
+    //
+
+    function getPixelsFromString(size_str) {
+        if(size_str && (size_str.length >= 2) ) {
+            var suffix = size_str.substr(size_str.length-2);
+            if(suffix === "px") {
+                var prefix = size_str.substr(0, size_str.length - 2);
+                var value = parseInt(prefix);
+                return value;
+            }
+        }
+        return null;
+    }
 });
