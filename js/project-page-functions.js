@@ -146,22 +146,35 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
     saveDownloadLink(myLog);
     setDownloadButtonState($downloadMenuButton);
     updateTextForDownloadItem(myLog.input_format);
+    updateConversionStatusOnPage($buildStatusIcon, myLog);
+    $revisions.empty();
+}
+
+function updateConversionStatusOnPage($buildStatusIcon, myLog) {
+    if(CONVERSION_TIMED_OUT) {
+        myLog.status = "failed";
+        if(!myLog.errors) {
+            myLog.errors = [];
+        }
+        const errorMsg = "Conversion Timed Out!\nStarted " + timeSince(new Date(myLog.created_at)) + " ago";
+        myLog.errors.unshift(errorMsg);
+        console.log(errorMsg);
+        $('h1.conversion-requested').text("ERROR: Conversion timed out!");
+    }
 
     $buildStatusIcon.find('i').attr("class", "fa " + faSpinnerClass); // default to spinner
     setOverallConversionStatus(myLog.status);
 
     if(myLog.warnings.length) {
-        var modal_html = '<ul><li>'+myLog.warnings.join("</li><li>")+'</li></ul>';
+        var modal_html = '<ul><li>' + myLog.warnings.join("</li><li>") + '</li></ul>';
         $buildStatusIcon.on('click', function () {
             showWarningModal(modal_html);
         }).attr('title', 'Click to see warnings');
     }
-
-    $revisions.empty();
 }
 
 function showWarningModal(modal_body){
-    html =  '<div id="warning-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirm-modal" aria-hidden="true">'+
+    var html =  '<div id="warning-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirm-modal" aria-hidden="true">'+
             '  <div class="modal-dialog">'+
             '    <div class="modal-content">'+
             '      <div class="modal-header">'+
@@ -388,7 +401,6 @@ function setDownloadButtonState($button, commitID, pageUrl) {
         cache: "false",
         dataType: 'jsonp',
         success: function (data, status) {
-                console.log(data);
                 if(data.download_exists) {
                     if($button) {
                         $button.prop('disabled', false)
