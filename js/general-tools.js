@@ -143,11 +143,11 @@ var conversion_start_time = new Date(); // default to current time
 var recent_build_log = null;
 var CONVERSION_TIMED_OUT = false; // global fail status
 
-function checkForBuildCompletionAfterDelay() {
-    if((new Date() - conversion_start_time) > 600000) { // maximum 10 minute wait
+function checkAgainForBuildCompletion() {
+    if((new Date() - conversion_start_time) > 600000) { // maximum 10 minutes of checking
         showBuildStatusAsTimedOut($('#build-status-icon'));
     } else {
-        setTimeout(checkConversionStatus, 10000); // 10 second wait
+        setTimeout(checkConversionStatus, 10000); // wait 10 second before checking
     }
 }
 
@@ -183,12 +183,12 @@ function checkConversionStatus() {
             } catch(e) {
                 console.log("failed to get conversion start time: " + e);
             }
-            checkForBuildCompletionAfterDelay(); // check again in 10 seconds
+            checkAgainForBuildCompletion();
         }
     })
     .fail(function () {
         console.log("error reading my own build_log.json, retry in 10 seconds");
-        checkForBuildCompletionAfterDelay();
+        checkAgainForBuildCompletion();
     }); // End getJSON
 }
 
