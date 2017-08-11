@@ -602,6 +602,7 @@ function onWindowResize() {
 var conversion_start_time = new Date(); // default to current time
 var recent_build_log = null;
 var CONVERSION_TIMED_OUT = false; // global fail status
+const MAX_CHECKING_INTERVAL = 600000; // maximum 10 minutes of checking
 
 function showBuildStatusAsTimedOut($buildStatusIcon) {
     console.log("conversion wait timeout");
@@ -620,11 +621,15 @@ function showBuildStatusAsTimedOut($buildStatusIcon) {
 }
 
 function checkAgainForBuildCompletion() {
-    if((new Date() - conversion_start_time) > 600000) { // maximum 10 minutes of checking
+    if((new Date() - conversion_start_time) > MAX_CHECKING_INTERVAL) {
         showBuildStatusAsTimedOut($('#build-status-icon'));
     } else {
         setTimeout(checkConversionStatus, 10000); // wait 10 second before checking
     }
+}
+
+function reloadPage() {
+    window.location.reload(true); // conversion finished, reload page
 }
 
 function checkConversionStatus() {
@@ -636,13 +641,9 @@ function checkConversionStatus() {
         }
         if (iconType !== eConvStatus.IN_PROGRESS) {
             console.log("conversion completed");
-            window.location.reload(true); // conversion finished, reload page
+            reloadPage();
         } else {
-            try {
-                conversion_start_time = new Date(myLog.created_at);
-            } catch(e) {
-                console.log("failed to get conversion start time: " + e);
-            }
+            conversion_start_time = new Date(myLog.created_at);
             checkAgainForBuildCompletion();
         }
     })
