@@ -73,9 +73,9 @@ If Travis CI has built and deployed the `develop` branch successfully, you creat
 
 #### Syncing Assets
 
-Assets (binary things like images) are housed on cdn.door43.org/assets for this site. This assets folder is a Resilio Sync folder shared among the developers (ask if you need access).  Link your Resilio Sync folder into `_site/assets/`
+Assets (binary things like images) are housed on cdn.door43.org/assets for this site. This assets folder is a Resilio Sync folder shared among the developers (ask if you need access).  
 
-*Note: The first time you will have to run `s3cmd --configure` to setup and then copy and rename the cfg file to `s3cfg-prod` in project folder (e.g. `cp ~/.s3cfg s3cfg-prod` )*
+*Note: The first time you will have to Link your Resilio Sync folder into `_site/assets/`.  Then run `s3cmd --configure` to setup s3cmd. Next copy and rename the cfg file to `s3cfg-prod` in project folder (e.g. `cp ~/.s3cfg s3cfg-prod` )*
 
 ##### Syncing
 
