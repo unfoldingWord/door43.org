@@ -201,7 +201,7 @@ function updateTextOnUndefinedLanguagePage(href, $links) {
         var subPath = getSubPath(href);
         changeMissingTextForLanguageCode(lang_code, subPath);
         $.getScript('/js/project-page-functions.js', function() {
-            setLanguagePageViews(null,href,1);
+            getAndUpdateLanguagePageViews(null,href,1);
         })
     }
 }
