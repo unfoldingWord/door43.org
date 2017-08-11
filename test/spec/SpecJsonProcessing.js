@@ -142,18 +142,25 @@ describe('Test Processing of Json files', function () {
             validateBuildStatus();
         });
 
-        it('processBuildLogJson() warnings should update screen status', function () {
+        it('processBuildLogJson() warnings should update screen status and click should work', function () {
             // given
+            jasmine.getFixtures().fixturesPath = 'base/test/fixtures';
+            loadFixtures('obs-project-page-fixture.html');
+            $buildStatusIcon = $('#build-status-icon');
+            spyOn($buildStatusIcon, 'attr').and.callFake(mockJqueryAttr);
+            spyOn(window, 'showWarningModal').and.returnValue(false);
+
             var build_log = JSON.parse(JSON.stringify(build_log_base)); // clone
             build_log.warnings = ["warning"];
 
             // when
             processBuildLogJson(build_log, $downloadMenuButton, $buildStatusIcon, $lastUpdated, $revisions);
+            $buildStatusIcon.trigger('click');
 
             // then
             validateBuildStatus();
-            $buildStatusIcon.trigger('click');
-            $('#warning-modal').trigger('hidden.bs.modal');
+            expect(window.showWarningModal).toHaveBeenCalled();
+            $('#warning-modal').trigger('hidden.bs.modal'); // clear off screen
         });
 
         //

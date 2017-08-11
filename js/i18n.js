@@ -10,7 +10,7 @@ function onReady() {
     setupLanguageSelector();
     setupSearchFieldFromUrl();
     searchProjects();
-    setLanguagePageViews($('#num-of-views'),window.location.href,1);
+    getAndUpdateLanguagePageViews(null,window.location.href,1);
     pageLoaded = true;
 
     $('#search-button').on('click', function () {
@@ -1055,3 +1055,14 @@ function scrollToResults(scroll_to_id) {
     // prevent default
     return false;
 }
+
+function getAndUpdateLanguagePageViews(span, pageUrl, increment) {
+    var url = getLanguagePageViewUrl(pageUrl);
+    return getAndUpdatePageViews(span, url, pageUrl, increment);
+}
+
+function getLanguagePageViewUrl(pageUrl) {
+    var prefix = getSiteFromPage(pageUrl);
+    return 'https://' + prefix + 'api.door43.org/language_view_count';
+}
+

@@ -138,3 +138,76 @@ if (!String.prototype.startsWith) {
     return this.indexOf(searchString, position) === position;
   };
 }
+
+function processPageViewSuccessResponse(data) {
+    var response = { };
+    if (data.hasOwnProperty('ErrorMessage')) {
+        response['error'] = 'Error: ' + data['ErrorMessage'];
+    }
+    else if (data.hasOwnProperty('view_count')) {
+        var viewCount = data['view_count'];
+        var message = viewCount + ' view';
+        if (viewCount > 1) {
+            message += 's';
+        }
+        response['message'] = message;
+    } else {
+        response['error'] = 'Error: illegal response';
+    }
+    return response;
+}
+
+function getAndUpdatePageViews(span, pageCountUrl, pageUrl, increment) {
+    var params = {
+        path: pageUrl,
+        increment: increment
+    };
+
+    $.ajax({
+        url: pageCountUrl,
+        type: 'GET',
+        cache: "false",
+        data: params,
+        dataType: 'jsonp',
+        success: function (data, status) {
+            var response = processPageViewSuccessResponse(data);
+            if (span && response.hasOwnProperty('message')) {
+                span.html(response['message']);
+            }
+            if (response.hasOwnProperty('error')) {
+                console.log(response['error'], data);
+            }
+            return response;
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            const error = 'Error: ' + textStatus + '\n' + errorThrown;
+            console.log(error);
+            return error;
+        }
+    });
+    return false;
+}
+
+function beginsWith(pageUrl, match) {
+    const pos = pageUrl.indexOf(match);
+    return pos === 0;
+}
+
+function getSiteFromPage(pageUrl) {
+    var prefix = '';
+    try {
+        var parts = pageUrl.split('//');
+        if (parts.length > 1) {
+            var netloc = parts[1];
+            if (beginsWith(netloc, 'dev')) {
+                prefix = 'dev-';
+            } else if (beginsWith(netloc, 'test') || beginsWith(netloc, 'localhost') || beginsWith(netloc, '127.0.0.1')) {
+                prefix = 'test-';
+            }
+        }
+    } catch (e) {
+        console.log("Exception on page URL '" + pageUrl + "': " + e);
+    }
+    return prefix;
+}
+
