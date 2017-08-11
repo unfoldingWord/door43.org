@@ -2,10 +2,11 @@
 describe('Test Processing of Json files', function () {
     var repo = "ar_eph_text_ulb";
     var user = "dummy_user";
-    const createdAt = "2017-06-26T20:57:42Z";
+    const startedAt = "2017-06-26T20:57:42Z";
     var build_log_base = {
         commit_id: "39a099622d",
-        created_at: createdAt,
+        created_at: startedAt,
+        started_at: startedAt,
         errors: [],
         message: "Conversion requested",
         repo_name: repo,
@@ -151,7 +152,7 @@ describe('Test Processing of Json files', function () {
             if(build_log) {
                 expect(recent_build_log).toEqual(build_log);
             }
-            expect(conversion_start_time).toEqual(new Date(createdAt));
+            expect(conversion_start_time).toEqual(new Date(startedAt));
         }
     });
 

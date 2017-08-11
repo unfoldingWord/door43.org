@@ -643,7 +643,7 @@ function checkConversionStatus() {
             console.log("conversion completed");
             reloadPage();
         } else {
-            conversion_start_time = new Date(myLog.created_at);
+            conversion_start_time = new Date(myLog.started_at);
             checkAgainForBuildCompletion();
         }
     })
