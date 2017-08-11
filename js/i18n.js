@@ -10,7 +10,7 @@ function onReady() {
     setupLanguageSelector();
     setupSearchFieldFromUrl();
     searchProjects();
-    setLanguagePageViews(null,window.location.href,1);
+    getAndUpdateLanguagePageViews(null,window.location.href,1);
     pageLoaded = true;
 
     $('#search-button').on('click', function () {
@@ -1056,7 +1056,7 @@ function scrollToResults(scroll_to_id) {
     return false;
 }
 
-function setLanguagePageViews(span, pageUrl, increment) {
+function getAndUpdateLanguagePageViews(span, pageUrl, increment) {
     var url = getLanguagePageViewUrl(pageUrl);
     return getAndUpdatePageViews(span, url, pageUrl, increment);
 }

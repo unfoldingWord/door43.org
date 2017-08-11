@@ -13,7 +13,7 @@ describe('LanguageViews', function () {
                 fnction();
             });
 
-            spyOn(window, "setLanguagePageViews").and.returnValue("dummy");
+            spyOn(window, "getAndUpdateLanguagePageViews").and.returnValue("dummy");
         });
 
         it('updateTextOnUndefinedLanguagePage() should setup language options', function () {
@@ -314,8 +314,8 @@ describe('LanguageViews', function () {
         });
     });
 
-    describe('Test setLanguagePageViews()', function () {
-        it('setLanguagePageViews() valid view_count should generate message', function () {
+    describe('Test getAndUpdateLanguagePageViews()', function () {
+        it('getAndUpdateLanguagePageViews() valid view_count should generate message', function () {
             //given
             var url = 'https://api.door43.org/en';
             var data = {
@@ -334,7 +334,7 @@ describe('LanguageViews', function () {
             };
 
             //when
-            setLanguagePageViews(span, url, 'dummy', 1);
+            getAndUpdateLanguagePageViews(span, url, 'dummy', 1);
 
             //then
             expect(response['message']).toEqual(expectedMessage);
@@ -342,7 +342,7 @@ describe('LanguageViews', function () {
             expect(messageSet).toEqual(expectedMessage);
         });
 
-        it('setLanguagePageViews() Error message in response data should generate error', function () {
+        it('getAndUpdateLanguagePageViews() Error message in response data should generate error', function () {
             //given
             var url = 'https://api.door43.org/en';
             var data = {
@@ -355,14 +355,14 @@ describe('LanguageViews', function () {
             });
 
             //when
-            setLanguagePageViews(null, url, 'dummy', 1);
+            getAndUpdateLanguagePageViews(null, url, 'dummy', 1);
 
             //then
             expect(response['error']).toEqual(expectedErrorMessage);
             expect(response.hasOwnProperty('message')).toBeFalsy();
         });
 
-        it('setLanguagePageViews() simulate ajax error reponse', function () {
+        it('getAndUpdateLanguagePageViews() simulate ajax error reponse', function () {
             //given
             var url = 'https://api.door43.org/en';
             var response = null;
@@ -374,13 +374,13 @@ describe('LanguageViews', function () {
             });
 
             //when
-            setLanguagePageViews(null, url, 'dummy', 1);
+            getAndUpdateLanguagePageViews(null, url, 'dummy', 1);
 
             //then
             expect(response).toEqual(expectedResponse);
         });
 
-        it('setLanguagePageViews() empty response data should generate error', function () {
+        it('getAndUpdateLanguagePageViews() empty response data should generate error', function () {
             //given
             var url = 'https://api.door43.org/en';
             var data = { };
@@ -391,7 +391,7 @@ describe('LanguageViews', function () {
             });
 
             //when
-            setLanguagePageViews(null, url, 'dummy', 1);
+            getAndUpdateLanguagePageViews(null, url, 'dummy', 1);
 
             //then
             expect(response['error']).toEqual(expectedErrorMessage);
