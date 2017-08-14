@@ -146,18 +146,31 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
     saveDownloadLink(myLog);
     setDownloadButtonState($downloadMenuButton);
     updateTextForDownloadItem(myLog.input_format);
+    updateConversionStatusOnPage($buildStatusIcon, myLog);
+    $revisions.empty();
+}
+
+function updateConversionStatusOnPage($buildStatusIcon, myLog) {
+    if(CONVERSION_TIMED_OUT) {
+        myLog.status = "failed";
+        if(!myLog.errors) {
+            myLog.errors = [];
+        }
+        const errorMsg = "Conversion Timed Out!\nStarted " + timeSince(new Date(myLog.created_at)) + " ago";
+        myLog.errors.unshift(errorMsg);
+        console.log(errorMsg);
+        $('h1.conversion-requested').text("ERROR: Conversion timed out!");
+    }
 
     $buildStatusIcon.find('i').attr("class", "fa " + faSpinnerClass); // default to spinner
     setOverallConversionStatus(myLog.status);
 
     if(myLog.warnings.length) {
-        var modal_html = '<ul><li>'+myLog.warnings.join("</li><li>")+'</li></ul>';
+        var modal_html = '<ul><li>' + myLog.warnings.join("</li><li>") + '</li></ul>';
         $buildStatusIcon.on('click', function () {
             showWarningModal(modal_html);
         }).attr('title', 'Click to see warnings');
     }
-
-    $revisions.empty();
 }
 
 function showWarningModal(modal_body){
@@ -388,7 +401,6 @@ function setDownloadButtonState($button, commitID, pageUrl) {
         cache: "false",
         dataType: 'jsonp',
         success: function (data, status) {
-                console.log(data);
                 if(data.download_exists) {
                     if($button) {
                         $button.prop('disabled', false)
@@ -586,3 +598,66 @@ function onWindowResize() {
             teardownMobileContentNavigation();
     }
 }
+
+var conversion_start_time = new Date(); // default to current time
+var recent_build_log = null;
+var CONVERSION_TIMED_OUT = false; // global fail status
+const MAX_CHECKING_INTERVAL = 600000; // maximum 10 minutes of checking
+
+function showBuildStatusAsTimedOut($buildStatusIcon) {
+    console.log("conversion wait timeout");
+    if (!recent_build_log) {
+        recent_build_log = {
+            status: "failed",
+            created_at: conversion_start_time
+        };
+    }
+    CONVERSION_TIMED_OUT = true;
+    try {
+        updateConversionStatusOnPage($buildStatusIcon, recent_build_log);
+    } catch(e) {
+        console.log("failed to set page status: " + e);
+    }
+}
+
+function checkAgainForBuildCompletion() {
+    if((new Date() - conversion_start_time) > MAX_CHECKING_INTERVAL) {
+        showBuildStatusAsTimedOut($('#build-status-icon'));
+    } else {
+        setTimeout(checkConversionStatus, 10000); // wait 10 second before checking
+    }
+}
+
+function reloadPage() {
+    window.location.reload(true); // conversion finished, reload page
+}
+
+function checkConversionStatus() {
+    $.getJSON("build_log.json", function (myLog) {
+        var iconType = eConvStatus.IN_PROGRESS;
+        if(myLog) {
+            recent_build_log = myLog;
+            iconType = getDisplayIconType(myLog.status);
+        }
+        if (iconType !== eConvStatus.IN_PROGRESS) {
+            console.log("conversion completed");
+            reloadPage();
+        } else {
+            conversion_start_time = new Date(myLog.created_at);
+            checkAgainForBuildCompletion();
+        }
+    })
+    .fail(function () {
+        console.log("error reading build_log.json, retry in 10 seconds");
+        checkAgainForBuildCompletion();
+    }); // End getJSON
+}
+
+function checkForConversionRequested($conversion_requested) {
+    if($conversion_requested && ($conversion_requested.length)) {
+        console.log("conversion in process");
+        checkConversionStatus();
+    }
+}
+
+checkForConversionRequested($('h1.conversion-requested'));
