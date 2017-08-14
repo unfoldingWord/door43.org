@@ -141,7 +141,7 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
     myCommitId = myLog.commit_id.substring(0, 10);
     myOwner = myLog.repo_owner;
     myRepoName = myLog.repo_name;
-    $lastUpdated.html("Updated " + timeSince(new Date(myLog.started_at)) + " ago");
+    $lastUpdated.html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
 
     saveDownloadLink(myLog);
     setDownloadButtonState($downloadMenuButton);
@@ -156,7 +156,7 @@ function updateConversionStatusOnPage($buildStatusIcon, myLog) {
         if(!myLog.errors) {
             myLog.errors = [];
         }
-        const errorMsg = "Conversion Timed Out!\nStarted " + timeSince(new Date(myLog.started_at)) + " ago";
+        const errorMsg = "Conversion Timed Out!\nStarted " + timeSince(new Date(myLog.created_at)) + " ago";
         myLog.errors.unshift(errorMsg);
         console.log(errorMsg);
         $('h1.conversion-requested').text("ERROR: Conversion timed out!");
@@ -609,7 +609,7 @@ function showBuildStatusAsTimedOut($buildStatusIcon) {
     if (!recent_build_log) {
         recent_build_log = {
             status: "failed",
-            started_at: conversion_start_time
+            created_at: conversion_start_time
         };
     }
     CONVERSION_TIMED_OUT = true;
@@ -643,7 +643,7 @@ function checkConversionStatus() {
             console.log("conversion completed");
             reloadPage();
         } else {
-            conversion_start_time = new Date(myLog.started_at);
+            conversion_start_time = new Date(myLog.created_at);
             checkAgainForBuildCompletion();
         }
     })
