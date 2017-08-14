@@ -86,6 +86,7 @@ describe('Test Processing of Json files', function () {
         var build_log_base = {
             commit_id: "39a099622d",
             created_at: "2017-06-26T20:57:42Z",
+            started_at: "2017-06-26T20:57:43Z",
             errors: [],
             message: "Conversion successful",
             repo_name: repo,
