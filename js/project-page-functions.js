@@ -168,6 +168,8 @@ function updateConversionStatusOnPage($buildStatusIcon, myLog) {
     if(myLog.warnings.length) {
         var modal_html = '<ul><li>' + myLog.warnings.join("</li><li>") + '</li></ul>';
         $buildStatusIcon.on('click', function () {
+            _StatHat.push(["_trackCount", "PgNkqAnDE37z2tStLTSmTyBLb2Zo", 1.0]);
+            pageTracker._trackPageview ('/goal/warningmodal');
             showWarningModal(modal_html);
         }).attr('title', 'Click to see warnings');
     }
