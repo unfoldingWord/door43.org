@@ -9,6 +9,15 @@ $(document).ready(function(){
  * Called to initialize the project page
  */
 function onProjectPageLoaded() {
+  var _StatHat = _StatHat || [];
+  _StatHat.push(['_setUser', 'NzMzIAPKpWipEWR8_hWIhqlgmew~']);
+  (function() {
+      var sh = document.createElement('script'); sh.type = 'text/javascript';
+      sh.async = true;
+      sh.src = '//www.stathat.com/javascripts/api.js';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(sh, s);
+  })();
   if(projectPageLoaded)
     return;
   projectPageLoaded = true;
