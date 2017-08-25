@@ -24,3 +24,5 @@ You can also use a translation tool and use its sync or upload feature to contri
 The old DokuWiki site is still available in read-only mode at [https://dw.door43.org](https://dw.door43.org).
 
 All of the content from the old wiki has been migrated into [DCS](https://git.door43.org).  You can search for content using the search box on the [Browse page](/en/).
+
+Please [contact us](/en/contact/) if you have any questions.
