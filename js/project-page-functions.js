@@ -136,7 +136,7 @@ function processProjectJson(project, $revisions) {
         var dateStr = date.toLocaleString("en-US", options);
 
         if (commit.id !== myCommitId) {
-            dateStr = '<a href="../' + commit.id + '/index.html">' + dateStr + '</a>';
+            dateStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + dateStr + '</a>';
         }
 
         $revisions.append('<tr ' + display + '><td>' + dateStr + '</td><td>' + iconHtml + '</td></tr>');
@@ -259,6 +259,7 @@ function getVisibleHeight(selector) {
 
 //noinspection JSUnusedGlobalSymbols
 function showTenMore(){
+  _StatHat.push(["_trackCount", "wShy-AE8rCXbQkCJepSvfSA3eUVzaw~~", 1.0]);
   var $revisions = $('#left-sidebar').find('#revisions');
   var counter = 0;
 
@@ -281,6 +282,7 @@ function showTenMore(){
 }
 
 function printAll(){
+  _StatHat.push(["_trackCount", "5o8ZBSJ6yPfmZ28HhXZPaSBNYzRU", 1.0]);
   var id = myOwner+"/"+myRepoName+"/"+myCommitId;
   var api_domain = "api.door43.org";
   var api_prefix = "";
@@ -450,6 +452,7 @@ function extractCommitFromUrl(pageUrl) {
  * @returns {*}
  */
 function getDownloadUrl(pageUrl) {
+    _StatHat.push(["_trackCount", "eBQk6-wY9ziv3D77-qhJuiBYM3Z2", 1.0]);
     if(source_download) { // if found in build_log.json
         return source_download;
     }
