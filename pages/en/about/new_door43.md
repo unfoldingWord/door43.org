@@ -15,6 +15,6 @@ Use the [Browse page](/en/) to find content.
 
 The old DokuWiki site is still available in read-only mode at [https://dw.door43.org](https://dw.door43.org).
 
-All of the content from the old wiki has been migrated into [DCS](https://git.door43.org).  You can search for content using the search box on the [Browse page](/en/).
+All of the content from the old wiki has been migrated to this new site, you can use the [Browse page](/en/) to find it.
 
-Please [contact us](/en/contact/) if you have any questions.
+*Please [contact us](/en/contact/) if you have any questions.*
