@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Legal - Slack Terms of Service
-header_title: Slack Terms of Service
+title: Legal - Team43 Slack Terms of Service
+header_title: Team43 Slack Terms of Service
 permalink: /en/slack-terms-of-service/index.html
 ---
 
@@ -11,7 +11,7 @@ We use the [Slack](https://slack.com/downloads) messaging app to communicate qui
 
 ## Privacy
 
-All of the public channels in Team43 Slack are publicly logged (available at [https://team.door43.org/logs][d43-logs]). If you are concerned about privacy use a pseudonym. Your email address will be accessible to others in our Team43 Slack team.
+Our Team43 Slack channel is available for anyone to join. If you are concerned about privacy use a pseudonym. Your email address will be accessible to others in our Team43 Slack team.
 
 ## Agreement
 
