@@ -2,7 +2,7 @@
 layout: default
 title: New Door43
 header_title: New Door43
-permalink: /en/about/new_door43.html
+permalink: /en/about/new_door43/index.html
 ---
 
 Content for Door43 is now managed in the [Door43 Content Service (DCS)](https://git.door43.org).
