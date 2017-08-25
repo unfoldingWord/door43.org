@@ -1,5 +1,14 @@
 var myCommitId, myRepoName, myOwner, nav_height, header_height;
 var projectPageLoaded = false;
+var _StatHat = _StatHat || [];
+_StatHat.push(['_setUser', 'NzMzIAPKpWipEWR8_hWIhqlgmew~']);
+(function() {
+  var sh = document.createElement('script'); sh.type = 'text/javascript';
+  sh.async = true;
+  sh.src = '//www.stathat.com/javascripts/api.js';
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(sh, s);
+})();
 
 $(document).ready(function(){
     onProjectPageLoaded();
@@ -9,15 +18,6 @@ $(document).ready(function(){
  * Called to initialize the project page
  */
 function onProjectPageLoaded() {
-  var _StatHat = _StatHat || [];
-  _StatHat.push(['_setUser', 'NzMzIAPKpWipEWR8_hWIhqlgmew~']);
-  (function() {
-      var sh = document.createElement('script'); sh.type = 'text/javascript';
-      sh.async = true;
-      sh.src = '//www.stathat.com/javascripts/api.js';
-      var s = document.getElementsByTagName('script')[0];
-      s.parentNode.insertBefore(sh, s);
-  })();
   if(projectPageLoaded)
     return;
   projectPageLoaded = true;
@@ -178,7 +178,6 @@ function updateConversionStatusOnPage($buildStatusIcon, myLog) {
         var modal_html = '<ul><li>' + myLog.warnings.join("</li><li>") + '</li></ul>';
         $buildStatusIcon.on('click', function () {
             _StatHat.push(["_trackCount", "PgNkqAnDE37z2tStLTSmTyBLb2Zo", 1.0]);
-            pageTracker._trackPageview ('/goal/warningmodal');
             showWarningModal(modal_html);
         }).attr('title', 'Click to see warnings');
     }
