@@ -136,7 +136,7 @@ function processProjectJson(project, $revisions) {
         var dateStr = date.toLocaleString("en-US", options);
 
         if (commit.id !== myCommitId) {
-            dateStr = '<a href="../' + commit.id + '/index.html">' + dateStr + '</a>';
+            dateStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + dateStr + '</a>';
         }
 
         $revisions.append('<tr ' + display + '><td>' + dateStr + '</td><td>' + iconHtml + '</td></tr>');
