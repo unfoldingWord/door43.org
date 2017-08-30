@@ -609,6 +609,28 @@ body.ta {
   }
 }
 
+// over-ride layout for rtl
+[dir=rtl] {
+  #pinned-header.pin-to-top #sub-header {
+    position: inherit;
+    right: inherit;
+    top: inherit;
+    float: left;
+    margin-top: 15px;
+    margin-left: 0;
+
+    #num-of-views {
+      margin-right: inherit;
+      margin-left: 30px;
+    }
+  }
+
+  #pinned-header.pin-to-top #build-status-icon img {
+    position: sticky;
+    left: 0;
+  }
+}
+
 #warning-modal {
   .modal-dialog {
     overflow-y: initial;
