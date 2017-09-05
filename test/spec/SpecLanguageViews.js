@@ -307,7 +307,7 @@ describe('LanguageViews', function () {
             //then
             var $li = $('.content-container .page-content div ul li');
             expect($li.length).toEqual(4);
-            expect($li[0].innerHTML).toContain("/en?lc=" + lang_code);
+            expect($li[0].innerHTML).toContain("/en/?lc=" + lang_code);
             expect($li[1].innerHTML).toContain("history.go(-1)");
             expect($li[2].innerHTML).toContain("http://dw.door43.org/" + subPath);
             expect($li[3].innerHTML).toContain("<a href=\"/en/contact\">Contact Us</a> to let us know");
