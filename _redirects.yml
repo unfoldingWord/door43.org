@@ -1,3 +1,23 @@
-/en/legal/license: /en/copyright-and-licensing/
-/en/license: /en/copyright-and-licensing/
+/contact: /en/contact/
 /en/dev/api: https://api-info.readthedocs.io/en/latest/
+/en/home: /en/
+/en/legal/home: /en/copyright-and-licensing/
+/en/legal/license: /en/copyright-and-licensing/
+/en/legal/privacy: /en/privacy-policy/
+/en/license: /en/copyright-and-licensing/
+/en/library: /en/
+/en/syntax: http://help.door43.org/en/knowledgebase/15-door43-content-service/docs/41-translate-content-online
+/en/technical: http://help.door43.org/en/knowledgebase
+/en/tips-tricks: http://help.door43.org/en/knowledgebase
+/en/tcc: https://unfoldingword.org/tcc/
+/en/udb: https://unfoldingword.org/udb/
+/en/udb/home: https://unfoldingword.org/udb/
+/en/ulb: https://unfoldingword.org/ulb/
+/en/ulb/home: https://unfoldingword.org/ulb/
+/en/uwadmin/home: https://git.door43.org/Door43-Catalog
+/en/uwadmin/pub_status: https://git.door43.org/Door43-Catalog
+/en/uwadmin/lpx/obs/status: https://git.door43.org/Door43-Catalog/lpx_obs/src/master/manifest.yaml
+/home: /
+/word-counts: https://dw.door43.org/word-counts
+
+/ceb/home: /en/?lc=ceb
