@@ -1,5 +1,16 @@
 /contact: /en/contact/
 /en/dev/api: https://api-info.readthedocs.io/en/latest/
+/en/dev/api/unfoldingword: https://api-info.readthedocs.io/en/latest/
+/en/dev/api/translationstudio: https://api-info.readthedocs.io/en/latest/
+/en/dev/api/translationkeyboard: https://api-info.readthedocs.io/en/latest/
+/en/dev: https://unfoldingword.org/door43/
+/en/dev/obs-app: https://unfoldingword.org/app/
+/en/dev/obs-translation-app: https://unfoldingword.org/ts/
+/en/dev/obs-book-render: https://github.com/unfoldingWord-dev/tools/blob/develop/obs/book/pdf_export.sh
+/en/dev/usfmtag: https://github.com/unfoldingWord-dev/Dokuwiki-USFMTag
+/en/dev/tools: https://github.com/unfoldingWord-dev/tools
+/en/dev/obs-video-render: https://dw.door43.org/en/dev/obs-video-render
+/en/dev/map-creator: https://dw.door43.org/en/dev/map-creator
 /en/home: /en/
 /en/legal/home: /en/copyright-and-licensing/
 /en/legal/license: /en/copyright-and-licensing/
