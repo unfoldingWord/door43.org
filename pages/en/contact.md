@@ -65,4 +65,8 @@ The fastest way to get answers is to ask the [#helpdesk](https://team43.slack.co
 
 If you prefer, you may also e-mail our help desk at [help@door43.org][help-mail].
 
+## Knowledgebase
+
+You may also find help articles on the [Door43 Knowledgebase](http://help.door43.org/en/knowledgebase).
+
 [help-mail]: mailto:help@door43.org "help@door43.org"
