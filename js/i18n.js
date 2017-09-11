@@ -384,13 +384,14 @@ function setupSearchFieldFromUrl(searchUrl) {
  **************************************************************************************************/
 
 /* Default values for search criteria */
-const DEFAULT_PAGE_MINIMUM_VIEWS = 10; // For default page, needs to have this many views
-const DEFAULT_PAGE_NUMBER_DAYS_FOR_RECENT = 30; // For default page, needs to have this many views
-const MAX_NUMBER_OF_RESULTS_FROM_DB = 10000;  // Maximum items that will be queried from DynamoDB at one time
+const DEFAULT_PAGE_MINIMUM_VIEWS = 5; // For default page popular, needs to have this many views
+const DEFAULT_PAGE_NUMBER_DAYS_FOR_RECENT = 6*30; // For default page recent, needs to be this recent
+const MAX_NUMBER_OF_RESULTS_FROM_DB = 100;  // Maximum items that will be queried from DynamoDB at one time
 
 /* Global variables */
 var baseUrl = "..";
-var results = [];
+var searchResults = {};
+var errorShown = false;
 
 /**
  * Class for search criteria
@@ -427,6 +428,28 @@ function SearchCriteria() {
     this.minViews = 0;
     this.daysForRecent = null;
     this.returnedFields = null;
+}
+
+/**
+ * extract out non null parameters in criteria
+ * @param criteria
+ * @return {params}
+ */
+function getParamsToSend(criteria) {
+    var params = {};
+    for (var property in criteria) {
+        if (criteria.hasOwnProperty(property)) {
+            var value = criteria[property];
+            if(value) {
+                if(Array.isArray(value)) {
+                    params[property] = '[' + value.join(',') + ']';
+                } else {
+                    params[property] = value;
+                }
+            }
+        }
+    }
+    return params;
 }
 
 /**
@@ -528,18 +551,24 @@ function getArrayItem(params, key) {
  * @param {string} [searchUrl] - The URL to use to search the projects. Uses page URL if none given.
  */
 function searchProjects(searchUrl) {
-    searchUrl = (typeof searchUrl === 'undefined') ? window.location.href : searchUrl;
     var criteria = getSearchCriteriaFromUrl(searchUrl);
-    if (_.isEqual(criteria, new SearchCriteria())) {
-        // Nothing was set in the criteria, so is the default page, setting minViews and daysFoRecent
-        criteria.minViews = DEFAULT_PAGE_MINIMUM_VIEWS;
-        criteria.daysForRecent = DEFAULT_PAGE_NUMBER_DAYS_FOR_RECENT
-    }
+    const default_search = _.isEqual(criteria, new SearchCriteria());
     criteria.returnedFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
-    results = [];
+    searchResults = {};
     $('#popular-div').find('.search-listing').html('<span class="loading-results">'+loadingText+'</span>');
     $('#recent-div').find('.search-listing').html('<span class="loading-results">'+loadingText+'</span>');
-    return searchManifestTable(criteria, updateResults);
+    if (!default_search) {
+        return searchManifestTable(criteria, updateBothResults);
+    }
+
+    // Nothing was set in the criteria, so is the default page, do two separate searches for popular and recent
+    criteria.daysForRecent = DEFAULT_PAGE_NUMBER_DAYS_FOR_RECENT;
+    searchManifestTable(criteria, updateRecentResults);
+
+    var criteria_popular = new SearchCriteria();
+    criteria_popular.minViews = DEFAULT_PAGE_MINIMUM_VIEWS;
+    criteria_popular.returnedFields = criteria.returnedFields;
+    return searchManifestTable(criteria_popular, updatePopularResults);
 }
 
 /***
@@ -554,222 +583,94 @@ function searchProjects(searchUrl) {
  * @return boolean - true if search initiated, if false then search error
  */
 function searchManifestTable(criteria, callback) {
-    try {
-        var tableName = getManifestTable();
-        var expressionAttributeValues = {};
-        var filterExpression = "";
-        var expressionAttributeNames = {};
-        var projectionExpression = null;
+    var searchUrl = "https://dev-api.door43.org/search_projects";
+    var params = getParamsToSend(criteria);
+    resetSearch();
 
-        if (criteria.minViews > 0) {
-            expressionAttributeNames["#views"] = "views";
-            expressionAttributeValues[":views"] = criteria.minViews;
-            filterExpression = appendFilter(filterExpression, "#views >= :views", true);
-            if (criteria.daysForRecent) {
-                var currentDate = new Date();
-                var recentMS = currentDate.valueOf() - criteria.daysForRecent * 24 * 60 * 60 * 1000; // go back daysForRecent days in milliseconds
-                expressionAttributeNames["#date"] = "last_updated";
-                expressionAttributeValues[":recent"] = new Date(recentMS).toISOString();
-                filterExpression = appendFilter(filterExpression, "#date >= :recent", true);
+    $.ajax({
+        url: searchUrl,
+        type: 'GET',
+        cache: "false",
+        data: params,
+        dataType: 'jsonp',
+        success: function (data, status) {
+            callback(null, data);
+            return data;
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            const error = 'Error: ' + textStatus + '\n' + errorThrown;
+            console.log(error);
+            if(!errorShown) {
+                errorShown = true;
+                callback(error, null);
             }
+            return error;
         }
+    });
 
-        if (criteria.languages && criteria.languages.length) {
-            var set = generateQuerySet(criteria.languages, expressionAttributeValues);
-            filterExpression = appendFilter(filterExpression, "(#lc in (" + set + "))");
-            expressionAttributeNames["#lc"] = "lang_code";
-        }
-
-        if (criteria.user_name) {
-            expressionAttributeValues[":user"] = criteria.user_name.toLowerCase();
-            filterExpression = appendFilter(filterExpression, "contains(#u, :user)");
-            expressionAttributeNames["#u"] = "user_name_lower";
-        }
-
-        if (criteria.repo_name) {
-            expressionAttributeValues[":repo"] = criteria.repo_name.toLowerCase();
-            filterExpression = appendFilter(filterExpression, "contains(#r, :repo)");
-            expressionAttributeNames["#r"] = "repo_name_lower";
-        }
-
-        if (criteria.title) {
-            expressionAttributeValues[":title"] = criteria.title;
-            filterExpression = appendFilter(filterExpression, "contains(#title, :title)");
-            expressionAttributeNames["#title"] = "title";
-        }
-
-        if (criteria.time) {
-            expressionAttributeValues[":time"] = criteria.time;
-            filterExpression = appendFilter(filterExpression, "contains(#time, :time)");
-            expressionAttributeNames["#time"] = "last_updated";
-        }
-
-        if (criteria.manifest) {
-            expressionAttributeValues[":manifest"] = criteria.manifest.toLowerCase();
-            filterExpression = appendFilter(filterExpression, "contains(#m, :manifest)");
-            expressionAttributeNames["#m"] = "manifest_lower";
-        }
-
-        if (criteria.resID) {
-            expressionAttributeValues[":resID"] = criteria.resID.toLowerCase();
-            filterExpression = appendFilter(filterExpression, "#id = :resID");
-            expressionAttributeNames["#id"] = "resource_id";
-        }
-
-        if (criteria.resType) {
-            expressionAttributeValues[":type"] = criteria.resType.toLowerCase();
-            filterExpression = appendFilter(filterExpression, "#t = :type");
-            expressionAttributeNames["#t"] = "resource_type";
-        }
-
-        if (criteria.full_text) {
-            var tokens = criteria.full_text.match(/\w+|"[^"]+"/g); // tokenize by spaces, but keep words grouped by double quotes as one token
-            $.each(tokens, function (idx, token) {
-                token = token.replace(/^"+|"+$/g, '');  // remove double quotes from around token
-                expressionAttributeValues[":match" + idx] = token.toLowerCase();
-                filterExpression = appendFilter(filterExpression, "(contains(#m, :match" + idx + ") OR contains(#r, :match" + idx + ") OR contains(#u, :match" + idx + "))");
-            });
-            expressionAttributeNames["#m"] = "manifest_lower";
-            expressionAttributeNames["#r"] = "repo_name_lower";
-            expressionAttributeNames["#u"] = "user_name_lower";
-        }
-
-        if (criteria.returnedFields) {
-            criteria.returnedFields = substituteReserved(criteria.returnedFields, 'views', expressionAttributeNames);
-            projectionExpression = criteria.returnedFields;
-        }
-
-        var params = {
-            TableName: tableName,
-            Limit: criteria.matchLimit // number of records to get
-        };
-
-        if (filterExpression) {
-            params.FilterExpression = filterExpression;
-            if (expressionAttributeNames)
-                params.ExpressionAttributeNames = expressionAttributeNames;
-            if (expressionAttributeValues)
-                params.ExpressionAttributeValues = expressionAttributeValues;
-            if (projectionExpression)
-                params.ProjectionExpression = projectionExpression;
-        }
-
-    } catch (e) {
-        var err = "Could not search languages: " + e.message;
-        callback(err, null);
-        return false;
-    }
-
-    var docClient = new AWS.DynamoDB.DocumentClient();
-    searchContinue(docClient, params, [], criteria.matchLimit, callback);
     return true;
 }
 
 /**
- * Appends a filter
- *
- * @param filterExpression
- * @param rule
- * @param orTogether
- * @returns {*}
- */
-function appendFilter(filterExpression, rule, orTogether) {
-    const concat = orTogether ? " OR " : " AND ";
-
-    if (!filterExpression) {
-        filterExpression = "";
-    }
-    if (filterExpression.length > 0) {
-        filterExpression += concat;
-    }
-    filterExpression += rule;
-    return filterExpression;
-}
-
-/**
- * Generates query set
- *
- * @param languages
- * @param expressionAttributeValues
- * @returns {string}
- */
-function generateQuerySet(languages, expressionAttributeValues) {
-    var set = "";
-    for (var i = 0; i < languages.length; i++) {
-        var contentIdName = ":val_" + (i + 1);
-        if (i === 0) {
-            set += contentIdName;
-        } else {
-            set += ", " + contentIdName;
-        }
-        expressionAttributeValues[contentIdName] = languages[i].toLowerCase();
-    }
-    return set;
-}
-
-
-/**
- * Handles database reserved words
- *
- * @param returnedFields
- * @param key
- * @param expressionAttributeNames
- * @returns {XML|string|void|*}
- */
-function substituteReserved(returnedFields, key, expressionAttributeNames) {
-    if (returnedFields.indexOf(key)) {
-        var sub = "#" + key;
-        returnedFields = returnedFields.replace(key, sub);
-        expressionAttributeNames[sub] = key;
-        return returnedFields;
-    }
-}
-
-/**
- * Recursive function to scanall items
- *
- * @param docClient
- * @param params
- * @param retData
- * @param matchLimit
- * @param callback
- */
-function searchContinue(docClient, params, retData, matchLimit, callback) {
-    docClient.scan(params, onScan);
-
-    function onScan(err, data) {
-        if (err) {
-            callback(err, retData);
-        } else {
-            if ('Items' in data) {
-                retData = retData.concat(data.Items);
-            }
-            var itemCount = retData.length;
-            if ((itemCount >= matchLimit) || !('LastEvaluatedKey' in data)) {
-                callback(err, retData);
-            } else { // more in list that we need to get
-                params.ExclusiveStartKey = data.LastEvaluatedKey;
-                searchContinue(docClient, params, retData, matchLimit, callback);
-            }
-        }
-    }
-}
-
-/**
- * Update the results stored in memory and shows them.
+ * Update the results stored in memory and show them.
  *
  * @param err
  * @param {Object[]} entries
  */
-function updateResults(err, entries) {
+function updateBothResults(err, entries) {
     if (!err) {
-        results = _.sortBy(entries, 'last_updated').reverse();
+        var results = _.sortBy(entries.slice(), 'last_updated').reverse();
+        searchResults[SECTION_TYPE_RECENT] = results;
+
+        results = _.sortBy(entries, 'views').reverse();
+        searchResults[SECTION_TYPE_POPULAR] = results;
+
         // Calling showSearchResults() without specifying a section means we want both emptied and newly populated
         showSearchResults();
     } else {
         var message = getMessageString(err, entries, "Search");
         alert(message);
     }
+}
+
+/**
+ * Update the results stored in memory and show them.
+ *
+ * @param err
+ * @param {Object[]} entries
+ */
+function updatePopularResults(err, entries) {
+    if (!err) {
+        var results = _.sortBy(entries, 'views').reverse();
+        searchResults[SECTION_TYPE_POPULAR] = results;
+        showSearchResults(SECTION_TYPE_POPULAR);
+    } else {
+        var message = getMessageString(err, entries, "Search");
+        alert(message);
+    }
+}
+
+/**
+ * Update the results stored in memory and show them.
+ *
+ * @param err
+ * @param {Object[]} entries
+ */
+function updateRecentResults(err, entries) {
+    if (!err) {
+        var results = _.sortBy(entries, 'last_updated').reverse();
+        searchResults[SECTION_TYPE_RECENT] = results;
+        showSearchResults(SECTION_TYPE_RECENT);
+    } else {
+        var message = getMessageString(err, entries, "Search");
+        alert(message);
+    }
+}
+
+function resetSearch() {
+    errorShown = false;
+    popular_fibonacci_n = 5;
+    recent_fibonacci_n = 5;
 }
 
 /**
@@ -846,12 +747,11 @@ function showSearchResults(sectionToShow) {
     if (typeof sectionToShow === 'undefined') {
         $popular_div.empty();
         $recent_div.empty();
-        popular_fibonacci_n = 5;
-        recent_fibonacci_n = 5;
     }
 
     if (typeof sectionToShow === 'undefined' || sectionToShow === SECTION_TYPE_POPULAR) {
-        var popularResults = _.sortBy(results.slice().reverse(), 'views').reverse(); // Reverse 1st time since we reverse again
+        var popularResults = searchResults[SECTION_TYPE_POPULAR];
+        popularResults = _.sortBy(popularResults.reverse(), 'views').reverse(); // Reverse 1st time since we reverse again
         if (!popularResults.length) {
             $popular_div.html('<div class="no-results">'+noResultsText+'</div>');
         }
@@ -873,7 +773,9 @@ function showSearchResults(sectionToShow) {
     }
 
     if (typeof sectionToShow === 'undefined' || sectionToShow === SECTION_TYPE_RECENT) {
-        if (!results.length) {
+        var recentResults = searchResults[SECTION_TYPE_RECENT];
+        recentResults = _.sortBy(recentResults.reverse(), 'last_updated').reverse(); // Reverse 1st time since we reverse again
+        if (!recentResults.length) {
             $recent_div.html('<div class="no-results">'+noResultsText+'</div>');
         } else {
             // display recent
@@ -883,11 +785,11 @@ function showSearchResults(sectionToShow) {
             numberToAdd = (numberToAdd > 21 ? 21 : (numberToAdd < 5 ? 5 : numberToAdd));
             indexTo = indexFrom + numberToAdd;
             displayMoreLink = true;
-            if (indexTo >= results.length) {
+            if (indexTo >= recentResults.length) {
                 displayMoreLink = false;
-                indexTo = results.length;
+                indexTo = recentResults.length;
             }
-            addEntriesToDiv($recent_div, SECTION_TYPE_RECENT, results.slice(indexFrom, indexTo), template, displayMoreLink);
+            addEntriesToDiv($recent_div, SECTION_TYPE_RECENT, recentResults.slice(indexFrom, indexTo), template, displayMoreLink);
         }
     }
 }
