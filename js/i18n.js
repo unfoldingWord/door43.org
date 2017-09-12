@@ -588,7 +588,7 @@ function getSearchPageViewUrl(pageUrl) {
  *                                              err - an error message string
  *                                              entries - an array of table entry objects that match the search params.
  *                                                where each object contains returnedFields
- * @return boolean - true if search initiated, if false then search error
+ * @return {'url','params'} - true if search initiated, if false then search error
  */
 function searchManifestTable(criteria, callback) {
     var searchUrl = getSearchPageViewUrl(window.location.href);
@@ -616,7 +616,10 @@ function searchManifestTable(criteria, callback) {
         }
     });
 
-    return true;
+    return {
+        'url': searchUrl,
+        'params': params
+    }
 }
 
 /**
