@@ -386,7 +386,7 @@ function setupSearchFieldFromUrl(searchUrl) {
 /* Default values for search criteria */
 const DEFAULT_PAGE_MINIMUM_VIEWS = 5; // For default page popular, needs to have this many views
 const DEFAULT_PAGE_NUMBER_DAYS_FOR_RECENT = 6*30; // For default page recent, needs to be this recent
-const MAX_NUMBER_OF_RESULTS_FROM_DB = 100;  // Maximum items that will be queried from DynamoDB at one time
+const MAX_NUMBER_OF_RESULTS_FROM_DB = 100;  // Maximum items that will be read from DB at one time
 
 /* Global variables */
 var baseUrl = "..";
@@ -558,18 +558,26 @@ function searchProjects(searchUrl) {
     $('#popular-div').find('.search-listing').html('<span class="loading-results">'+loadingText+'</span>');
     $('#recent-div').find('.search-listing').html('<span class="loading-results">'+loadingText+'</span>');
     if (!default_search) {
-        return searchManifestTable(criteria, updateBothResults);
+        return searchManifestTable(criteria, updateResults);
     }
 
     // Nothing was set in the criteria, so is the default page, do two separate searches for popular and recent
     criteria.daysForRecent = DEFAULT_PAGE_NUMBER_DAYS_FOR_RECENT;
+    criteria['sort_by_reversed'] = 'last_updated';
     searchManifestTable(criteria, updateRecentResults);
 
     var criteria_popular = new SearchCriteria();
     criteria_popular.minViews = DEFAULT_PAGE_MINIMUM_VIEWS;
+    criteria_popular['sort_by_reversed'] = 'views';
     criteria_popular.returnedFields = criteria.returnedFields;
     return searchManifestTable(criteria_popular, updatePopularResults);
 }
+
+function getSearchPageViewUrl(pageUrl) {
+    var prefix = getSiteFromPage(pageUrl);
+    return 'https://' + prefix + 'api.door43.org/search_projects';
+}
+
 
 /***
  * kicks off a search for entries in the manifest table (case insensitive). Search parameters are ANDed together to
@@ -583,7 +591,7 @@ function searchProjects(searchUrl) {
  * @return boolean - true if search initiated, if false then search error
  */
 function searchManifestTable(criteria, callback) {
-    var searchUrl = "https://dev-api.door43.org/search_projects";
+    var searchUrl = getSearchPageViewUrl(window.location.href);
     var params = getParamsToSend(criteria);
     resetSearch();
 
@@ -612,55 +620,51 @@ function searchManifestTable(criteria, callback) {
 }
 
 /**
- * Update the results stored in memory and show them.
+ * Update both the popular and recent search results stored in memory and show them.
  *
  * @param err
  * @param {Object[]} entries
  */
-function updateBothResults(err, entries) {
-    if (!err) {
-        var results = _.sortBy(entries.slice(), 'last_updated').reverse();
-        searchResults[SECTION_TYPE_RECENT] = results;
-
-        results = _.sortBy(entries, 'views').reverse();
-        searchResults[SECTION_TYPE_POPULAR] = results;
-
-        // Calling showSearchResults() without specifying a section means we want both emptied and newly populated
-        showSearchResults();
-    } else {
-        var message = getMessageString(err, entries, "Search");
-        alert(message);
-    }
+function updateResults(err, entries) {
+    updateSearchResults(undefined, err, entries);
 }
 
 /**
- * Update the results stored in memory and show them.
+ * Update the popular search results stored in memory and show them.
  *
  * @param err
  * @param {Object[]} entries
  */
 function updatePopularResults(err, entries) {
-    if (!err) {
-        var results = _.sortBy(entries, 'views').reverse();
-        searchResults[SECTION_TYPE_POPULAR] = results;
-        showSearchResults(SECTION_TYPE_POPULAR);
-    } else {
-        var message = getMessageString(err, entries, "Search");
-        alert(message);
-    }
+    updateSearchResults(SECTION_TYPE_POPULAR, err, entries);
 }
 
 /**
- * Update the results stored in memory and show them.
+ * Update the recent search results stored in memory and show them.
  *
  * @param err
  * @param {Object[]} entries
  */
 function updateRecentResults(err, entries) {
+    updateSearchResults(SECTION_TYPE_RECENT, err, entries);
+}
+
+/**
+ * Update the search results stored in memory and show them.
+ *
+ * @param searchType
+ * @param err
+ * @param entries
+ */
+function updateSearchResults(searchType, err, entries) {
     if (!err) {
-        var results = _.sortBy(entries, 'last_updated').reverse();
-        searchResults[SECTION_TYPE_RECENT] = results;
-        showSearchResults(SECTION_TYPE_RECENT);
+        if(!searchType) {
+            searchResults[SECTION_TYPE_RECENT] = entries.slice();
+            searchResults[SECTION_TYPE_POPULAR] = entries;
+        } else {
+            searchResults[searchType] = entries;
+        }
+        showSearchResults(searchType);
     } else {
         var message = getMessageString(err, entries, "Search");
         alert(message);

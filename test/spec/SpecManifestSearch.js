@@ -41,6 +41,62 @@ describe('Test Manifest Search', function () {
         expect(window.showSearchResults).toHaveBeenCalled();
     });
 
+    it('updatePopularResults: err should call alert', function () {
+        //given
+        var err = "Error";
+        var entries = [];
+        setupMocksForUpdateResults();
+
+        //when
+        updatePopularResults(err, entries);
+
+        //then
+        expect(window.alert).toHaveBeenCalled();
+        expect(window.showSearchResults).not.toHaveBeenCalled();
+    });
+
+    it('updatePopularResults: no err should call showSearchResults', function () {
+        //given
+        var err = null;
+        var entries = [];
+        setupMocksForUpdateResults();
+
+        //when
+        updatePopularResults(err, entries);
+
+        //then
+        expect(window.alert).not.toHaveBeenCalled();
+        expect(window.showSearchResults).toHaveBeenCalled();
+    });
+
+    it('updateRecentResults: err should call alert', function () {
+        //given
+        var err = "Error";
+        var entries = [];
+        setupMocksForUpdateResults();
+
+        //when
+        updateRecentResults(err, entries);
+
+        //then
+        expect(window.alert).toHaveBeenCalled();
+        expect(window.showSearchResults).not.toHaveBeenCalled();
+    });
+
+    it('updateRecentResults: no err should call showSearchResults', function () {
+        //given
+        var err = null;
+        var entries = [];
+        setupMocksForUpdateResults();
+
+        //when
+        updateRecentResults(err, entries);
+
+        //then
+        expect(window.alert).not.toHaveBeenCalled();
+        expect(window.showSearchResults).toHaveBeenCalled();
+    });
+
     it('updateUrlWithSearchParams: valid language language array two item search', function () {
         //given
         var fullTextSearch = "dummy_text";
