@@ -751,12 +751,8 @@ function showSearchResults(sectionToShow) {
 
     var indexFrom, numberToAdd, indexTo, displayMoreLink;
 
-    if (typeof sectionToShow === 'undefined') {
-        $popular_div.empty();
-        $recent_div.empty();
-    }
-
     if (typeof sectionToShow === 'undefined' || sectionToShow === SECTION_TYPE_POPULAR) {
+        $popular_div.empty();
         var popularResults = searchResults[SECTION_TYPE_POPULAR];
         popularResults = _.sortBy(popularResults.reverse(), 'views').reverse(); // Reverse 1st time since we reverse again
         if (!popularResults.length) {
@@ -780,6 +776,7 @@ function showSearchResults(sectionToShow) {
     }
 
     if (typeof sectionToShow === 'undefined' || sectionToShow === SECTION_TYPE_RECENT) {
+        $recent_div.empty();
         var recentResults = searchResults[SECTION_TYPE_RECENT];
         recentResults = _.sortBy(recentResults.reverse(), 'last_updated').reverse(); // Reverse 1st time since we reverse again
         if (!recentResults.length) {
