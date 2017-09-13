@@ -678,13 +678,9 @@ function updateSearchResults(searchType, err, entries) {
 function resetSearch(sectionToShow) {
     errorShown = false;
     if (!sectionToShow || sectionToShow === SECTION_TYPE_POPULAR) {
-        var $popular_div = $('#popular-div').find('.search-listing');
-        $popular_div.empty();
         popular_fibonacci_n = 5;
     }
     if (!sectionToShow || sectionToShow === SECTION_TYPE_RECENT) {
-        var $recent_div = $('#recent-div').find('.search-listing');
-        $recent_div.empty();
         recent_fibonacci_n = 5;
     }
 }
@@ -761,6 +757,9 @@ function showSearchResults(sectionToShow) {
     var indexFrom, numberToAdd, indexTo, displayMoreLink;
 
     if (typeof sectionToShow === 'undefined' || sectionToShow === SECTION_TYPE_POPULAR) {
+        if(popular_fibonacci_n === 5) {
+            $popular_div.empty();
+        }
         var popularResults = searchResults[SECTION_TYPE_POPULAR];
         popularResults = _.sortBy(popularResults.reverse(), 'views').reverse(); // Reverse 1st time since we reverse again
         if (!popularResults.length) {
@@ -784,6 +783,9 @@ function showSearchResults(sectionToShow) {
     }
 
     if (typeof sectionToShow === 'undefined' || sectionToShow === SECTION_TYPE_RECENT) {
+        if(recent_fibonacci_n === 5) {
+            $recent_div.empty();
+        }
         var recentResults = searchResults[SECTION_TYPE_RECENT];
         recentResults = _.sortBy(recentResults.reverse(), 'last_updated').reverse(); // Reverse 1st time since we reverse again
         if (!recentResults.length) {
