@@ -1,9 +1,8 @@
-
-describe('Test I18N JavaScript', function () {
+describe('Test Popular and Recent', function () {
 
   beforeEach(function () {
 
-    results = [
+    var results = [
       {
         "lang_name": "English",
         "lang_code": "en",
@@ -165,7 +164,8 @@ describe('Test I18N JavaScript', function () {
         "num_views": 0
       }
     ];
-    results = _.sortBy(results,'last_updated');
+    applySearchResults(results);
+    resetSearch();
 
     jasmine.getFixtures().fixturesPath = 'base/test/fixtures';
 
@@ -201,7 +201,8 @@ describe('Test I18N JavaScript', function () {
   });
 
   it('With results sliced to 4, showSearchResults() should not show the more-container', function () {
-    results = results.slice(0,4); // make list only 4 items long
+    var results = searchResults[SECTION_TYPE_POPULAR].slice(0,4); // make list only 4 items long
+    applySearchResults(results);
     showSearchResults(); // show all 4
     var $body = $(document.body);
 
@@ -218,7 +219,7 @@ describe('Test I18N JavaScript', function () {
     expect($more.length).toEqual(0);
   });
 
-  it('showSearchResults(SECTION_TYPE_POPULAR) show show 8 more items in the popular section', function () {
+  it('showSearchResults(SECTION_TYPE_POPULAR) should show 8 more items in the popular section', function () {
     showSearchResults(); // show first 5
     showSearchResults(SECTION_TYPE_POPULAR); // show next 8
     var $body = $(document.body);
@@ -268,3 +269,13 @@ describe('Test I18N JavaScript', function () {
     expect(fibonacci(8)).toEqual(21);
   });
 });
+
+//
+// helpers
+//
+
+function applySearchResults(results) {
+    searchResults = {};
+    searchResults[SECTION_TYPE_POPULAR] = results.slice();
+    searchResults[SECTION_TYPE_RECENT] = results;
+}
