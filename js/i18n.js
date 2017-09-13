@@ -564,13 +564,13 @@ function searchProjects(searchUrl) {
     // Nothing was set in the criteria, so is the default page, do two separate searches for popular and recent
     criteria.daysForRecent = DEFAULT_PAGE_NUMBER_DAYS_FOR_RECENT;
     criteria['sort_by_reversed'] = 'last_updated';
-    searchManifestTable(criteria, updateRecentResults);
+    searchManifestTable(criteria, updateRecentResults, SECTION_TYPE_RECENT);
 
     var criteria_popular = new SearchCriteria();
     criteria_popular.minViews = DEFAULT_PAGE_MINIMUM_VIEWS;
     criteria_popular['sort_by_reversed'] = 'views';
     criteria_popular.returnedFields = criteria.returnedFields;
-    return searchManifestTable(criteria_popular, updatePopularResults);
+    return searchManifestTable(criteria_popular, updatePopularResults, SECTION_TYPE_POPULAR);
 }
 
 function getSearchPageViewUrl(pageUrl) {
@@ -588,12 +588,13 @@ function getSearchPageViewUrl(pageUrl) {
  *                                              err - an error message string
  *                                              entries - an array of table entry objects that match the search params.
  *                                                where each object contains returnedFields
+ * @param sectionToShow - section that will be updated: recent, popular or both
  * @return {'url','params'} - true if search initiated, if false then search error
  */
-function searchManifestTable(criteria, callback) {
+function searchManifestTable(criteria, callback, sectionToShow) {
     var searchUrl = getSearchPageViewUrl(window.location.href);
     var params = getParamsToSend(criteria);
-    resetSearch();
+    resetSearch(sectionToShow);
 
     $.ajax({
         url: searchUrl,
@@ -674,10 +675,18 @@ function updateSearchResults(searchType, err, entries) {
     }
 }
 
-function resetSearch() {
+function resetSearch(sectionToShow) {
     errorShown = false;
-    popular_fibonacci_n = 5;
-    recent_fibonacci_n = 5;
+    if (!sectionToShow || sectionToShow === SECTION_TYPE_POPULAR) {
+        var $popular_div = $('#popular-div').find('.search-listing');
+        $popular_div.empty();
+        popular_fibonacci_n = 5;
+    }
+    if (!sectionToShow || sectionToShow === SECTION_TYPE_RECENT) {
+        var $recent_div = $('#recent-div').find('.search-listing');
+        $recent_div.empty();
+        recent_fibonacci_n = 5;
+    }
 }
 
 /**
@@ -752,7 +761,6 @@ function showSearchResults(sectionToShow) {
     var indexFrom, numberToAdd, indexTo, displayMoreLink;
 
     if (typeof sectionToShow === 'undefined' || sectionToShow === SECTION_TYPE_POPULAR) {
-        $popular_div.empty();
         var popularResults = searchResults[SECTION_TYPE_POPULAR];
         popularResults = _.sortBy(popularResults.reverse(), 'views').reverse(); // Reverse 1st time since we reverse again
         if (!popularResults.length) {
@@ -776,7 +784,6 @@ function showSearchResults(sectionToShow) {
     }
 
     if (typeof sectionToShow === 'undefined' || sectionToShow === SECTION_TYPE_RECENT) {
-        $recent_div.empty();
         var recentResults = searchResults[SECTION_TYPE_RECENT];
         recentResults = _.sortBy(recentResults.reverse(), 'last_updated').reverse(); // Reverse 1st time since we reverse again
         if (!recentResults.length) {
