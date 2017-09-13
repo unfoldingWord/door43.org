@@ -18,13 +18,13 @@ Door43 is an online repository for open-licensed Biblical content in any languag
 <div class="col-md-4 text-center">
 
 <h2>Learn</h2>
-<center><a href="https://unfoldingword.org/academy/" target="_blank"><img src="https://cdn.door43.org/assets/img/icons/icon-ta.png" alt="tA Icon"></a></center>
+<center><a href="/u/Door43/en_ta/eccd2b1a6f/index.html"><img src="https://cdn.door43.org/assets/img/icons/icon-ta.png" alt="tA Icon"></a></center>
 
 </div>
 <div class="col-md-4 text-center">
 
 <h2>Browse</h2>
-<center><a href="/"><img src="https://cdn.door43.org/assets/img/icons/icon-d43.png" alt="Door43 Icon"></a></center>
+<center><a href="/en/"><img src="https://cdn.door43.org/assets/img/icons/icon-d43.png" alt="Door43 Icon"></a></center>
 
 </div>
 </div>

@@ -55,9 +55,13 @@ The develop branch may be seen online at http://test-door43.org.s3-website-us-we
 
 The master branch is available at https://live.door43.org (soon to be at https://door43.org).
 
+#### Adding language pages
+
+To create a new language landing page, add a directory for it under `_data` (like `data/en`), with the `*.yml` files localized for the new language. Also add a directory for it under `pages` (like `pages/en`) and add an `index.md` file to it. Update the links in the `*.md` files to include the new language code in the paths.
+
 #### Pre Production Testing
 
-You may run `make test`, or `make build`, or `make serve` to test and review your changes locally.  Once the `cibuild.sh` script passes successfully locally, push `test` branch.  Follow setup instructions in `s3_test_push.sh` and then run the script  `s3_test_push.sh`.  Your changes will then be uploaded to `http://test-door43.org.s3-website-us-west-2.amazonaws.com`
+You may run `make test`, or `make build`, or `make serve` to test and review your changes locally.  Once the `cibuild.sh` script passes successfully locally, deploy to `test` by following setup instructions in `s3_test_push.sh` and then run the script  `s3_test_push.sh`.  Your changes will then be uploaded to `http://test-door43.org.s3-website-us-west-2.amazonaws.com`
 
 #### Develop Testing
 
@@ -69,7 +73,9 @@ If Travis CI has built and deployed the `develop` branch successfully, you creat
 
 #### Syncing Assets
 
-Assets (binary things like images) are housed on cdn.door43.org/assets for this site. This assets folder is a Resilio Sync folder shared among the developers (ask if you need access).
+Assets (binary things like images) are housed on cdn.door43.org/assets for this site. This assets folder is a Resilio Sync folder shared among the developers (ask if you need access).  
+
+*Note: The first time you will have to Link your Resilio Sync folder into `_site/assets/`.  Then run `s3cmd --configure` to setup s3cmd. Next copy and rename the cfg file to `s3cfg-prod` in project folder (e.g. `cp ~/.s3cfg s3cfg-prod` )*
 
 ##### Syncing
 

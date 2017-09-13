@@ -34,7 +34,7 @@
                         <button id="download_menu_button" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-cloud-download"></span><span class="hide-on-pinned"> Download</span>
                             <span class="caret"></span></button>
                         <ul class="dropdown-menu">
-                            <li><a type="submit" onclick="window.open(getDownloadUrl())"><span class="glyphicon glyphicon-compressed"> MD</span></a></li>
+                            <li><a type="submit" onclick="window.open(getDownloadUrl())"><span id="download_menu_source_item" class="glyphicon glyphicon-compressed"> Source</span></a></li>
                         </ul>
                     </span>
                 </span>
@@ -43,7 +43,7 @@
         <div id="sub-header">
             <span id="last-updated" class="hide-on-pinned">Updated ? hours ago</span>
             <span id="views"><i class="fa fa-eye"></i></span>
-            <span id="num-of-views"># views</span>
+            <span id="num-of-views" dir="ltr"># views</span>
             <a id="see-on-dcs" href="" target="_blank">See on DCS</a>
         </div>
     </div>
@@ -69,7 +69,7 @@
 {% include footer.html %}
 
 <script type="text/javascript" src="{{ '/js/general-tools.js' | prepend: site.baseurl }}"></script>
-<script type="text/javascript" src="{{ '/js/project-page.js' | prepend: site.baseurl }}"></script>
+<script type="text/javascript" src="{{ '/js/project-page-functions.js' | prepend: site.baseurl }}"></script>
 
 </body>
 

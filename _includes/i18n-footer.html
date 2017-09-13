@@ -1,4 +1,7 @@
 <footer class="site-footer" role="contentinfo" itemscope="itemscope" itemtype="http://schema.org/WPFooter">
+
+  {% include footer-menu.html %}
+
   <div class="container">
     <p style="margin-top:18px">
       <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
@@ -26,8 +29,7 @@
 <script type="text/javascript" src="{{ '/js/underscore.min.js' | prepend: site.baseurl }}"></script>
 <script type="text/javascript" src="{{ '/js/application.js' | prepend: site.baseurl }}"></script>
 <script type="text/javascript" src="{{ '/js/aws-sdk-2.80.0.min.js' | prepend: site.baseurl }}"></script>
-<script type="text/javascript" src="{{ '/js/project-page-functions.js' | prepend: site.baseurl }}"></script>
-<script type="text/javascript" src="{{ '/js/db_keys.js' | prepend: site.baseurl }}"></script>
+<script type="text/javascript" src="{{ '/js/general-tools.js' | prepend: site.baseurl }}"></script>
 <script type="text/javascript">
   var locale = {{ page.language_code | js_locale }};
   var l10n = {{ page.language_code | js_l10n }};

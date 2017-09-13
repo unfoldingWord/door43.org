@@ -4,10 +4,6 @@
 //noinspection CssInvalidCharsetRule
 @charset "utf-8";
 
-// Import partials from `sass_dir` (defaults to `_sass`)
-//noinspection CssUnknownTarget
-@import "pinned_header";
-
 /**
  * Style for project commit pages
  */
@@ -16,6 +12,8 @@ header {
     margin-bottom: 20px;
 
     #header-title {
+        padding-bottom: 10px;
+
         h1 {
             margin: 0;
 
@@ -63,7 +61,7 @@ header {
             }
             .dropdown-menu > li > a  {
               color: #3ebcfe;
-              padding: 0px 20px;
+              padding: 0 20px;
             }
         }
     }
@@ -81,6 +79,10 @@ header {
     #last-updated, #num-of-views {
       margin-right: 30px;
     }
+}
+
+.container {
+  width: 98% !important;
 }
 
 #revisions {
@@ -108,17 +110,12 @@ header {
  * Sidebar Nav
  */
 @media (min-width: 979px) {
-  #sidebar-nav, #revisions-div {
-    width: 250px;
-  }
-
-  #sidebar-nav.affix, #revisions-div.affix {
+  #left-sidebar-nav.affix, #right-sidebar-nav.affix {
     position: fixed;
-    top: 80px;
     bottom: 0;
     margin-bottom: 0;
     overflow-y: auto;
-    width: 250px;
+    width: 24%;
 
     &.pin-to-top {
       top: 130px !important;
@@ -126,70 +123,74 @@ header {
   }
 }
 
-#sidebar-nav li {
-  margin: 0;
+#content-header {
+  background-color: #fff;
+  width: 100%;
+  display: block;
+  z-index: 100;
+  overflow-y: auto;
+  padding-left: 10px;
+
+  h1 {
+    border-bottom: thin solid #ccc;
+  }
+
+  &.affix {
+    position: fixed;
+    left: 0;
+  }
+
+  #mobile-content-nav-toggle {
+    float: right;
+    border: none;
+    background-color: transparent;
+
+    &:after {
+      font-family: 'Glyphicons Halflings';
+      font-size: 0.8em;
+      content: "\e258";
+      color: #000;
+    }
+
+    &.expanded:after {
+      content: "\e259";
+    }
+  }
+
+  #mobile-content-nav {
+    padding-bottom: 4em;
+    border-bottom: solid #ccc;
+
+    li, h1, h2, h3, h4, h5 h6 {
+      font-size: 28px !important;
+    }
+
+    > ul > li > h1 {
+      display: none; /* For OBS to remove "Navigation" */
+    }
+  }
 }
 
-#sidebar-nav li a {
-  padding: 0;
+.content-nav {
+  li {
+    margin: 0;
+    a {
+      padding: 0;
+    }
+  }
+
+  li.active {
+    > a {
+      font-weight: normal;
+      color: #000;
+      margin: 0;
+    }
+  }
 }
-
-
 
 @media (max-width: 1199px) {
-  #sidebar-nav, #revisions-div {
-    width: 212px;
-  }
-
-  #sidebar-nav.affix, #revisions-div.affix {
-    width: 212px;
-  }
-}
-
-@media (max-width: 990px) {
-  #pinned-header {
-    &.pin-to-top {
-      #sub-header {
-        position: static;
-        display: block;
-        margin-bottom: 0;
-      }
-    }
-  }
-
-}
-
-@media (max-width: 840px) {
-  #pinned-header {
-    margin-top: 30px;
-    #header-title {
-      h1 {
-        font-size: 30px;
-        #build-status-icon {
-          i {
-            font-size: 26px;
-          }
-        }
-      }
-    }
-    &.pin-to-top {
-      top: 60px;
-    }
-  }
-}
-
-@media (max-width: 767px) {
-  #pinned-header {
-    #header-title {
-      h1 {
-        font-size: 24px;
-        #build-status-icon {
-          i {
-            font-size: 20px;
-          }
-        }
-      }
-    }
+  #left-sidebar-nav.affix, #right-sidebar-nav.affix {
+    width: 24%;
   }
 }
 
@@ -197,7 +198,7 @@ header {
  * Style for Bible navigation
  */
 body.bible {
-  #sidebar-nav {
+  .content-nav {
     ul.chapters {
       li.chapter {
         list-style-type: none;
@@ -211,7 +212,7 @@ body.bible {
           display: inline-block;
           padding: 10px 0;
           margin: 0;
-          background-color: #4e4e4e;
+          background-color: #4e4e4e !important;
           color: white;
           height: 40px;
           text-align: center;
@@ -220,7 +221,7 @@ body.bible {
         }
 
         a:hover {
-          background-color: #949494;
+          background-color: #949494 !important;
         }
       }
 
@@ -232,15 +233,17 @@ body.bible {
     }
 
     .panel-heading {
-      .accordion-toggle:after {
-        font-family: 'Glyphicons Halflings';
-        content: "\e114";
-        float: right;
-        color: grey;
-      }
-      .accordion-toggle.collapsed:after {
-        /* symbol for "collapsed" panels */
-        content: "\e080"; /* adjust as needed, taken from bootstrap.css */
+      .accordion-toggle {
+        &:after {
+          font-family: 'Glyphicons Halflings';
+          content: "\e259"; /* expanded */
+          font-size: 0.8em;
+          float: right;
+          color: #999;
+        }
+        &.collapsed:after {
+          content: "\e258"; /* collapsed */
+        }
       }
     }
   }
@@ -298,7 +301,7 @@ body.ta {
       p {
         margin-top: 0;
         margin-bottom: 10px;
-      } 
+      }
     }
 
     .top-box {
@@ -505,24 +508,187 @@ body.ta {
     }
   }
 
-  #right-sidebar-nav {
+  .content-nav {
     ul li {
       list-style-type: none;
       margin-bottom: 5px;
+
+      a {
+        display: inline !important;
+      }
+
+      a.content-nav-expand {
+        float: right;
+      }
     }
 
     h4 {
       font-size: 18px;
     }
+
+    > ul > li {
+      margin-left: 15px !important;
+
+      .content-nav-expand {
+        &:after {
+          font-family: 'Glyphicons Halflings';
+          content: "\e259"; /* expanded */
+          font-size: 0.8em;
+          float: right;
+          color: #999;
+        }
+        &.collapsed:after {
+          content: "\e258"; /* collapsed */
+        }
+      }
+
+      > ul {
+        padding: 0;
+      }
+    }
   }
 
-  #right-sidebar-nav > ul > li {
-    margin-left: 10px;
+  .content-nav > ul > li.active > ul > li.active > a,
+  .content-nav > ul > li.active > ul > li.active > a:hover,
+  .content-nav > ul > li.active > ul > li.active > a:focus {
+    font-weight: normal;
+    color: #000000;
+    margin: 0;
+  }
+
+  .content-nav > ul > li.active > ul > li.active {
+    border-left: 1px solid #000000;
+  }
+
+  .content-nav > ul > li > ul > li {
+    list-style-type: none;
+    padding-left: 30px;
   }
 }
 
-ul#sidebar-nav > li.active > a {
-  font-weight: normal;
-  color: #000000;
-  margin: 0;
+.content-nav {
+  li.active > a {
+    font-weight: normal;
+    color: #000000;
+    margin: 0;
+  }
+}
+
+// pin the header below the menu rather than scroll out of view
+@media (min-width: 991px) {
+  #pinned-header {
+    width: 100%;
+    z-index: 100;
+    background-color: #fff;
+
+    &.pin-to-top {
+      position: fixed;
+      margin-top: 0;
+      top: 60px;
+      box-shadow: 0 0 8px 1px #777;
+      #build-status-icon {
+        max-width: 35px;
+        overflow: hidden;
+      }
+      .hide-on-pinned {
+        display: none;
+      }
+      #sub-header {
+        position: fixed;
+        right: 20px;
+        top: 80px
+      }
+      #header-title, #sub-header {
+        display: inline-block;
+      }
+      .container {
+        padding-top: 6px;
+        padding-bottom: 12px;
+      }
+    }
+  }
+}
+
+// over-ride layout for rtl
+[dir=rtl] {
+  #pinned-header.pin-to-top #sub-header {
+    position: inherit;
+    right: inherit;
+    top: inherit;
+    float: left;
+    margin-top: 15px;
+    margin-left: 0;
+
+    #num-of-views {
+      margin-right: inherit;
+      margin-left: 30px;
+    }
+  }
+
+  #pinned-header.pin-to-top #build-status-icon img {
+    position: sticky;
+    left: 0;
+  }
+}
+
+#warning-modal {
+  .modal-dialog {
+    overflow-y: initial;
+
+    .modal-content {
+      text-align: center;
+
+      .modal-header {
+        text-align: center;
+
+        .warning-header {
+          font-weight: bold;
+        }
+
+        .warning-circle {
+          border-radius: 50%;
+          width: 85px;
+          height: 85px;
+          background: #fff;
+          border: 5px solid #FF9900;
+          color: #FF9900;
+          text-align: center;
+          font-size: 60px;
+          margin: 0 auto;
+          padding: 12px;
+          line-height: 0;
+        }
+      }
+
+      .modal-body {
+        text-align: left;
+        display: inline-block;
+        position: relative;
+        overflow-y: auto;
+        max-height: 250px;
+        padding: 15px;
+      }
+
+      .modal-footer {
+        text-align: center !important;
+
+        .btn.raised {
+          border: 1px solid #AAAAAA;
+          box-shadow: 5px 5px 3px #888888;
+        }
+
+        .btn-primary {
+          font-size: 16px;
+          background-color: #3ebcfe;
+          color: #fff;
+        }
+
+        .btn-secondary {
+          font-size: 16px;
+          color: #3ebcfe;
+          background-color: #fff;
+        }
+      }
+    }
+  }
 }

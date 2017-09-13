@@ -81,14 +81,37 @@ ul > li {
 .navbar {
     margin-bottom: 0;
 }
-a.navbar-brand {
-    background: url($logo-image) no-repeat no-repeat center !important;
-    background-size: contain !important;
+table.navbar-brand {
+    float: left;
     display: block;
     height: 60px;
-    text-indent: -9999px;
-    width: 270px;
-    margin-left: 0 !important;
+    text-indent: 0;
+    text-align: left;
+    width: 275px;
+    padding: 2px;
+    line-height: 10px;
+    margin-left: -15px !important;
+}
+.navbar-brand-image {
+    display: block;
+    height: 60px;
+    width: 70px;
+    padding: 0;
+    margin-left: 0;
+}
+.navbar-brand-title {
+    height: 32px;
+    font-size: 28px;
+    line-height: 28px;
+}
+.navbar-brand-subtitle {
+    height: 18px;
+    font-size: 14px;
+    line-height: 14px;
+
+}
+.navbar-brand * {
+    cursor: pointer;
 }
 @media (max-width: 990px) {
 
@@ -99,10 +122,22 @@ a.navbar-brand {
         margin-left: 0 !important;
         margin-right: 0 !important;
 
-        a.navbar-brand {
-            margin-left: 0;
+        table.navbar-brand {
+            margin-left: 15px !important;
+            text-align: left;
             width: 230px;
-            display: inline-block;
+        }
+        .navbar-brand-title {
+            padding-top: 2px;
+            margin-top: 0;
+            height: 22px;
+            font-size: 20px;
+            line-height: 14px;
+        }
+        .navbar-brand-subtitle {
+            height: 14px;
+            font-size: 11px;
+            line-height: 16px;
         }
     }
 }
@@ -122,7 +157,7 @@ a.navbar-brand {
  * Set a different width for smaller screens
  *
  */
-@media (min-width: 768px) and (max-width: 991px) {
+@media (min-width: 768px) and (max-width: 990px) {
 
     .navbar-header {
         position: absolute;
@@ -143,6 +178,9 @@ a.navbar-brand {
             padding: 5px 16px;
         }
     }
+    table.navbar-brand {
+        padding: 0;
+    }
 }
 @media (max-width: 767px) {
 
@@ -155,12 +193,11 @@ a.navbar-brand {
             display: inline-block;
             margin-right: 0;
         }
-        a.navbar-brand {
+        table.navbar-brand {
             float: right;
             padding-right: 0;
         }
     }
-
 }
 /**
  * Buttons

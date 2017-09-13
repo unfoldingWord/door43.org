@@ -4,7 +4,6 @@ describe('Test Manifest Search', function () {
 
   var expectedErr;
   var expectedData;
-  var scanMock;
   var returnedError;
   var returnedEntries;
   var originalSearchContinue;
@@ -35,6 +34,62 @@ describe('Test Manifest Search', function () {
 
         //when
         updateResults(err, entries);
+
+        //then
+        expect(window.alert).not.toHaveBeenCalled();
+        expect(window.showSearchResults).toHaveBeenCalled();
+    });
+
+    it('updatePopularResults: err should call alert', function () {
+        //given
+        var err = "Error";
+        var entries = [];
+        setupMocksForUpdateResults();
+
+        //when
+        updatePopularResults(err, entries);
+
+        //then
+        expect(window.alert).toHaveBeenCalled();
+        expect(window.showSearchResults).not.toHaveBeenCalled();
+    });
+
+    it('updatePopularResults: no err should call showSearchResults', function () {
+        //given
+        var err = null;
+        var entries = [];
+        setupMocksForUpdateResults();
+
+        //when
+        updatePopularResults(err, entries);
+
+        //then
+        expect(window.alert).not.toHaveBeenCalled();
+        expect(window.showSearchResults).toHaveBeenCalled();
+    });
+
+    it('updateRecentResults: err should call alert', function () {
+        //given
+        var err = "Error";
+        var entries = [];
+        setupMocksForUpdateResults();
+
+        //when
+        updateRecentResults(err, entries);
+
+        //then
+        expect(window.alert).toHaveBeenCalled();
+        expect(window.showSearchResults).not.toHaveBeenCalled();
+    });
+
+    it('updateRecentResults: no err should call showSearchResults', function () {
+        //given
+        var err = null;
+        var entries = [];
+        setupMocksForUpdateResults();
+
+        //when
+        updateRecentResults(err, entries);
 
         //then
         expect(window.alert).not.toHaveBeenCalled();
@@ -307,14 +362,14 @@ describe('Test Manifest Search', function () {
     it('searchManifestTable: valid language array should return success', function () {
         //given
         var expectedReturn = true;
-        var expectedItemCount = 0;
-        setupDynamoDbMocks(expectedReturn);
+        var expectedItemCount = 1;
+        setupDbQueryMocks();
         var criteria = new SearchCriteria();
         criteria.languages = ['es'];
         criteria.matchLimit = 20;
         expectedErr = null;
-        expectedData = { Items:[] };
-        var expectedSearchKeys = [ 'lang_code' ];
+        expectedData = [{ 'object': "" }];
+        var expectedSearchKeys = [ 'languages' ];
 
         //when
         var results = searchManifestTable(criteria, callback);
@@ -323,40 +378,18 @@ describe('Test Manifest Search', function () {
         validateResults(results, expectedReturn, expectedItemCount, expectedSearchKeys);
    });
 
-    it('searchManifestTable: valid language array with continue should return success', function () {
-        //given
-        var expectedReturn = true;
-        var expectedItemCount = 2;
-        setupDynamoDbMocks(expectedReturn);
-        var criteria = new SearchCriteria();
-        criteria.languages =  ['es'];
-        criteria.matchLimit = 2;
-        expectedErr = null;
-        expectedData = {
-            Items:[ { 'object': "" }],
-            LastEvaluatedKey: { dummy: "dummy data" }
-        };
-        var expectedSearchKeys = [ 'lang_code' ];
-
-        //when
-        var results = searchManifestTable(criteria, callback);
-
-        //then
-        validateResults(results, expectedReturn, expectedItemCount, expectedSearchKeys);
-    });
-
     it('searchManifestTable: valid language array and user name should return success', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
-        setupDynamoDbMocks(expectedReturn);
+        setupDbQueryMocks();
         var criteria = new SearchCriteria();
         criteria.languages = ['es', 'ceb'];
         criteria.user_name = "dummy";
         criteria.matchLimit = 20;
         expectedErr = null;
-        expectedData = { Items:[] };
-        var expectedSearchKeys = [ 'lang_code', 'user_name' ];
+        expectedData = [];
+        var expectedSearchKeys = [ 'languages', 'user_name' ];
 
         //when
         var results = searchManifestTable(criteria, callback);
@@ -369,14 +402,14 @@ describe('Test Manifest Search', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
-        setupDynamoDbMocks(expectedReturn);
+        setupDbQueryMocks();
         var criteria = new SearchCriteria();
         criteria.repo_name = "dummy_repo";
         criteria.resID = "dummy_res";
         criteria.returnedFields = "user_name, repo_name";
         criteria.matchLimit = 20;
         expectedErr = null;
-        expectedData = { Items:[] };
+        expectedData = [];
         var expectedSearchKeys = [ 'repo_name', 'resID' ];
 
         //when
@@ -390,14 +423,14 @@ describe('Test Manifest Search', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
-        setupDynamoDbMocks(expectedReturn);
+        setupDbQueryMocks();
         var criteria = new SearchCriteria();
         criteria.full_text = "dummy_text";
         criteria.resType = "dummy_type";
         criteria.returnedFields = "user_name, repo_name";
         criteria.matchLimit = 20;
         expectedErr = null;
-        expectedData = { Items:[] };
+        expectedData = [];
         var expectedSearchKeys = [ 'full_text', 'resType' ];
 
         //when
@@ -411,7 +444,7 @@ describe('Test Manifest Search', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
-        setupDynamoDbMocks(expectedReturn);
+        setupDbQueryMocks();
         var criteria = new SearchCriteria();
         criteria.resType = "dummy_res";
         criteria.title = "dummy_title";
@@ -420,7 +453,7 @@ describe('Test Manifest Search', function () {
         criteria.returnedFields = "user_name, repo_name, views";
         criteria.matchLimit = 20;
         expectedErr = null;
-        expectedData = { Items:[] };
+        expectedData = [];
         var expectedSearchKeys = [ 'resType', 'title', 'time', 'manifest' ];
 
         //when
@@ -434,16 +467,13 @@ describe('Test Manifest Search', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
-        setupDynamoDbMocks(expectedReturn);
+        setupDbQueryMocks();
         var criteria = new SearchCriteria();
         criteria.languages =  ['ceb'];
         criteria.matchLimit = 2;
         expectedErr = "search Failure";
-        expectedData = {
-            Items:[ { 'object': "" }],
-            LastEvaluatedKey: { dummy: "dummy data" }
-        };
-        var expectedSearchKeys = [ 'lang_code' ];
+        expectedData = [ { 'object': "" }];
+        var expectedSearchKeys = [ 'languages' ];
 
         //when
         var results = searchManifestTable(criteria, callback);
@@ -452,32 +482,15 @@ describe('Test Manifest Search', function () {
         validateResults(results, expectedReturn, expectedItemCount, expectedSearchKeys);
     });
 
-    it('searchManifestTable: undefined getTable() should return error', function () {
-        //given
-        getManifestTable = null;
-        var expectedReturn = false;
-        var expectedItemCount = 0;
-        var criteria = new SearchCriteria();
-        criteria.matchLimit = 20;
-        expectedErr = "dummy error";
-        expectedData = {};
-
-        //when
-        var results = searchManifestTable(criteria, callback);
-
-        //then
-        validateResults(results, expectedReturn, expectedItemCount);
-    });
-
     it('searchManifestTable: empty should return success but no data', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
-        setupDynamoDbMocks(expectedReturn);
+        setupDbQueryMocks();
         var criteria = new SearchCriteria();
         criteria.returnedFields = "user_name, repo_name";
         expectedErr = null;
-        expectedData = { Items:[] };
+        expectedData = [];
 
         //when
         var results = searchManifestTable(criteria, callback);
@@ -490,13 +503,13 @@ describe('Test Manifest Search', function () {
         //given
         var expectedReturn = true;
         var expectedItemCount = 0;
-        setupDynamoDbMocks(expectedReturn);
+        setupDbQueryMocks();
         var criteria = new SearchCriteria();
         criteria.minViews = 5;
         criteria.daysForRecent = 30;
         criteria.returnedFields = "user_name, repo_name";
         expectedErr = null;
-        expectedData = { Items:[] };
+        expectedData = [];
         var expectedSearchKeys = [ 'minViews', 'daysForRecent' ];
 
         //when
@@ -528,57 +541,47 @@ describe('Test Manifest Search', function () {
     var expectedKeyData;
 
     function validateResults(results, expectedReturn, expectedItemCount, expectedSearchKeys) {
-        expect(results).toEqual(expectedReturn);
+        returned_params = results ? results['params'] : null;
         if (expectedErr) {
             expect(returnedError.length > 0).toBeTruthy();
             if (!expectedReturn) {
                 expect(returnedEntries).toBeNull();
             } else {
-                expect(returnedEntries.length).toEqual(expectedItemCount);
+                var returnedEntryCount = returnedEntries ? returnedEntries.length : 0;
+                expect(returnedEntryCount).toEqual(expectedItemCount);
             }
         } else { // not error
             expect(returnedError).toBeNull();
-            if(!returnedEntries) {
-                expect(returnedEntries.length).toEqual(expectedItemCount);
-            }
+            var returnedEntryCount = returnedEntries ? returnedEntries.length : 0;
+            expect(returnedEntryCount).toEqual(expectedItemCount);
         }
         if(expectedSearchKeys) {
             determineExpectedAndUnexpectedKeyData(expectedSearchKeys);
 
             _.each(expectedKeyData, function (value, key) {
-                var attrName = value[0];
-                var attrNameValue = value[1];
-                var attrValue = value[2];
-
-                expect(returned_params.FilterExpression.indexOf(attrName)).toBeGreaterThanOrEqual(0);
-                expect(returned_params.ExpressionAttributeNames[attrName]).toEqual(attrNameValue);
-                expect(returned_params.FilterExpression.indexOf(attrValue)).toBeGreaterThanOrEqual(0);
-                expect(returned_params.ExpressionAttributeValues[attrValue]).not.toBeUndefined();
-                expect(returned_params.ExpressionAttributeValues[attrValue]).not.toBeNull();
+                expect(returned_params[key]).not.toBeUndefined();
+                expect(returned_params[key]).not.toBeNull();
             });
 
             _.each(unExpectedKeyData, function (value, key) {
-                var attrName = value[0];
-                var attrValue = value[2];
-
-                expect(returned_params.FilterExpression.indexOf(attrName)).toBeLessThan(0);
-                expect(returned_params.FilterExpression.indexOf(attrValue)).toBeLessThan(0);
+                expect(returned_params.hasOwnProperty(key)).toBeFalsy();
             });
         }
     }
 
    function determineExpectedAndUnexpectedKeyData(expectedSearchKeys) {
         const possibleKeys = {
-            minViews: ["#views", "views", ":views"],
-            daysForRecent: ["#date", "last_updated", ":recent"],
-            lang_code: ["#lc", "lang_code", ":val_1"],
-            user_name: ["#u", "user_name_lower", ":user"],
-            repo_name: ["#r", "repo_name_lower", ":repo"],
-            title: ["#title", "title", ":title"],
-            time: ["#time", "last_updated", ":time"],
-            manifest: ["#m", "manifest_lower", ":manifest"],
-            resID: ["#id", "resource_id", ":resID"],
-            resType: ["#t", "resource_type", ":type"],
+            minViews: true,
+            daysForRecent: true,
+            languages: true,
+            full_text: true,
+            user_name: true,
+            repo_name: true,
+            title: true,
+            time: true,
+            manifest: true,
+            resID: true,
+            resType: true
         };
 
         unExpectedKeyData = JSON.parse(JSON.stringify(possibleKeys)); // clone data
@@ -588,23 +591,8 @@ describe('Test Manifest Search', function () {
             if (value ) {
                 expectedKeyData[key] = value;
                 delete unExpectedKeyData[key];
-            } else if(key !== 'full_text') {
-                expect(possibleKeys.indexOf(key) >= 0).toBeTruthy();
             }
         });
-
-        if(expectedSearchKeys.indexOf('full_text') >= 0) {
-            var full_text = {
-                manifest: ["#m", "manifest_lower", ":match0"],
-                user_name: ["#r", "repo_name_lower", ":match0"],
-                repo_name: ["#u", "user_name_lower", ":match0"],
-            };
-
-            _.each(full_text,  function (value, key) {
-                expectedKeyData[key] = value;
-                delete unExpectedKeyData[key];
-            });
-        }
     }
 
     function validateSearchParameters(url, expectedBaseUrl, expectedParams) {
@@ -675,25 +663,17 @@ describe('Test Manifest Search', function () {
         spyOn(window, 'updateUrl').and.returnValue("mock_updateUrl");
     }
 
-    function setupDynamoDbMocks(retVal) {
-        AWS = {
-            DynamoDB: {}
-        };
-        AWS.DynamoDB.DocumentClient = DocumentClientClassMock;
-
+    function setupDbQueryMocks() {
         spyOn(window, 'updateResults').and.callThrough();
         spyOn(window, 'searchManifestTable').and.callThrough();
-        getManifestTable = jasmine.createSpy().and.returnValue("dummy-table");
-        scanMock = jasmine.createSpy().and.callFake(mockOnScan);
-        function mockOnScan(params, onScan) { // mock the table scan operation
-            if(onScan) {
-                onScan(expectedErr, expectedData); // call onScan handler with mock data
-            }
-            return retVal;
-        }
 
-        originalSearchContinue = searchContinue;
-        spyOn(window, 'searchContinue').and.callFake(mockSearchContinue);
+        spyOn($, "ajax").and.callFake(function(e) { // mock ajax call
+            if(!expectedErr) {
+                response = e.success(expectedData);
+            } else {
+                response = e.error(null, expectedErr, expectedErr + " thrown");
+            }
+        });
     }
 
     function setupSearchManifestTableMocks(retVal) {
@@ -711,10 +691,6 @@ describe('Test Manifest Search', function () {
     function setupMocksForUpdateResults() {
         spyOn(window, 'alert').and.returnValue("dummy-alert");
         spyOn(window, 'showSearchResults').and.returnValue("dummy-showSearchResults");
-    }
-
-    function DocumentClientClassMock() {
-        this.scan = scanMock; // when instance created, setup mock for scan operation
     }
 
     function callback(err, entries) {

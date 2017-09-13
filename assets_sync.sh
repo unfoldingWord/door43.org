@@ -8,7 +8,7 @@
 #  Contributors:
 #  Jesse Griffin <jesse@unfoldingword.org>
 
-SOURCE="assets/"
+SOURCE="_site/assets/"
 EXCLUDES="s3_excludes"
 BKT="s3://cdn.door43.org/assets/"
 

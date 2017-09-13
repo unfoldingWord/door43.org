@@ -37,7 +37,7 @@ module.exports = function(config) {
             './js/i18n.js',
 
             // served fixtures
-            { pattern: 'test/fixtures/**/*.html', included: false, served: true },
+            { pattern: 'test/fixtures/**/*.*', included: false, served: true },
 
             './test/spec/*.js',
             './test/spec/support/*.js'
