@@ -678,10 +678,10 @@ function updateSearchResults(searchType, err, entries) {
 function resetSearch(sectionToShow) {
     errorShown = false;
     if (!sectionToShow || sectionToShow === SECTION_TYPE_POPULAR) {
-        popular_fibonacci_n = 5;
+        popular_fibonacci_n = 0;
     }
     if (!sectionToShow || sectionToShow === SECTION_TYPE_RECENT) {
-        recent_fibonacci_n = 5;
+        recent_fibonacci_n = 0;
     }
 }
 
@@ -757,7 +757,8 @@ function showSearchResults(sectionToShow) {
     var indexFrom, numberToAdd, indexTo, displayMoreLink;
 
     if (typeof sectionToShow === 'undefined' || sectionToShow === SECTION_TYPE_POPULAR) {
-        if(popular_fibonacci_n === 5) {
+        if(!popular_fibonacci_n) {
+            popular_fibonacci_n = 5;
             $popular_div.empty();
         }
         var popularResults = searchResults[SECTION_TYPE_POPULAR];
@@ -783,7 +784,8 @@ function showSearchResults(sectionToShow) {
     }
 
     if (typeof sectionToShow === 'undefined' || sectionToShow === SECTION_TYPE_RECENT) {
-        if(recent_fibonacci_n === 5) {
+        if(!recent_fibonacci_n) {
+            recent_fibonacci_n = 5;
             $recent_div.empty();
         }
         var recentResults = searchResults[SECTION_TYPE_RECENT];
