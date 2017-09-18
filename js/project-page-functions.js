@@ -647,12 +647,14 @@ function reloadPage() {
 
 function checkConversionStatus() {
     $.getJSON("build_log.json", function (myLog) {
-        var iconType = eConvStatus.IN_PROGRESS;
+        var iconType = eConvStatus.ERROR;
         if(myLog) {
             recent_build_log = myLog;
             iconType = getDisplayIconType(myLog.status);
         }
-        if (iconType !== eConvStatus.IN_PROGRESS) {
+        if (iconType === eConvStatus.ERROR) {
+            console.log("conversion error");
+        } else if (iconType !== eConvStatus.IN_PROGRESS) {
             console.log("conversion completed");
             reloadPage();
         } else {

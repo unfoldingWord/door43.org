@@ -109,8 +109,23 @@ describe('Test Processing of Json files', function () {
             validateCheckAgain(build_log);
         });
 
+        it('checkConversionStatus() status failed should not call checkAgainForBuildCompletion', function () {
+            // given
+            var build_log = JSON.parse(JSON.stringify(build_log_base)); // clone
+            build_log.status = "failed";
+            mockGetJson(build_log);
+            spyOn(window, 'checkAgainForBuildCompletion').and.returnValue(false);
+            spyOn(window, 'reloadPage').and.returnValue(false);
 
-        it('checkConversionStatus() failed should call checkAgainForBuildCompletion', function () {
+            // when
+            checkConversionStatus();
+
+            // then
+            expect(window.reloadPage).not.toHaveBeenCalled();
+            expect(window.checkAgainForBuildCompletion).not.toHaveBeenCalled();
+        });
+
+        it('checkConversionStatus() get build failed should not call checkAgainForBuildCompletion', function () {
             // given
             var build_log = JSON.parse(JSON.stringify(build_log_base)); // clone
             build_log.status = "started";
