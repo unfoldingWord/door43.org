@@ -163,7 +163,7 @@ function removeLastSearchTerm() {
 }
 
 /**
- * Gets the list of language items from https://door43.org:9096
+ * Gets the list of language items from https://us.door43.org:9096
  *
  * @param {JQuery} $searchField
  * @param {function|Spy} [callback]  Optional. Initially added for unit testing
@@ -175,7 +175,7 @@ function getLanguageListItems($searchField, callback) {
     if (typeof languageSearchResults[term] !== 'undefined') {
         processLanguages($searchField, languageSearchResults[term], callback);
     } else {
-        var request = {type: 'GET', url: 'https://door43.org:9096/?q=' + encodeURIComponent(term)};
+        var request = {type: 'GET', url: 'https://us.door43.org:9096/?q=' + encodeURIComponent(term)};
         $.ajax(request).done(function (data) {
             if (!data.results) return;
             languageSearchResults[term] = data.results;
