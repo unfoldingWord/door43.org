@@ -121,10 +121,10 @@ function getResourceType(subPath) {
                 knownResource = 'obs';
                 if (parts.length > 2) {
                     if (parts[2] === 'notes') {
-                        knownResource = 'obs-tn';
+                        knownResource = 'tn';
                         if (parts.length > 3) {
                             if (parts[3] === 'questions') {
-                                knownResource = 'obs-tq';
+                                knownResource = 'tq';
                             }
                         }
                     }
@@ -132,7 +132,7 @@ function getResourceType(subPath) {
                 break;
 
             case 'obe':
-                knownResource = 'obs-tw';
+                knownResource = 'tw';
                 break;
 
             case 'ta':
@@ -143,7 +143,7 @@ function getResourceType(subPath) {
                 break;
         }
         if (knownResource) {
-            knownResource = '&resID=' + knownResource;
+            knownResource = '&resource=' + knownResource;
         }
     }
     return knownResource;
