@@ -125,7 +125,7 @@ describe('Test Processing of Json files', function () {
             expect(window.checkAgainForBuildCompletion).not.toHaveBeenCalled();
         });
 
-        it('checkConversionStatus() get build failed should not call checkAgainForBuildCompletion', function () {
+        it('checkConversionStatus() get build failed should call checkAgainForBuildCompletion', function () {
             // given
             var build_log = JSON.parse(JSON.stringify(build_log_base)); // clone
             build_log.status = "started";
