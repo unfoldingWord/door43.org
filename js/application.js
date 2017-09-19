@@ -142,9 +142,6 @@ function getResourceType(subPath) {
             default:
                 break;
         }
-        if (knownResource) {
-            knownResource = '&resource=' + knownResource;
-        }
     }
     return knownResource;
 }
@@ -165,7 +162,11 @@ function changeMissingTextForLanguageCode(lang_code, subPath) {
             }
         });
         var knownResource = getResourceType(subPath);
-        var searchParams = "/en/?lc=" + lang_code + knownResource;
+        var searchParams = "/en/?lc=" + lang_code;
+        if (knownResource) {
+            searchParams += '&resource=' + knownResource;
+            knownResource += ' ';
+        }
 
         $div.empty();
         if (script_text) {
@@ -174,7 +175,7 @@ function changeMissingTextForLanguageCode(lang_code, subPath) {
         $div.append("<ul>");
         var $ul = $div.find('ul');
         if ($ul.length) {
-            var search_link = buildAnchor(searchParams, "'" + lang_code + "' content");
+            var search_link = buildAnchor(searchParams, "'" + lang_code + "' " + knownResource + "content");
             appendLineItem($ul, "Try searching for " + search_link + ".");
             appendLineItem($ul, "<a href=\"javascript: history.go(-1)\">Go Back</a> to previous page.");
             var old_link = buildAnchor("http://dw.door43.org/" + subPath, "old door43.org site");
