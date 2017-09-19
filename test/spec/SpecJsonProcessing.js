@@ -143,8 +143,7 @@ describe('Test Processing of Json files', function () {
             validateBuildStatus();
         });
 
-        it('processBuildLogJson() warnings should update screen status and ok ' +
-            'click should work', function () {
+        it('processBuildLogJson() warnings should update screen status and ok click should work', function () {
             // given
             jasmine.getFixtures().fixturesPath = 'base/test/fixtures';
             loadFixtures('obs-project-page-fixture.html');

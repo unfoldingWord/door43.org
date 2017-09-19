@@ -202,7 +202,7 @@ function showWarningModal(modal_body){
             '&body='+encodeURIComponent("Type your question here\n\nSee the failure at "+window.location.href+"\n\n")+
             '" class="btn btn-secondary raised">Ask the Help Desk</a>'+
             '        <span class="btn btn-primary raised" data-dismiss="modal">Ok, Got it!</span>'+
-            '        <span class="btn btn-secondary raised right" onclick="printWarnings()">Print</a>'+
+            '        <span id="warning-print" class="btn btn-secondary raised right" onclick="printWarnings()">Print</a>'+
             '      </div>'+
             '    </div>'+
             '  </div>'+
