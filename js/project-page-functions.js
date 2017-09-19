@@ -180,6 +180,7 @@ function updateConversionStatusOnPage($buildStatusIcon, myLog) {
             _StatHat.push(["_trackCount", "PgNkqAnDE37z2tStLTSmTyBLb2Zo", 1.0]);
             showWarningModal(modal_html);
         }).attr('title', 'Click to see warnings');
+        $buildStatusIcon.css('cursor', 'pointer').css('boxShadow','1px 3px 6px 1px rgba(0, 0, 0, 0.2)');
     }
 }
 
