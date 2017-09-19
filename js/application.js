@@ -107,6 +107,46 @@ function buildAnchor(href, text) {
 }
 
 /**
+ * try to determine resource type from url
+ * @param subPath
+ * @return {string}
+ */
+function getResourceType(subPath) {
+    var parts = subPath.split('/');
+    var knownResource = '';
+    if (parts.length > 1) {
+        var resource = parts[1];
+        switch (resource) {
+            case 'obs':
+                knownResource = 'obs';
+                if (parts.length > 2) {
+                    if (parts[2] === 'notes') {
+                        knownResource = 'tn';
+                        if (parts.length > 3) {
+                            if (parts[3] === 'questions') {
+                                knownResource = 'tq';
+                            }
+                        }
+                    }
+                }
+                break;
+
+            case 'obe':
+                knownResource = 'tw';
+                break;
+
+            case 'ta':
+                knownResource = 'ta';
+                break;
+
+            default:
+                break;
+        }
+    }
+    return knownResource;
+}
+
+/**
  * for missing language page update options on page
  * @param lang_code
  * @param subPath
@@ -121,6 +161,12 @@ function changeMissingTextForLanguageCode(lang_code, subPath) {
                 script_text = $script.outerHTML;
             }
         });
+        var knownResource = getResourceType(subPath);
+        var searchParams = "/en/?lc=" + lang_code;
+        if (knownResource) {
+            searchParams += '&resource=' + knownResource;
+            knownResource += ' ';
+        }
 
         $div.empty();
         if (script_text) {
@@ -129,7 +175,7 @@ function changeMissingTextForLanguageCode(lang_code, subPath) {
         $div.append("<ul>");
         var $ul = $div.find('ul');
         if ($ul.length) {
-            var search_link = buildAnchor("/en/?lc=" + lang_code, "'" + lang_code + "' content");
+            var search_link = buildAnchor(searchParams, "'" + lang_code + "' " + knownResource + "content");
             appendLineItem($ul, "Try searching for " + search_link + ".");
             appendLineItem($ul, "<a href=\"javascript: history.go(-1)\">Go Back</a> to previous page.");
             var old_link = buildAnchor("http://dw.door43.org/" + subPath, "old door43.org site");

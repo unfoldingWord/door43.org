@@ -308,13 +308,109 @@ describe('LanguageViews', function () {
             var $li = $('.content-container .page-content div ul li');
             expect($li.length).toEqual(4);
             expect($li[0].innerHTML).toContain("/en/?lc=" + lang_code);
+            expect($li[0].innerHTML).toContain("'" + lang_code + "' content");
+            expect($li[1].innerHTML).toContain("history.go(-1)");
+            expect($li[2].innerHTML).toContain("http://dw.door43.org/" + subPath);
+            expect($li[3].innerHTML).toContain("<a href=\"/en/contact\">Contact Us</a> to let us know");
+        });
+
+        it('changeMissingTextForLanguageCode() should setup language options and type obs', function () {
+            //given
+            const subPath = 'ar/obs';
+            const lang_code = 'ar';
+            const expectedResourceID = 'obs';
+
+            //when
+            changeMissingTextForLanguageCode(lang_code, subPath);
+
+            //then
+            var $li = $('.content-container .page-content div ul li');
+            expect($li.length).toEqual(4);
+            expect($li[0].innerHTML).toContain("/en/?lc=" + lang_code + '&amp;resource=' + expectedResourceID);
+            expect($li[0].innerHTML).toContain("'" + lang_code + "' " + expectedResourceID + " content");
+            expect($li[1].innerHTML).toContain("history.go(-1)");
+            expect($li[2].innerHTML).toContain("http://dw.door43.org/" + subPath);
+            expect($li[3].innerHTML).toContain("<a href=\"/en/contact\">Contact Us</a> to let us know");
+        });
+
+        it('changeMissingTextForLanguageCode() should setup language options and type tn', function () {
+            //given
+            const subPath = 'ar/obs/notes';
+            const lang_code = 'ar';
+            const expectedResourceID = 'tn';
+
+            //when
+            changeMissingTextForLanguageCode(lang_code, subPath);
+
+            //then
+            var $li = $('.content-container .page-content div ul li');
+            expect($li.length).toEqual(4);
+            expect($li[0].innerHTML).toContain("/en/?lc=" + lang_code + '&amp;resource=' + expectedResourceID);
+            expect($li[0].innerHTML).toContain("'" + lang_code + "' " + expectedResourceID + " content");
+            expect($li[1].innerHTML).toContain("history.go(-1)");
+            expect($li[2].innerHTML).toContain("http://dw.door43.org/" + subPath);
+            expect($li[3].innerHTML).toContain("<a href=\"/en/contact\">Contact Us</a> to let us know");
+        });
+
+        it('changeMissingTextForLanguageCode() should setup language options and type tq', function () {
+            //given
+            const subPath = 'ar/obs/notes/questions';
+            const lang_code = 'ar';
+            const expectedResourceID = 'tq';
+
+            //when
+            changeMissingTextForLanguageCode(lang_code, subPath);
+
+            //then
+            var $li = $('.content-container .page-content div ul li');
+            expect($li.length).toEqual(4);
+            expect($li[0].innerHTML).toContain("/en/?lc=" + lang_code + '&amp;resource=' + expectedResourceID);
+            expect($li[0].innerHTML).toContain("'" + lang_code + "' " + expectedResourceID + " content");
+            expect($li[1].innerHTML).toContain("history.go(-1)");
+            expect($li[2].innerHTML).toContain("http://dw.door43.org/" + subPath);
+            expect($li[3].innerHTML).toContain("<a href=\"/en/contact\">Contact Us</a> to let us know");
+        });
+
+        it('changeMissingTextForLanguageCode() should setup language options and type tw', function () {
+            //given
+            const subPath = 'ar/obe';
+            const lang_code = 'ar';
+            const expectedResourceID = 'tw';
+
+            //when
+            changeMissingTextForLanguageCode(lang_code, subPath);
+
+            //then
+            var $li = $('.content-container .page-content div ul li');
+            expect($li.length).toEqual(4);
+            expect($li[0].innerHTML).toContain("/en/?lc=" + lang_code + '&amp;resource=' + expectedResourceID);
+            expect($li[0].innerHTML).toContain("'" + lang_code + "' " + expectedResourceID + " content");
+            expect($li[1].innerHTML).toContain("history.go(-1)");
+            expect($li[2].innerHTML).toContain("http://dw.door43.org/" + subPath);
+            expect($li[3].innerHTML).toContain("<a href=\"/en/contact\">Contact Us</a> to let us know");
+        });
+
+        it('changeMissingTextForLanguageCode() should setup language options and type ta', function () {
+            //given
+            const subPath = 'ar/ta';
+            const lang_code = 'ar';
+            const expectedResourceID = 'ta';
+
+            //when
+            changeMissingTextForLanguageCode(lang_code, subPath);
+
+            //then
+            var $li = $('.content-container .page-content div ul li');
+            expect($li.length).toEqual(4);
+            expect($li[0].innerHTML).toContain("'" + lang_code + "' " + expectedResourceID + " content");
+            expect($li[0].innerHTML).toContain("/en/?lc=" + lang_code + '&amp;resource=' + expectedResourceID);
             expect($li[1].innerHTML).toContain("history.go(-1)");
             expect($li[2].innerHTML).toContain("http://dw.door43.org/" + subPath);
             expect($li[3].innerHTML).toContain("<a href=\"/en/contact\">Contact Us</a> to let us know");
         });
     });
 
-    describe('Test getAndUpdateLanguagePageViews()', function () {
+describe('Test getAndUpdateLanguagePageViews()', function () {
         it('getAndUpdateLanguagePageViews() valid view_count should generate message', function () {
             //given
             var url = 'https://api.door43.org/en';
