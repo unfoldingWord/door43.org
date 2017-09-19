@@ -180,7 +180,7 @@ function updateConversionStatusOnPage($buildStatusIcon, myLog) {
             _StatHat.push(["_trackCount", "PgNkqAnDE37z2tStLTSmTyBLb2Zo", 1.0]);
             showWarningModal(modal_html);
         }).attr('title', 'Click to see warnings');
-        $buildStatusIcon.css('cursor', 'pointer').css('boxShadow','1px 3px 6px 1px rgba(0, 0, 0, 0.2)');
+        $buildStatusIcon.addClass('warning-button');
     }
 }
 
@@ -202,7 +202,7 @@ function showWarningModal(modal_body){
             '&body='+encodeURIComponent("Type your question here\n\nSee the failure at "+window.location.href+"\n\n")+
             '" class="btn btn-secondary raised">Ask the Help Desk</a>'+
             '        <span class="btn btn-primary raised" data-dismiss="modal">Ok, Got it!</span>'+
-            '        <span class="btn btn-secondary raised" onclick="printWarnings()">Print</a>'+
+            '        <span class="btn btn-secondary raised right" onclick="printWarnings()">Print</a>'+
             '      </div>'+
             '    </div>'+
             '  </div>'+
