@@ -227,6 +227,7 @@ function printWarnings() {
             printWarningsSub($warnings, title);
         });
     }
+    _StatHat.push(["_trackCount", "JgojEAJCMPqTlYGKK-PgPSBJOTFi", 1.0]);
 }
 
 function printWarningsSub($warnings, title) {
