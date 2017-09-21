@@ -180,6 +180,7 @@ function updateConversionStatusOnPage($buildStatusIcon, myLog) {
             _StatHat.push(["_trackCount", "PgNkqAnDE37z2tStLTSmTyBLb2Zo", 1.0]);
             showWarningModal(modal_html);
         }).attr('title', 'Click to see warnings');
+        $buildStatusIcon.addClass('warning-button');
     }
 }
 
@@ -192,7 +193,7 @@ function showWarningModal(modal_body){
             '        <div class="warning-circle"><i class="fa fa-exclamation"></i></div>'+
             '        <h3 class="warning-header">Warning!</h3>'+
             '      </div>'+
-            '      <div class="modal-body">'+
+            '      <div id="warnings-list" class="modal-body">'+
             modal_body +
             '      </div>'+
             '      <div class="modal-footer">'+
@@ -201,6 +202,7 @@ function showWarningModal(modal_body){
             '&body='+encodeURIComponent("Type your question here\n\nSee the failure at "+window.location.href+"\n\n")+
             '" class="btn btn-secondary raised">Ask the Help Desk</a>'+
             '        <span class="btn btn-primary raised" data-dismiss="modal">Ok, Got it!</span>'+
+            '        <span id="warning-print" class="btn btn-secondary raised right" onclick="printWarnings()">Print</a>'+
             '      </div>'+
             '    </div>'+
             '  </div>'+
@@ -209,6 +211,43 @@ function showWarningModal(modal_body){
     $('body').append(html);
     $("#warning-modal").modal().modal('show').on('hidden.bs.modal', function() {
         $(this).remove();
+    });
+}
+
+var printLoaded = false;
+
+function printWarnings() {
+    const $warnings = $("#warnings-list");
+    const title = "Conversion Warnings";
+    if(printLoaded) {
+        printWarningsSub($warnings, title);
+    } else {
+        $.getScript('/js/jQuery.print.js', function () {
+            printLoaded = true;
+            printWarningsSub($warnings, title);
+        });
+    }
+    _StatHat.push(["_trackCount", "JgojEAJCMPqTlYGKK-PgPSBJOTFi", 1.0]);
+}
+
+function printWarningsSub($warnings, title) {
+    $warnings.print({
+        //Use Global styles
+        globalStyles: false,
+        //Add link with attrbute media=print
+        mediaPrint: false,
+        //Custom stylesheet
+        stylesheet: "http://fonts.googleapis.com/css?family=Inconsolata",
+        //Print in a hidden iframe
+        iframe: true,
+        //Don't print this
+        noPrintSelector: ".avoid-this",
+        //Add this at top
+        prepend: title,
+        //Log to console when printing is done via a deffered callback
+        deferred: $.Deferred().done(function () {
+            console.log('Printing done', arguments);
+        })
     });
 }
 
