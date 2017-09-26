@@ -1292,7 +1292,7 @@ hr { margin: 20px 0px; color: #000000; }
 
 a { text-decoration: none; color: #000000; }
 
-a:after { content: " (https://live.door43.org" attr(href) ")"; font-size: 80%; }
+a:after { content: " (https://door43.org" attr(href) ")"; font-size: 80%; }
 
 a[href^="http://"]:after, a[href^="https://"]:after { content: " (" attr(href) ")"; font-size: 90%; }
 

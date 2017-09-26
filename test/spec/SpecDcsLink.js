@@ -32,7 +32,7 @@ describe('Test DCS Links', function () {
     var localContext = {
       'window':{
         location:{
-          href: 'https://live.door43.org/u/Door43/en_obs/ec7c9d9e8c/',
+          href: 'https://door43.org/u/Door43/en_obs/ec7c9d9e8c/',
           pathname: '/u/Door43/en_obs/ec7c9d9e8c/'
         }
       }
@@ -56,7 +56,7 @@ describe('Test DCS Links', function () {
     var localContext = {
       'window': {
         location: {
-          href: 'https://live.door43.org/u/Door43/en_obs/ec7c9d9e8c/',
+          href: 'https://door43.org/u/Door43/en_obs/ec7c9d9e8c/',
           pathname: '/u/Door43/en_obs/ec7c9d9e8c/'
         }
       }

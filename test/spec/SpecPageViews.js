@@ -152,7 +152,7 @@ describe('PageViews', function () {
     describe('Test getPageViewUrl()', function () {
         it('getPageViewUrl() live page should point to api', function () {
             //given
-            var pageUrl = 'https://live.door43.org/u/dummy/repo/96db55378e/';
+            var pageUrl = 'https://door43.org/u/dummy/repo/96db55378e/';
             const expectedURL = 'https://api.door43.org/page_view_count';
 
             //when

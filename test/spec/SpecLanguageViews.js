@@ -498,7 +498,7 @@ describe('Test getAndUpdateLanguagePageViews()', function () {
     describe('Test getLanguagePageViewUrl()', function () {
         it('getLanguagePageViewUrl() live page should point to api', function () {
             //given
-            var pageUrl = 'https://live.door43.org/en/';
+            var pageUrl = 'https://door43.org/en/';
             const expectedURL = 'https://api.door43.org/language_view_count';
 
             //when

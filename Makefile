@@ -34,5 +34,5 @@ publish: test
 	git merge develop
 	git push origin master
 	echo "Ensure the build completed https://travis-ci.org/unfoldingWord-dev/door43.org"
-	echo "Check https://live.door43.org/ in a moment"
+	echo "Check https://door43.org/ in a moment"
 	git checkout develop

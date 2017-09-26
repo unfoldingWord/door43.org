@@ -53,7 +53,7 @@ There are two branches that are built and deployed to S3 by Travis CI:
 
 The develop branch may be seen online at http://test-door43.org.s3-website-us-west-2.amazonaws.com.
 
-The master branch is available at https://live.door43.org (soon to be at https://door43.org).
+The master branch is available at https://door43.org).
 
 #### Adding language pages
 
@@ -69,7 +69,7 @@ After Pre-production Testing you commit your changes and make a pull request aga
 
 #### Push to Production
 
-If Travis CI has built and deployed the `develop` branch successfully, you create a pull request to merge it into the `master` branch.  When this has been merged, Travis will automatically deploy yours changes to production.  Your changes should be visible within 5 minutes on `https://live.door43.org`
+If Travis CI has built and deployed the `develop` branch successfully, you create a pull request to merge it into the `master` branch.  When this has been merged, Travis will automatically deploy yours changes to production.  Your changes should be visible within 5 minutes on `https://door43.org`
 
 #### Syncing Assets
 
