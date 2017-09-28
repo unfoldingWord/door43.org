@@ -50,8 +50,9 @@ describe('Test Processing of Json files', function () {
 
     describe('Test checkConversionStatus()', function () {
 
-        it('checkConversionStatus() status success should reload page', function () {
+        it('checkConversionStatus() status success should reload page if last read was pending', function () {
             // given
+            lastStatus = eConvStatus.IN_PROGRESS;
             var build_log = JSON.parse(JSON.stringify(build_log_base)); // clone
             mockGetJson(build_log);
             spyOn(window, 'reloadPage').and.returnValue(false);
@@ -62,6 +63,23 @@ describe('Test Processing of Json files', function () {
             // then
             expect(window.reloadPage).toHaveBeenCalled();
             expect(recent_build_log).toEqual(build_log);
+            expect(lastStatus).toEqual(eConvStatus.SUCCESS);
+        });
+
+        it('checkConversionStatus() status success should not reload page if last read was not pending', function () {
+            // given
+            lastStatus = -1;
+            var build_log = JSON.parse(JSON.stringify(build_log_base)); // clone
+            mockGetJson(build_log);
+            spyOn(window, 'reloadPage').and.returnValue(false);
+
+            // when
+            checkConversionStatus();
+
+            // then
+            expect(window.reloadPage).not.toHaveBeenCalled();
+            expect(recent_build_log).toEqual(build_log);
+            expect(lastStatus).toEqual(eConvStatus.SUCCESS);
         });
 
         it('checkConversionStatus() status requested should call checkAgainForBuildCompletion', function () {
