@@ -684,6 +684,8 @@ function reloadPage() {
     window.location.reload(true); // conversion finished, reload page
 }
 
+var lastStatus = -1;
+
 function checkConversionStatus() {
     $.getJSON("build_log.json", function (myLog) {
         var iconType = eConvStatus.ERROR;
@@ -695,11 +697,14 @@ function checkConversionStatus() {
             console.log("conversion error");
         } else if (iconType !== eConvStatus.IN_PROGRESS) {
             console.log("conversion completed");
-            reloadPage();
+            if(lastStatus === eConvStatus.IN_PROGRESS) {
+                reloadPage(); // only reload page if we went from in_progress to a final state
+            }
         } else {
             conversion_start_time = new Date(myLog.created_at);
             checkAgainForBuildCompletion();
         }
+        lastStatus = iconType;
     })
     .fail(function () {
         console.log("error reading build_log.json, retry in 10 seconds");
