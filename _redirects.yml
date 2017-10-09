@@ -29,6 +29,8 @@
 /en/uwadmin/pub_status: https://git.door43.org/Door43-Catalog
 /en/uwadmin/lpx/obs/status: https://git.door43.org/Door43-Catalog/lpx_obs/src/master/manifest.yaml
 /home: /
+/en/get-started: /
+/obs-setup: https://unfoldingword.org/ts/
 /word-counts: https://dw.door43.org/word-counts
 
 /ceb/home: /en/?lc=ceb
