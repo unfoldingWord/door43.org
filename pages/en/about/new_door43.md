@@ -5,7 +5,11 @@ header_title: New Door43
 permalink: /en/about/new_door43/index.html
 ---
 
-Content for Door43 is now managed in the [Door43 Content Service (DCS)](https://git.door43.org). Every change made in DCS automatically creates a web page on this site, use the [Browse page](/en/) to find and share content.
+Content for Door43 is managed in the [Door43 Content Service (DCS)](https://git.door43.org). Every change made in DCS automatically creates a web page on this site.
+
+<img src="https://cdn.door43.org/assets/img/dcs_tx_door43.jpg" alt="DCS to Door43 Conversion">
+
+Use the [Browse page](/en/) to find and share content.
 
 ## What Happened to the Old Site?
 
