@@ -530,7 +530,6 @@ body.ta, body.tw {
 
     > ul > li {
       margin-left: 15px !important;
-
       .content-nav-expand {
         &:after {
           font-family: 'Glyphicons Halflings';
@@ -565,6 +564,8 @@ body.ta, body.tw {
   .content-nav > ul > li > ul > li {
     list-style-type: none;
     padding-left: 30px;
+    margin-left: 28px;
+    text-indent: -28px;
   }
 }
 
