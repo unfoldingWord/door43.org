@@ -507,7 +507,9 @@ body.ta {
       list-style-type: disc;
     }
   }
+}
 
+body.ta, body.tw {
   .content-nav {
     ul li {
       list-style-type: none;
