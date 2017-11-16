@@ -5,7 +5,7 @@ header_title: Statement of Faith
 permalink: /en/statement-of-faith/index.html
 ---
 
-*The following statement of faith is subscribed to by all member organizations of and contributors to the [unfoldingWord][uw] project. It is in agreement with these historical creeds: [Apostles’ Creed][apostles], [Nicene Creed][nicene], and [Athanasian Creed][athanasian]; and also the [Lausanne Covenant][lc].
+*The following statement of faith is subscribed to by all member organizations of and contributors to the [unfoldingWord][uw] project. It is in agreement with these historical creeds: [Apostles’ Creed][apostles], [Nicene Creed][nicene], and [Athanasian Creed][athanasian]; and also the [Lausanne Covenant][lc].*
 
 We believe that Christian belief can and should be divided into **essential beliefs** and **peripheral beliefs** (Romans 14).
 
