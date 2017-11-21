@@ -51,7 +51,7 @@ tar xvf secrets.tar
 
 for x in `ls "$SOURCE"`; do
     [ "$x" == "assets" ] && continue
-    echo $x
+    echo "Syncing $x"
     [ -d "$x" ] && s3cmd -c s3cfg-prod sync -M -F \
         --no-mime-magic \
         --dry-run \
@@ -64,3 +64,5 @@ for x in `ls "$SOURCE"`; do
         --add-header="Cache-Control:max-age=600" \
         "$SOURCE/$x" "$BKT/"
 done
+
+echo "Done!"
