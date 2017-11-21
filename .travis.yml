@@ -12,11 +12,11 @@ before_deploy: pip install --user s3cmd
 deploy:
 - provider: script
   skip_cleanup: true
-  script: ./s3_dev_push.sh
+  script: ./s3_push.sh "s3://dev-door43.org"
   on:
     branch: develop
 - provider: script
   skip_cleanup: true
-  script: ./s3_prod_push.sh
+  script: ./s3_push.sh "s3://door43.org"
   on:
     branch: master
