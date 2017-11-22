@@ -52,15 +52,13 @@ tar xvf secrets.tar
 for x in `ls "$SOURCE"`; do
     [ "$x" == "assets" ] && continue
     echo "Syncing $x"
-    [ -d "$x" ] && s3cmd -c s3cfg-prod sync -M -F \
+    [ -d "$SOURCE/$x" ] && s3cmd -c s3cfg-prod sync -M -F \
         --no-mime-magic \
-        --dry-run \
         --exclude-from "$EXCLUDES" \
         --add-header="Cache-Control:max-age=600" \
         "$SOURCE/$x/" "$BKT/$x/"
-    [ -f "$x" ] && s3cmd -c s3cfg-prod put -M -F \
+    [ -f "$SOURCE/$x" ] && s3cmd -c s3cfg-prod put -M -F \
         --no-mime-magic \
-        --dry-run \
         --add-header="Cache-Control:max-age=600" \
         "$SOURCE/$x" "$BKT/"
 done
