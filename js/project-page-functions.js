@@ -326,7 +326,7 @@ function printAll(){
   var api_domain = "api.door43.org";
   var api_prefix = "";
   switch(window.location.hostname){
-    case "dev.door43.org":
+    case "dev-door43.org.s3-website-us-west-2.amazonaws.com":
       api_prefix = "dev-";
       break;
     case "test-door43.org.s3-website-us-west-2.amazonaws.com":
