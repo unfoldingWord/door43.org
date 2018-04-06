@@ -333,7 +333,19 @@ function printAll(){
       api_prefix = "test-";
       break;
   }
-  window.open("https://"+api_prefix+api_domain+"/tx/print?id="+id,'_blank');
+  $.ajax({
+    url: "https://"+api_prefix+api_domain+"/tx/print?id="+id,
+    success: function(data) {
+      // response body is url to printed HTML
+      if (!data.startsWith('http')) {
+        // TODO(ethantkoenig): this is an ugly hack
+        data = 'https://' + data;
+      }
+      console.log("URL for printed HTML: " + data);
+      window.open(data, '_blank');
+    },
+    crossDomain: true
+  });
 }
 
 /**
