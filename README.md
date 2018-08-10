@@ -33,7 +33,12 @@ To setup a development environment for developing on this site, you need to run 
     cd door43.org
     bundle install
 
-If you do not have the `bundle` executable, then you'll need to run `sudo gem install bundle` first.
+
+This will install the Ruby gems specified in `Gemfile`.
+You may be asked for the `sudo` password to install to the system RubyGems on Linx.
+If you do not have the `bundle` executable, then you'll need to run `sudo gem install bundle` or `sudo apt install ruby-bundler` first.
+If you do not have `/usr/lib/ruby/include/ruby.h` on Linux, then you'll need to run `sudo apt install ruby-dev` first.
+If you cannot install `nokogirl` due to requiring `zlib`, then you'll need to run `sudo apt install zlib1g-dev`.
 
 #### Updating dependencies
 
@@ -42,6 +47,8 @@ If you do not have the `bundle` executable, then you'll need to run `sudo gem in
 ##### Setup
 
 If you need `s3cmd`, then install it from http://s3tools.org/download.  It's as easy as `sudo pip install s3cmd`, `yum install s3cmd` or `sudo apt-get install s3cmd` for Linux.
+
+If you need `npm`, use `sudo apt install npm` for Linux.
 
 You will also need to ensure that you have a configuration file for `s3cmd` available as `s3cfg-prod` at the root of the repo.  Both the assets and s3cfg-prod locations are excluded from git in .gitignore.
 
@@ -75,7 +82,7 @@ If Travis CI has built and deployed the `develop` branch successfully, you creat
 
 #### Syncing Assets
 
-Assets (binary things like images) are housed on cdn.door43.org/assets for this site. This assets folder is a Resilio Sync folder shared among the developers (ask if you need access).  
+Assets (binary things like images) are housed on cdn.door43.org/assets for this site. This assets folder is a Resilio Sync folder shared among the developers (ask if you need access).
 
 *Note: The first time you will have to Link your Resilio Sync folder into `_site/assets/`.  Then run `s3cmd --configure` to setup s3cmd. Next copy and rename the cfg file to `s3cfg-prod` in project folder (e.g. `cp ~/.s3cfg s3cfg-prod` )*
 
