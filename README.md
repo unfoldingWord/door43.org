@@ -35,7 +35,7 @@ To setup a development environment for developing on this site, you need to run 
 
 
 This will install the Ruby gems specified in `Gemfile`.
-You may be asked for the `sudo` password to install to the system RubyGems on Linx.
+You may be asked for the `sudo` password to install to the system RubyGems on Linux.
 If you do not have the `bundle` executable, then you'll need to run `sudo gem install bundle` or `sudo apt install ruby-bundler` first.
 If you do not have `/usr/lib/ruby/include/ruby.h` on Linux, then you'll need to run `sudo apt install ruby-dev` first.
 If you cannot install `nokogirl` due to requiring `zlib`, then you'll need to run `sudo apt install zlib1g-dev`.
