@@ -5,7 +5,7 @@ header_title: About Door43
 permalink: /en/about/index.html
 ---
 
-Door43 is an online repository for open-licensed Biblical content in any language. Contributors from all over the world use this site to work together to create, translate, and distribute unrestricted discipleship resources.
+Door43 is a community of people interested in furthering unrestricted biblical content in every language. Contributors from all over the world use this site to work together to create, translate, and distribute unrestricted discipleship resources.
 
 Learn more about the [New Door43 Site]({{ '/en/about/new_door43/' | prepend: site.baseurl }}).
 
