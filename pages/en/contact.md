@@ -6,7 +6,7 @@ permalink: /en/contact/index.html
 
 ## Slack
 
-The fastest way to get answers is to ask the [#helpdesk](https://team43.slack.com/messages/helpdesk/) channel in our Team43 Slack Group.  Use the form below to join our Slack team if you are not a member.
+The fastest way to get answers is to ask the [#helpdesk](https://team43.slack.com/messages/helpdesk/) channel in our Door43 Slack Group.  Use the form below to join Door43 Slack if you are not a member.
 
 <script type="text/javascript">
   function disable_page() {
@@ -67,6 +67,6 @@ If you prefer, you may also e-mail our help desk at [help@door43.org][help-mail]
 
 ## Forum
 
-You may also find help articles on the [CCBT Discussion Forum](https://forum.ccbt.bible/).
+You may also browse how-tos and ask questions about Door43 and unrestricted biblical content on the [Door43 Forum](https://forum.door43.org/).
 
 [help-mail]: mailto:help@door43.org "help@door43.org"
