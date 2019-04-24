@@ -1,21 +1,21 @@
 ---
 layout: default
-title: Legal - Team43 Slack Terms of Service
-header_title: Team43 Slack Terms of Service
+title: Legal - Door43 Slack Terms of Service
+header_title: Door43 Slack Terms of Service
 permalink: /en/slack-terms-of-service/index.html
 ---
 
 ## Purpose
 
-We use the [Slack](https://slack.com/downloads) messaging app to communicate quickly and efficiently. Our team name is Team43. Sign up on the [Contact](/en/contact) page.
+We use the [Slack](https://slack.com/downloads) messaging app to communicate quickly and efficiently. Sign up on the [Contact](/en/contact) page.
 
 ## Privacy
 
-Our Team43 Slack channel is available for anyone to join. If you are concerned about privacy use a pseudonym. Your email address will be accessible to others in our Team43 Slack team.
+Our Door43 Slack channel is available for anyone to join. If you are concerned about privacy use a pseudonym. Your email address will be accessible to others in our Door43 Slack group.
 
 ## Agreement
 
-The actions you take in Team43 Slack should be in agreement with the Door43 [Statement of Faith][sof].
+The actions you take in Door43 Slack should be in agreement with the Door43 [Statement of Faith][sof].
 
 ## Conduct
 
@@ -27,5 +27,4 @@ Discussions should be Christ honoring, non-libelous, and courteous. Posting of s
 
 Use Slack instead of email if at all possible.
 
-[d43-logs]: https://team.door43.org/logs "Slack Logs"
 [sof]: {{ '/en/statement-of-faith/' | prepend: site.baseurl }} "Statement of Faith"
