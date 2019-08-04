@@ -119,9 +119,10 @@ function onProjectPageLoaded() {
 }
 
 function processProjectJson(project, $revisions) {
+    var todaysDate = new Date().setHours(0,0,0,0)
     var counter = 1;
     $.each(project.commits.reverse(), function (index, commit) {
-        var date = new Date(commit.created_at);
+        var commitDate = new Date(commit.created_at);
         var options = {
             year: "numeric",
             month: "short",
@@ -130,17 +131,18 @@ function processProjectJson(project, $revisions) {
             minute: "numeric",
             timeZone: "UTC"
         };
+        // Use time for today, else date (trying to keep the string reasonably short)
+        var dateTimeStr = (commitDate.setHours(0,0,0,0) == todaysDate) ? // Date equals today's date
+            commitDate.toLocaleTimeString("en-US", options) : commitDate.toLocaleDateString("en-US", options);
+
+        var displayStr = commit.id + ' (' + dateTimeStr + ')'
+        if (commit.id !== myCommitId) // liven revision links other than the current one
+            displayStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + displayStr + '</a>';
 
         var display = (counter++ > 10) ? 'style="display: none"' : '';
         var iconHtml = getCommitConversionStatusIcon(commit.status);
-        var dateStr = date.toLocaleString("en-US", options);
-
-        if (commit.id !== myCommitId) {
-            dateStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + dateStr + '</a>';
-        }
-
-        $revisions.append('<tr ' + display + '><td>' + dateStr + '</td><td>' + iconHtml + '</td></tr>');
-    }); // End each
+        $revisions.append('<tr ' + display + '><td>' + displayStr + '</td><td>' + iconHtml + '</td></tr>');
+    }); // end each
 
     if (counter > 10)
         $revisions.append('<tr id="view_more_tr"><td colspan="2" class="borderless"><a href="javascript:showTenMore();">View More...</a></tr>');
