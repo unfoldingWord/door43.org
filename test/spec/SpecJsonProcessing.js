@@ -43,7 +43,7 @@ describe('Test Processing of Json files', function () {
             // given
             var commitCount = 10;
             var project = generateProject(commitCount);
-            var expectedCallCount = commitCount + 1;
+            var expectedCallCount = commitCount;  // was commitCount + 1 -- RJH Aug2019
 
             // when
             processProjectJson(project, $revisions);
