@@ -123,9 +123,8 @@ function processProjectJson(project, $revisions) {
     var counter = 1;
     $.each(project.commits.reverse(), function (index, commit) {
         var commitDateTime = new Date(commit.created_at);
-        var commitDate = commitDateTime;
-        commitDate.setHours(0,0,0,0);
-        // Use time for today, else date (trying to keep the string reasonably short)
+        var commitDate = new Date(commit.created_at).setHours(0,0,0,0);
+        // Use time for today's commits, else date (trying to keep the string reasonably short)
         var dateTimeStr = (commitDate == todaysDate)
             ? commitDateTime.toLocaleTimeString("en-US", {hour:"numeric", minute:"numeric", timeZone:"UTC"})
             : commitDateTime.toLocaleDateString("en-US", {year:"numeric", month:"short", day:"numeric", timeZone:"UTC"});
@@ -134,6 +133,8 @@ function processProjectJson(project, $revisions) {
         if (commit.id !== myCommitId) // liven revision links other than the current one
             displayStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + displayStr + '</a>';
 
+        // NOTE: Could break here now, rather than just hiding
+        //   (but will leave till for now until we move to a button rather than a list)
         var display = (counter++ > 10) ? 'style="display: none"' : '';
         var iconHtml = getCommitConversionStatusIcon(commit.status);
         $revisions.append('<tr ' + display + '><td>' + displayStr + '</td><td>' + iconHtml + '</td></tr>');
