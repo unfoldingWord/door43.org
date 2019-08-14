@@ -123,17 +123,10 @@ function processProjectJson(project, $revisions) {
     var counter = 1;
     $.each(project.commits.reverse(), function (index, commit) {
         var commitDate = new Date(commit.created_at);
-        var options = {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            timeZone: "UTC"
-        };
         // Use time for today, else date (trying to keep the string reasonably short)
-        var dateTimeStr = (commitDate.setHours(0,0,0,0) == todaysDate) ? // Date equals today's date
-            commitDate.toLocaleTimeString("en-US", options) : commitDate.toLocaleDateString("en-US", options);
+        var dateTimeStr = (commitDate.setHours(0,0,0,0) == todaysDate) // Date equals today's date
+                    ? commitDate.toLocaleTimeString("en-US", {hour:"numeric", minute:"numeric", timeZone:"UTC"})
+                    : commitDate.toLocaleDateString("en-US", {year:"numeric", month:"short", day:"numeric", timeZone:"UTC"});
 
         var displayStr = commit.id + ' (' + dateTimeStr + ')'
         if (commit.id !== myCommitId) // liven revision links other than the current one
@@ -144,12 +137,12 @@ function processProjectJson(project, $revisions) {
         $revisions.append('<tr ' + display + '><td>' + displayStr + '</td><td>' + iconHtml + '</td></tr>');
     }); // end each
 
-    if (counter > 10)
-        $revisions.append('<tr id="view_more_tr"><td colspan="2" class="borderless"><a href="javascript:showTenMore();">View More...</a></tr>');
+    // if (counter > 10)
+    //     $revisions.append('<tr id="view_more_tr"><td colspan="2" class="borderless"><a href="javascript:showTenMore();">View More...</a></tr>');
 }
 
 function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $lastUpdated, $revisions) {
-    myCommitId = myLog.commit_id.substring(0, 10);
+    myCommitId = myLog.commit_id;
     myOwner = myLog.repo_owner;
     myRepoName = myLog.repo_name;
     $lastUpdated.html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
@@ -299,28 +292,28 @@ function getVisibleHeight(selector) {
 }
 
 //noinspection JSUnusedGlobalSymbols
-function showTenMore(){
-  _StatHat.push(["_trackCount", "wShy-AE8rCXbQkCJepSvfSA3eUVzaw~~", 1.0]);
-  var $revisions = $('#left-sidebar').find('#revisions');
-  var counter = 0;
+// function showTenMore(){
+//   _StatHat.push(["_trackCount", "wShy-AE8rCXbQkCJepSvfSA3eUVzaw~~", 1.0]);
+//   var $revisions = $('#left-sidebar').find('#revisions');
+//   var counter = 0;
 
-  // get the rows still hidden
-  var hiddenRows = $revisions.find('tr').filter(function() {
-    var $this = $(this);
-    return $this.css('display') === 'none';
-  });
+//   // get the rows still hidden
+//   var hiddenRows = $revisions.find('tr').filter(function() {
+//     var $this = $(this);
+//     return $this.css('display') === 'none';
+//   });
 
-  // show the next batch of rows
-  while (counter < 10 && counter < hiddenRows.length) {
-    hiddenRows[counter].style.display = '';
-    counter++;
-  }
+//   // show the next batch of rows
+//   while (counter < 10 && counter < hiddenRows.length) {
+//     hiddenRows[counter].style.display = '';
+//     counter++;
+//   }
 
-  // if all rows are now visible, hide the View More link
-  if (counter >= hiddenRows.length) {
-    $revisions.find('#view_more_tr').css('display', 'none');
-  }
-}
+//   // if all rows are now visible, hide the View More link
+//   if (counter >= hiddenRows.length) {
+//     $revisions.find('#view_more_tr').css('display', 'none');
+//   }
+// }
 
 function printAll(){
   _StatHat.push(["_trackCount", "5o8ZBSJ6yPfmZ28HhXZPaSBNYzRU", 1.0]);
