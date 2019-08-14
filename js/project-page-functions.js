@@ -122,11 +122,13 @@ function processProjectJson(project, $revisions) {
     var todaysDate = new Date().setHours(0,0,0,0)
     var counter = 1;
     $.each(project.commits.reverse(), function (index, commit) {
-        var commitDate = new Date(commit.created_at);
+        var commitDateTime = new Date(commit.created_at);
+        var commitDate = commitDateTime;
+        commitDate.setHours(0,0,0,0);
         // Use time for today, else date (trying to keep the string reasonably short)
-        var dateTimeStr = (commitDate.setHours(0,0,0,0) == todaysDate) // Date equals today's date
-                    ? commitDate.toLocaleTimeString("en-US", {hour:"numeric", minute:"numeric", timeZone:"UTC"})
-                    : commitDate.toLocaleDateString("en-US", {year:"numeric", month:"short", day:"numeric", timeZone:"UTC"});
+        var dateTimeStr = (commitDate == todaysDate)
+            ? commitDateTime.toLocaleTimeString("en-US", {hour:"numeric", minute:"numeric", timeZone:"UTC"})
+            : commitDateTime.toLocaleDateString("en-US", {year:"numeric", month:"short", day:"numeric", timeZone:"UTC"});
 
         var displayStr = commit.id + ' (' + dateTimeStr + ')'
         if (commit.id !== myCommitId) // liven revision links other than the current one
