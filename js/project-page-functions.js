@@ -126,8 +126,9 @@ function processProjectJson(project, $revisions) {
         var commitDate = new Date(commit.created_at).setHours(0,0,0,0);
         // Use time for today's commits, else date (trying to keep the string reasonably short)
         var dateTimeStr = (commitDate == todaysDate)
-            ? commitDateTime.toLocaleTimeString("en-US", {hour:"numeric", minute:"numeric", timeZone:"UTC"})
-            : commitDateTime.toLocaleDateString("en-US", {year:"numeric", month:"short", day:"numeric", timeZone:"UTC"});
+            // undefined means use browser's locale
+            ? commitDateTime.toLocaleTimeString(undefined, {hour:"numeric", minute:"numeric", timeZone:"UTC"})
+            : commitDateTime.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric", timeZone:"UTC"});
 
         var displayStr = commit.id + ' (' + dateTimeStr + ')'
         if (commit.id !== myCommitId) // liven revision links other than the current one
