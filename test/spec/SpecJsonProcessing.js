@@ -26,6 +26,7 @@ describe('Test Processing of Json files', function () {
             appendHtmlSet = null;
         });
 
+        /* RJH Aug2019
         it('processProjectJson() valid object should update revisions', function () {
             // given
             var commitCount = 1;
@@ -51,6 +52,7 @@ describe('Test Processing of Json files', function () {
             // then
             validateRevision(expectedCallCount);
         });
+        */
 
         //
         // helpers
