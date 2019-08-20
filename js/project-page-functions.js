@@ -36,14 +36,14 @@ function onProjectPageLoaded() {
   });
 
   var filename = window.location.href.split('?')[0].split('/').pop();
-  $('#left-sidebar').find('#page-nav option[value="' + filename + '"]').attr('selected', 'selected');
+// RJH Aug2019   $('#left-sidebar').find('#page-nav option[value="' + filename + '"]').attr('selected', 'selected');
 
   $.getJSON("build_log.json", function (myLog) {
-    var $revisions = $('#left-sidebar').find('#revisions');
+    // RJH Aug2019 var $revisions = $('#left-sidebar').find('#revisions');
     processBuildLogJson(myLog, $('#download_menu_button'), $('#build-status-icon'), $('#last-updated'), $revisions);
 
     $.getJSON("../project.json", function (project) {
-        processProjectJson(project, $revisions);
+        processProjectJson(project, $('#revisions_menu_button'));
     })
       .done(function () {
         console.log("processed project.json");
@@ -104,7 +104,8 @@ function onProjectPageLoaded() {
   }
 
   $(window).on('scroll resize', function () {
-    $('#left-sidebar-nav, #right-sidebar-nav').css('bottom', getVisibleHeight('footer'));
+    // RJH Aug2019 $('#left-sidebar-nav, #right-sidebar-nav').css('bottom', getVisibleHeight('footer'));
+    $('#right-sidebar-nav').css('bottom', getVisibleHeight('footer'));
   });
 
   setPageViews($('#num-of-views'),window.location.href,1);
@@ -118,7 +119,35 @@ function onProjectPageLoaded() {
     $(window).resize(onWindowResize());
 }
 
-function processProjectJson(project, $revisions) {
+/** RJH Aug2019
+ * update Revisions menu item with appropriate text
+ * @param revisionsItemText
+ */
+function updateTextForRevisionsItem(revisionsItemText) {
+    var $revisionsMenuItem = getSpanForRevisionsMenuItem();
+    if ($revisionsMenuItem) {
+        $revisionsMenuItem.html(revisionsItemText);
+    }
+}
+
+/** RJH Aug2019
+ * get span that has text for Revisions menu item
+ * @return {*} jQuery item or null if not found
+ */
+function getSpanForRevisionsMenuItem() {
+    var $revisionsMenuItem = $('#revisions_menu_source_item'); // quickest way
+    if (! $revisionsMenuItem.length) { // if not found on older pages, try to drill down in menu
+        $revisionsMenuItem = $("#revisions_menu ul li span");
+        if (! $revisionsMenuItem.length) { // if still not found, return null
+            return null;
+        }
+    }
+    return $revisionsMenuItem;
+}
+
+function processProjectJson(project, $revisions_menu_button) {
+    // RJH Aug2019
+    $('#revisions_menu_button').prop('disabled', project.commits.length == 1)
     var todaysDate = new Date().setHours(0,0,0,0)
     var counter = 1;
     $.each(project.commits.reverse(), function (index, commit) {
@@ -134,11 +163,10 @@ function processProjectJson(project, $revisions) {
         if (commit.id !== myCommitId) // liven revision links other than the current one
             displayStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + displayStr + '</a>';
 
-        // NOTE: Could break here now, rather than just hiding
-        //   (but will leave till for now until we move to a button rather than a list)
-        var display = (counter++ > 10) ? 'style="display: none"' : '';
+        // var display = (counter++ > 10) ? 'style="display: none"' : '';
         var iconHtml = getCommitConversionStatusIcon(commit.status);
-        $revisions.append('<tr ' + display + '><td>' + displayStr + '</td><td>' + iconHtml + '</td></tr>');
+        // $revisions.append('<tr ' + display + '><td>' + displayStr + '</td><td>' + iconHtml + '</td></tr>');
+        updateTextForRevisionsItem(displayStr);
     }); // end each
 
     // if (counter > 10)
@@ -155,6 +183,8 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
     setDownloadButtonState($downloadMenuButton);
     updateTextForDownloadItem(myLog.input_format);
     updateConversionStatusOnPage($buildStatusIcon, myLog);
+
+    $('#revisions_menu_button').text = myCommitId; // RJH Aug2019
     $revisions.empty();
 }
 
@@ -295,29 +325,31 @@ function getVisibleHeight(selector) {
     return 0;
 }
 
-//noinspection JSUnusedGlobalSymbols
-// function showTenMore(){
-//   _StatHat.push(["_trackCount", "wShy-AE8rCXbQkCJepSvfSA3eUVzaw~~", 1.0]);
-//   var $revisions = $('#left-sidebar').find('#revisions');
-//   var counter = 0;
+/* RJH Aug2019
+noinspection JSUnusedGlobalSymbols
+function showTenMore(){
+  _StatHat.push(["_trackCount", "wShy-AE8rCXbQkCJepSvfSA3eUVzaw~~", 1.0]);
+  var $revisions = $('#left-sidebar').find('#revisions');
+  var counter = 0;
 
-//   // get the rows still hidden
-//   var hiddenRows = $revisions.find('tr').filter(function() {
-//     var $this = $(this);
-//     return $this.css('display') === 'none';
-//   });
+  // get the rows still hidden
+  var hiddenRows = $revisions.find('tr').filter(function() {
+    var $this = $(this);
+    return $this.css('display') === 'none';
+  });
 
-//   // show the next batch of rows
-//   while (counter < 10 && counter < hiddenRows.length) {
-//     hiddenRows[counter].style.display = '';
-//     counter++;
-//   }
+  // show the next batch of rows
+  while (counter < 10 && counter < hiddenRows.length) {
+    hiddenRows[counter].style.display = '';
+    counter++;
+  }
 
-//   // if all rows are now visible, hide the View More link
-//   if (counter >= hiddenRows.length) {
-//     $revisions.find('#view_more_tr').css('display', 'none');
-//   }
-// }
+  // if all rows are now visible, hide the View More link
+  if (counter >= hiddenRows.length) {
+    $revisions.find('#view_more_tr').css('display', 'none');
+  }
+}
+*/
 
 function printAll(){
   _StatHat.push(["_trackCount", "5o8ZBSJ6yPfmZ28HhXZPaSBNYzRU", 1.0]);
@@ -511,6 +543,18 @@ function getDownloadUrl(pageUrl) {
     return download;
 }
 
+/** RJH Aug2019
+ * get URL for revision
+ * @param [pageUrl] if not set will use page href
+ * @returns {*}
+ */
+function getRevisionUrl(pageUrl) {
+    // _StatHat.push(["_trackCount", "eBQk6-wY9ziv3D77-qhJuiBYM3Z2", 1.0]);
+    var commitID = extractCommitFromUrl(pageUrl);
+    var download = "../' + commitID + '/index.html";
+    return download;
+}
+
 /**
  * get download link from build log
  * @param myLog
@@ -560,7 +604,8 @@ function onProjectPageChange(){
     nav_height = $('.navbar').outerHeight(true);
     header_height = $('#pinned-header').outerHeight(true);
     /* Set/update the affix offset for left, right and content (if mobile) */
-    $('#left-sidebar-nav, #right-sidebar-nav').affix({
+    // RJH Aug2019 $('#left-sidebar-nav, #right-sidebar-nav').affix({
+    $('#right-sidebar-nav').affix({
         offset: {
             top: nav_height + header_height - 100
         }

@@ -43,6 +43,7 @@ header {
                     color: #3ebcfe;
                 }
             }
+            
             #print-button, #download_menu_button {
               background-color: white;
               color: #3ebcfe;
@@ -50,16 +51,37 @@ header {
               -webkit-box-shadow: 1px 3px 6px 1px rgba(0,0,0,0.2);
               box-shadow: 1px 3px 6px 1px rgba(0,0,0,0.2);
             }
-            .dropdown-menu {
+            .download-dropdown-menu {
               background-color: white;
               border: none;
               -webkit-box-shadow: 1px 3px 6px 1px rgba(0,0,0,0.2);
               box-shadow: 1px 3px 6px 1px rgba(0,0,0,0.2);
             }
-            .dropdown-menu > li {
+            .download-dropdown-menu > li {
               padding: 0;
             }
-            .dropdown-menu > li > a  {
+            .download-dropdown-menu > li > a  {
+              color: #3ebcfe;
+              padding: 0 20px;
+            }
+
+            #revisions_menu_button {
+              background-color: blue;
+              color: yellow;
+              border: none;
+              -webkit-box-shadow: 1px 3px 6px 1px rgba(0,0,0,0.2);
+              box-shadow: 1px 3px 6px 1px rgba(0,0,0,0.2);
+            }
+            .revisions-dropdown-menu {
+              background-color: white;
+              border: none;
+              -webkit-box-shadow: 1px 3px 6px 1px rgba(0,0,0,0.2);
+              box-shadow: 1px 3px 6px 1px rgba(0,0,0,0.2);
+            }
+            .revisions-dropdown-menu > li {
+              padding: 0;
+            }
+            .revisions-dropdown-menu > li > a  {
               color: #3ebcfe;
               padding: 0 20px;
             }
@@ -82,7 +104,7 @@ header {
 }
 
 .container {
-  width: 98% !important;
+  width: 95% !important;
 }
 
 #revisions {
@@ -110,7 +132,7 @@ header {
  * Sidebar Nav
  */
 @media (min-width: 979px) {
-  #left-sidebar-nav.affix, #right-sidebar-nav.affix {
+  #right-sidebar-nav.affix {
     position: fixed;
     bottom: 0;
     margin-bottom: 0;
@@ -189,7 +211,7 @@ header {
 }
 
 @media (max-width: 1199px) {
-  #left-sidebar-nav.affix, #right-sidebar-nav.affix {
+  #right-sidebar-nav.affix {
     width: 24%;
   }
 }
