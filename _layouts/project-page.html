@@ -28,22 +28,22 @@
                 <span id="starred-icon"><i class="fa fa-star-o"></i></span>
                 <span id="h1">Header</span>
                 <span id="revisions_menu">
-                    <span class="revisions-dropdown" >
-                        <button id="revisions_menu_button" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="revisions-dropdown"><span class="glyphicon glyphicon-list"></span><span class="hide-on-pinned"> View</span>
+                    <span class="dropdown" >
+                        <button id="revisions_menu_button" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-list"></span><span class="hide-on-pinned"> View</span>
                             <span class="caret"></span></button>
-                        <ul class="revisions-dropdown-menu">
-                            <li><a type="submit" onclick="window.open(getRevisionUrl())"><span id="revisions_menu_source_item" class="glyphicon glyphicon-eye-open"> Master</span></a></li>
+                        <ul class="dropdown-menu">
+                            <li><a type="submit" onclick="window.open(getRevisionUrl())"><span id="menu_source_item" class="glyphicon glyphicon-eye-open"> Latest</span></a></li>
                         </ul>
                     </span>
                 </span>
                 <span id="build-status-icon"><i class="fa fa-question-circle"></i></span>
                 <button id="print-button" class="btn btn-secondary hidden-print" onclick="printAll()"><span class="glyphicon glyphicon-print" aria-hidden="true"></span><span class="hide-on-pinned"> Print</span></button>
                 <span id="download_menu">
-                    <span class="download-dropdown" >
-                        <button id="download_menu_button" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="download-dropdown"><span class="glyphicon glyphicon-cloud-download"></span><span class="hide-on-pinned"> Download</span>
+                    <span class="dropdown" >
+                        <button id="download_menu_button" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-cloud-download"></span><span class="hide-on-pinned"> Download</span>
                             <span class="caret"></span></button>
-                        <ul class="download-dropdown-menu">
-                            <li><a type="submit" onclick="window.open(getDownloadUrl())"><span id="download_menu_source_item" class="glyphicon glyphicon-compressed"> Source</span></a></li>
+                        <ul class="dropdown-menu">
+                            <li><a type="submit" onclick="window.open(getDownloadUrl())"><span id="menu_source_item" class="glyphicon glyphicon-compressed"> Source</span></a></li>
                         </ul>
                     </span>
                 </span>
@@ -61,7 +61,7 @@
     <main class="content" role="main" itemprop="mainContentOfPage">
         <article itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
             <div class="page-content row">
-                <div class="col-md-6" role="main" id="outer-content">
+                <div class="col-md-9" role="main" id="outer-content">
                     { content }
                 </div>
                 <div id="right-sidebar" class="col-md-3 sidebar" role="complementary">
