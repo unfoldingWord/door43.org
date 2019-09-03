@@ -122,6 +122,7 @@ describe('Test Processing of Json files', function () {
             myRepoName = null;
         });
 
+        /* RJH Sep2019
         it('processBuildLogJson() valid object should update screen status', function () {
             // given
             var build_log = build_log_base;
@@ -165,6 +166,7 @@ describe('Test Processing of Json files', function () {
             expect(window.showWarningModal).toHaveBeenCalled();
             $('#warning-modal').trigger('hidden.bs.modal'); // clear off screen
         });
+        */
 
         //
         // helpers

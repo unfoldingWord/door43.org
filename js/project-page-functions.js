@@ -40,10 +40,10 @@ function onProjectPageLoaded() {
 
   $.getJSON("build_log.json", function (myLog) {
     // RJH Aug2019 var $revisions = $('#left-sidebar').find('#revisions');
-    processBuildLogJson(myLog, $('#download_menu_button'), $('#build-status-icon'), $('#last-updated'), $revisions);
+    processBuildLogJson(myLog, $('#download_menu_button'), $('#build-status-icon'), $('#last-updated'));
 
     $.getJSON("../project.json", function (project) {
-        processProjectJson(project, $('#revisions_menu_button'));
+        processProjectJson(project);
     })
       .done(function () {
         console.log("processed project.json");
@@ -147,7 +147,7 @@ function getSpanForRevisionsMenuItem() {
 
 function processProjectJson(project, $revisions_menu_button) {
     // RJH Aug2019
-    $('#revisions_menu_button').prop('disabled', project.commits.length == 1)
+    $revisions_menu_button.prop('disabled', project.commits.length == 1)
     var todaysDate = new Date().setHours(0,0,0,0)
     var counter = 1;
     $.each(project.commits.reverse(), function (index, commit) {
@@ -173,8 +173,9 @@ function processProjectJson(project, $revisions_menu_button) {
     //     $revisions.append('<tr id="view_more_tr"><td colspan="2" class="borderless"><a href="javascript:showTenMore();">View More...</a></tr>');
 }
 
-function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $lastUpdated, $revisions) {
+function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $lastUpdated) {
     myCommitId = myLog.commit_id;
+    myCommitType = myLog.commit_type;
     myOwner = myLog.repo_owner;
     myRepoName = myLog.repo_name;
     $lastUpdated.html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
@@ -184,8 +185,9 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
     updateTextForDownloadItem(myLog.input_format);
     updateConversionStatusOnPage($buildStatusIcon, myLog);
 
-    $('#revisions_menu_button').text = myCommitId; // RJH Aug2019
-    $revisions.empty();
+    // RJH Aug2019 $revisions.empty();
+    $('#revisions_menu_button').text = myCommitId;
+    
 }
 
 function updateConversionStatusOnPage($buildStatusIcon, myLog) {
