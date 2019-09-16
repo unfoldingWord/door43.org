@@ -1,3 +1,4 @@
+console.log("project-page-functions.js version 6f");
 var myCommitId, myRepoName, myOwner, nav_height, header_height;
 var projectPageLoaded = false;
 var _StatHat = _StatHat || [];
@@ -36,14 +37,19 @@ function onProjectPageLoaded() {
   });
 
   var filename = window.location.href.split('?')[0].split('/').pop();
-// RJH Aug2019   $('#left-sidebar').find('#page-nav option[value="' + filename + '"]').attr('selected', 'selected');
+  // NOTE: left-sidebar doesn't exist for new template, RJH Sep2019
+  $('#left-sidebar').find('#page-nav option[value="' + filename + '"]').attr('selected', 'selected');
 
   $.getJSON("build_log.json", function (myLog) {
-    // RJH Aug2019 var $revisions = $('#left-sidebar').find('#revisions');
+    // NOTE: Only the older template has Revisions in the left sidebar
+    //       We use the length of this variable (zero/non-zero) to detect the template type
+    //          i.e., Revision in left sidebar (old template) or in button (newer template)
+    $revisions = $('#left-sidebar').find('#revisions');
+
     processBuildLogJson(myLog, $('#download_menu_button'), $('#build-status-icon'), $('#last-updated'));
 
     $.getJSON("../project.json", function (project) {
-        processProjectJson(project);
+        processProjectJson(project); // Updates the revision list
     })
       .done(function () {
         console.log("processed project.json");
@@ -119,59 +125,63 @@ function onProjectPageLoaded() {
     $(window).resize(onWindowResize());
 }
 
-/** RJH Aug2019
- * update Revisions menu item with appropriate text
- * @param revisionsItemText
- */
-function updateTextForRevisionsItem(revisionsItemText) {
-    var $revisionsMenuItem = getSpanForRevisionsMenuItem();
-    if ($revisionsMenuItem) {
-        $revisionsMenuItem.html(revisionsItemText);
-    }
-}
 
-/** RJH Aug2019
- * get span that has text for Revisions menu item
- * @return {*} jQuery item or null if not found
- */
-function getSpanForRevisionsMenuItem() {
-    var $revisionsMenuItem = $('#revisions_menu_source_item'); // quickest way
-    if (! $revisionsMenuItem.length) { // if not found on older pages, try to drill down in menu
-        $revisionsMenuItem = $("#revisions_menu ul li span");
-        if (! $revisionsMenuItem.length) { // if still not found, return null
-            return null;
-        }
+function processProjectJson(project) {
+    if ($revisions.length) { // old template with Revisions in left-sidebar
+        console.log("processProjectJson() with revisions IN LEFT-SIDEBAR");
+    // if (!$revisions.length) { // not old template with Revisions in left-sidebar
+    } else { // newer template with Revisions in drop-down
+        // RJH Aug2019
+        console.log("processProjectJson() with revisions IN DROP-DOWN");
+        $('#revisions_menu_button').prop('disabled', project.commits.length == 1);
+        $revisionsMenuList = $('#revisions_menu ul');
+        if (!$revisionsMenuList.length)
+            console.log("Unable to find revisions menu list!");
     }
-    return $revisionsMenuItem;
-}
 
-function processProjectJson(project, $revisions_menu_button) {
-    // RJH Aug2019
-    $revisions_menu_button.prop('disabled', project.commits.length == 1)
-    var todaysDate = new Date().setHours(0,0,0,0)
+    // Assemble a list of up to 10 commits with intelligent dates or times
+    //  and makes into live links except for the current one.
+    var todaysDate = new Date()
+    todaysDate.setHours(0,0,0,0)
+    var thisYear = todaysDate.getFullYear();
     var counter = 1;
     $.each(project.commits.reverse(), function (index, commit) {
         var commitDateTime = new Date(commit.created_at);
-        var commitDate = new Date(commit.created_at).setHours(0,0,0,0);
+        var commitDate = new Date(commit.created_at)
+        commitDate.setHours(0,0,0,0);
         // Use time for today's commits, else date (trying to keep the string reasonably short)
         var dateTimeStr = (commitDate == todaysDate)
-            // undefined means use browser's locale
+            // undefined below should mean use browser's locale
+            // Only display the time if it's today
             ? commitDateTime.toLocaleTimeString(undefined, {hour:"numeric", minute:"numeric", timeZone:"UTC"})
-            : commitDateTime.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric", timeZone:"UTC"});
+            : (commitDate.getFullYear() == thisYear)
+                // Only display the date & month if it's this same year
+                ? commitDateTime.toLocaleDateString(undefined, {month:"short", day:"numeric", timeZone:"UTC"})
+                // Display the date & month & year for previous years
+                : commitDateTime.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric", timeZone:"UTC"});
 
         var displayStr = commit.id + ' (' + dateTimeStr + ')'
         if (commit.id !== myCommitId) // liven revision links other than the current one
             displayStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + displayStr + '</a>';
 
-        // var display = (counter++ > 10) ? 'style="display: none"' : '';
         var iconHtml = getCommitConversionStatusIcon(commit.status);
-        // $revisions.append('<tr ' + display + '><td>' + displayStr + '</td><td>' + iconHtml + '</td></tr>');
-        updateTextForRevisionsItem(displayStr);
+
+        // We still have to handle both the old and new template styles
+        if ($revisions.length) { // old template with Revisions in left-sidebar
+            var display = (counter > 10) ? 'style="display: none"' : '';
+            $revisions.append('<tr ' + display + '><td>' + displayStr + '</td><td>' + iconHtml + '</td></tr>');
+        } else { // newer template with Revisions in left-sidebar
+            $revisionsMenuList.append('<li>' + displayStr + ' ' + iconHtml + '</li>');
+        }
+
+        if (counter++ > 10) return false; // i.e., break -- only display first 10 entries in the dropdown
     }); // end each
 
-    // if (counter > 10)
-    //     $revisions.append('<tr id="view_more_tr"><td colspan="2" class="borderless"><a href="javascript:showTenMore();">View More...</a></tr>');
+    // if ($revisions.length && counter > 10)
+        // $revisions.append('<tr id="view_more_tr"><td colspan="2" class="borderless"><a href="javascript:showTenMore();">View More...</a></tr>');
+
 }
+
 
 function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $lastUpdated) {
     myCommitId = myLog.commit_id;
@@ -185,9 +195,14 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
     updateTextForDownloadItem(myLog.input_format);
     updateConversionStatusOnPage($buildStatusIcon, myLog);
 
-    // RJH Aug2019 $revisions.empty();
-    $('#revisions_menu_button').text = myCommitId;
-    
+    if ($revisions.length) { // old template with Revisions in left-sidebar
+        $revisions.empty();
+    } else { // newer template with Revisions in drop-down
+        // RJH Aug2019
+        $('#revisions_menu ul').empty()
+        // Set the text of our new button to show the current revision name, i.e., commit id
+        $('#revisions_menu_button .hide-on-pinned').text(' '+myCommitId); // space separates it from the icon
+    }
 }
 
 function updateConversionStatusOnPage($buildStatusIcon, myLog) {
@@ -439,6 +454,7 @@ function getCommid(commitID, pageUrl) {
     return commitID;
 }
 
+
 /**
  * update download menu item with appropriate text based on input_format - markdown for md, and USFM otherwise
  * @param inputFormat
@@ -450,6 +466,7 @@ function updateTextForDownloadItem(inputFormat) {
         $downloadMenuItem.html(downloadItemText);
     }
 }
+
 
 /**
  * get span that has text for download menu item
@@ -530,6 +547,7 @@ function extractCommitFromUrl(pageUrl) {
     return commitID;
 }
 
+
 /**
  * get URL for download
  * @param [pageUrl] if not set will use page href
@@ -541,21 +559,10 @@ function getDownloadUrl(pageUrl) {
         return source_download;
     }
     var commitID = extractCommitFromUrl(pageUrl);
-    var download = DEFAULT_DOWNLOAD_LOCATION + commitID + ".zip";
+    var download = DEFAULT_DOWNLOAD_LOCATION + commitID + '.zip';
     return download;
 }
 
-/** RJH Aug2019
- * get URL for revision
- * @param [pageUrl] if not set will use page href
- * @returns {*}
- */
-function getRevisionUrl(pageUrl) {
-    // _StatHat.push(["_trackCount", "eBQk6-wY9ziv3D77-qhJuiBYM3Z2", 1.0]);
-    var commitID = extractCommitFromUrl(pageUrl);
-    var download = "../' + commitID + '/index.html";
-    return download;
-}
 
 /**
  * get download link from build log
