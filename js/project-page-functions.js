@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 6f");
+console.log("project-page-functions.js version 7");
 var myCommitId, myRepoName, myOwner, nav_height, header_height;
 var projectPageLoaded = false;
 var _StatHat = _StatHat || [];
@@ -133,7 +133,12 @@ function processProjectJson(project) {
     } else { // newer template with Revisions in drop-down
         // RJH Aug2019
         console.log("processProjectJson() with revisions IN DROP-DOWN");
-        $('#revisions_menu_button').prop('disabled', project.commits.length == 1);
+        // Disable the drop-down button if there's only one commit
+        if (project.commits.length == 1) {
+            $('#revisions_menu_button').prop('disabled', true);
+            $('#revisions_menu_button .glyphicon').hide();
+            $('#revisions_menu_button .caret').hide();
+        } // Assuming no need to ever unhide these, i.e., project file can't change dynamically
         $revisionsMenuList = $('#revisions_menu ul');
         if (!$revisionsMenuList.length)
             console.log("Unable to find revisions menu list!");
@@ -161,17 +166,18 @@ function processProjectJson(project) {
                 : commitDateTime.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric", timeZone:"UTC"});
 
         var displayStr = commit.id + ' (' + dateTimeStr + ')'
-        if (commit.id !== myCommitId) // liven revision links other than the current one
-            displayStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + displayStr + '</a>';
-
         var iconHtml = getCommitConversionStatusIcon(commit.status);
 
         // We still have to handle both the old and new template styles
         if ($revisions.length) { // old template with Revisions in left-sidebar
+            if (commit.id !== myCommitId) // liven revision links other than the current one
+                displayStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + displayStr + '</a>';
             var display = (counter > 10) ? 'style="display: none"' : '';
             $revisions.append('<tr ' + display + '><td>' + displayStr + '</td><td>' + iconHtml + '</td></tr>');
         } else { // newer template with Revisions in left-sidebar
-            $revisionsMenuList.append('<li>' + displayStr + ' ' + iconHtml + '</li>');
+            if (commit.id !== myCommitId) // liven revision links other than the current one
+                displayStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + displayStr + ' ' + iconHtml + '</a>';
+            $revisionsMenuList.append('<li>' + displayStr + '</li>');
         }
 
         if (counter++ > 10) return false; // i.e., break -- only display first 10 entries in the dropdown
@@ -201,7 +207,7 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
         // RJH Aug2019
         $('#revisions_menu ul').empty()
         // Set the text of our new button to show the current revision name, i.e., commit id
-        $('#revisions_menu_button .hide-on-pinned').text(' '+myCommitId); // space separates it from the icon
+        // $('#revisions_menu_button .hide-on-pinned').text(myCommitId);
     }
 }
 
