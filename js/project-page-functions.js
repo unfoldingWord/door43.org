@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 7");
+console.log("project-page-functions.js version 7c");
 var myCommitId, myRepoName, myOwner, nav_height, header_height;
 var projectPageLoaded = false;
 var _StatHat = _StatHat || [];
@@ -154,17 +154,30 @@ function processProjectJson(project) {
         var commitDateTime = new Date(commit.created_at);
         var commitDate = new Date(commit.created_at)
         commitDate.setHours(0,0,0,0);
-        // Use time for today's commits, else date (trying to keep the string reasonably short)
-        var dateTimeStr = (commitDate == todaysDate)
-            // undefined below should mean use browser's locale
-            // Only display the time if it's today
-            ? commitDateTime.toLocaleTimeString(undefined, {hour:"numeric", minute:"numeric", timeZone:"UTC"})
-            : (commitDate.getFullYear() == thisYear)
-                // Only display the date & month if it's this same year
-                ? commitDateTime.toLocaleDateString(undefined, {month:"short", day:"numeric", timeZone:"UTC"})
-                // Display the date & month & year for previous years
-                : commitDateTime.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric", timeZone:"UTC"});
-
+        try {
+            cdtMoment = moment(commitDateTime);
+            // Use time for today's commits, else date (trying to keep the string reasonably short)
+            var dateTimeStr = (commitDate.getTime() == todaysDate.getTime())
+                // undefined below should mean use browser's locale (but it seems only to detect user language, not locate)
+                // Only display the time if it's today
+                ? cdtMoment.format('LT')
+                : (commitDate.getFullYear() == thisYear)
+                    // Only display the date & month if it's this same year
+                    ? cdtMoment.format('ll').replace( ', 2019', '') // TODO: Find a better way to do this
+                    // Display the date & month & year for previous years
+                    : cdtMoment.format('ll');
+        } // Gives a ReferenceError if moment library is not available
+        catch(err) {
+            var dateTimeStr = (commitDate.getTime() == todaysDate.getTime())
+                // undefined below should mean use browser's locale (but it seems only to detect user language, not locate)
+                // Only display the time if it's today
+                ? commitDateTime.toLocaleTimeString(undefined, {hour:"numeric", minute:"numeric", timeZone:"UTC"})
+                : (commitDate.getFullYear() == thisYear)
+                    // Only display the date & month if it's this same year
+                    ? commitDateTime.toLocaleDateString(undefined, {month:"short", day:"numeric", timeZone:"UTC"})
+                    // Display the date & month & year for previous years
+                    : commitDateTime.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric", timeZone:"UTC"});
+        }
         var displayStr = commit.id + ' (' + dateTimeStr + ')'
         var iconHtml = getCommitConversionStatusIcon(commit.status);
 
