@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 7c");
+console.log("project-page-functions.js version 8");
 var myCommitId, myRepoName, myOwner, nav_height, header_height;
 var projectPageLoaded = false;
 var _StatHat = _StatHat || [];
@@ -130,18 +130,18 @@ function processProjectJson(project) {
     if ($revisions.length) { // old template with Revisions in left-sidebar
         console.log("processProjectJson() with revisions IN LEFT-SIDEBAR");
     // if (!$revisions.length) { // not old template with Revisions in left-sidebar
-    } else { // newer template with Revisions in drop-down
+    } else { // newer template with Versions in drop-down
         // RJH Aug2019
-        console.log("processProjectJson() with revisions IN DROP-DOWN");
+        console.log("processProjectJson() with versions IN DROP-DOWN");
         // Disable the drop-down button if there's only one commit
         if (project.commits.length == 1) {
-            $('#revisions_menu_button').prop('disabled', true);
-            $('#revisions_menu_button .glyphicon').hide();
-            $('#revisions_menu_button .caret').hide();
+            $('#versions_menu_button').prop('disabled', true);
+            // $('#versions_menu_button .glyphicon').hide();
+            $('#versions_menu_button .caret').hide();
         } // Assuming no need to ever unhide these, i.e., project file can't change dynamically
-        $revisionsMenuList = $('#revisions_menu ul');
-        if (!$revisionsMenuList.length)
-            console.log("Unable to find revisions menu list!");
+        $versionsMenuList = $('#versions_menu ul');
+        if (!$versionsMenuList.length)
+            console.log("Unable to find versions menu list!");
     }
 
     // Assemble a list of up to 10 commits with intelligent dates or times
@@ -154,7 +154,7 @@ function processProjectJson(project) {
         var commitDateTime = new Date(commit.created_at);
         var commitDate = new Date(commit.created_at)
         commitDate.setHours(0,0,0,0);
-        try {
+        try { // moment library was not included in older templates
             cdtMoment = moment(commitDateTime);
             // Use time for today's commits, else date (trying to keep the string reasonably short)
             var dateTimeStr = (commitDate.getTime() == todaysDate.getTime())
@@ -168,6 +168,7 @@ function processProjectJson(project) {
                     : cdtMoment.format('ll');
         } // Gives a ReferenceError if moment library is not available
         catch(err) {
+            console.log("Falling back to JS Dates -- limited local time display!")
             var dateTimeStr = (commitDate.getTime() == todaysDate.getTime())
                 // undefined below should mean use browser's locale (but it seems only to detect user language, not locate)
                 // Only display the time if it's today
@@ -187,10 +188,12 @@ function processProjectJson(project) {
                 displayStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + displayStr + '</a>';
             var display = (counter > 10) ? 'style="display: none"' : '';
             $revisions.append('<tr ' + display + '><td>' + displayStr + '</td><td>' + iconHtml + '</td></tr>');
-        } else { // newer template with Revisions in left-sidebar
-            if (commit.id !== myCommitId) // liven revision links other than the current one
-                displayStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + displayStr + ' ' + iconHtml + '</a>';
-            $revisionsMenuList.append('<li>' + displayStr + '</li>');
+        } else { // newer template with Versions in left-sidebar
+            if (commit.id == myCommitId)
+                displayStr = '<div>' + displayStr + iconHtml + '</div>'
+            else // liven revision links other than the current one
+                displayStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + displayStr + iconHtml + '</a>';
+            $versionsMenuList.append('<li>' + displayStr + '</li>');
         }
 
         if (counter++ > 10) return false; // i.e., break -- only display first 10 entries in the dropdown
@@ -216,11 +219,11 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
 
     if ($revisions.length) { // old template with Revisions in left-sidebar
         $revisions.empty();
-    } else { // newer template with Revisions in drop-down
+    } else { // newer template with Versions in drop-down
         // RJH Aug2019
-        $('#revisions_menu ul').empty()
-        // Set the text of our new button to show the current revision name, i.e., commit id
-        // $('#revisions_menu_button .hide-on-pinned').text(myCommitId);
+        $('#versions_menu ul').empty()
+        // Set the text of our new button to show the current version name, i.e., branch/tag name
+        // $('#versions_menu_button .hide-on-pinned').text(myCommitId);
     }
 }
 
@@ -482,7 +485,7 @@ function updateTextForDownloadItem(inputFormat) {
     var $downloadMenuItem = getSpanForDownloadMenuItem();
     if ($downloadMenuItem) {
         var downloadItemText = getTextForDownloadItem(inputFormat);
-        $downloadMenuItem.html(downloadItemText);
+        $downloadMenuItem.append(' ' + downloadItemText);
     }
 }
 
@@ -494,7 +497,9 @@ function updateTextForDownloadItem(inputFormat) {
 function getSpanForDownloadMenuItem() {
     var $downloadMenuItem = $('#download_menu_source_item'); // quickest way
     if (! $downloadMenuItem.length) { // if not found on older pages, try to drill down in menu
-        $downloadMenuItem = $("#download_menu ul li span");
+        //$downloadMenuItem = $("#download_menu ul li span");
+        // The above puts the text inside the glyphicon span !!!
+        $downloadMenuItem = $("#download_menu ul li a");
         if (! $downloadMenuItem.length) { // if still not found, return null
             return null;
         }
@@ -508,7 +513,7 @@ function getSpanForDownloadMenuItem() {
  * @return {string}
  */
 function getTextForDownloadItem(inputFormat) {
-    var downloadItemText = (inputFormat === 'md') ? "Markdown" : 'USFM';
+    var downloadItemText = (inputFormat === 'md') ? 'Markdown' : 'USFM';
     return downloadItemText;
 }
 
