@@ -44,7 +44,7 @@ header {
                 }
             }
 
-            #print-button, #download_menu_button, #revisions_menu_button {
+            #print-button, #download_menu_button, #versions_menu_button {
               background-color: white;
               color: #3ebcfe;
               border: none;
@@ -62,8 +62,20 @@ header {
             }
             .dropdown-menu > li > a  {
               color: #3ebcfe;
-              padding: 0 20px;
+              // padding: 0 20px;
             }
+            /* RJH added these, Sept 2019 */
+            .versions-dropdown > li > a, .versions-dropdown > li > div {
+              padding: 5px 10px;
+              line-height: 1.4;
+              display: flex;
+              align-items: center;
+              font-size: 16px;
+              justify-content: space-between;
+          }
+          .versions-dropdown > li > a > img, .versions-dropdown > li > div img {
+              margin-left: 6px;
+          }
         }
     }
 }
@@ -248,6 +260,12 @@ body.bible, body.tq, body.tn {
       }
     }
   }
+}
+
+/* RJH added this, Sept 2019 */
+#outer-content {
+  /* Don't want really long lines -- hard to read */
+  max-width: 1200px;
 }
 
 /**
