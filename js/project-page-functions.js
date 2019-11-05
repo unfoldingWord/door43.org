@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 8");
+console.log("project-page-functions.js version 8d");
 var myCommitId, myRepoName, myOwner, nav_height, header_height;
 var projectPageLoaded = false;
 var _StatHat = _StatHat || [];
@@ -144,6 +144,7 @@ function processProjectJson(project) {
             console.log("Unable to find versions menu list!");
     }
 
+    // For both the old-style revisions list on the left, and the new-style drop-down button:
     // Assemble a list of up to 10 commits with intelligent dates or times
     //  and makes into live links except for the current one.
     var todaysDate = new Date()
@@ -189,10 +190,17 @@ function processProjectJson(project) {
             var display = (counter > 10) ? 'style="display: none"' : '';
             $revisions.append('<tr ' + display + '><td>' + displayStr + '</td><td>' + iconHtml + '</td></tr>');
         } else { // newer template with Versions in left-sidebar
-            if (commit.id == myCommitId)
-                displayStr = '<div>' + displayStr + iconHtml + '</div>'
-            else // liven revision links other than the current one
-                displayStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + displayStr + iconHtml + '</a>';
+            if (commit.id == myCommitId) {
+                if ('commit_hash' in commit && commit.commit_hash)
+                    displayStr = '<div><span title="' + commit.commit_hash + '">' + displayStr + '</span>' + iconHtml + '</div>'
+                else
+                    displayStr = '<div>' + displayStr + iconHtml + '</div>'
+            } else {// liven revision links other than the current one
+                if ('commit_hash' in commit && commit.commit_hash)
+                    displayStr = '<a title="' + commit.commit_hash + '" href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + displayStr + iconHtml + '</a>';
+                else
+                    displayStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + displayStr + iconHtml + '</a>';
+            }
             $versionsMenuList.append('<li>' + displayStr + '</li>');
         }
 

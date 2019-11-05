@@ -97,6 +97,22 @@ header {
 .container {
   width: 95% !important;
 }
+// RJH added this, Sept 2019
+.content {
+  // Don't want really long lines -- hard to read
+  max-width: 1400px; // includes floating Table of Contents
+  margin-left: auto;
+  margin-right: auto;
+}
+#outer-content {
+  // Don't want really long lines -- hard to read
+  max-width: 700px;
+}
+nav {
+  #right-sidebar-nav {
+    width: 270px;
+  }
+}
 
 #revisions {
 
@@ -260,12 +276,6 @@ body.bible, body.tq, body.tn {
       }
     }
   }
-}
-
-/* RJH added this, Sept 2019 */
-#outer-content {
-  /* Don't want really long lines -- hard to read */
-  max-width: 1200px;
 }
 
 /**
