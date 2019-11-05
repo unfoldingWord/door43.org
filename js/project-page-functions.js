@@ -1,3 +1,4 @@
+console.log("project-page-functions.js version 8d");
 var myCommitId, myRepoName, myOwner, nav_height, header_height;
 var projectPageLoaded = false;
 var _StatHat = _StatHat || [];
@@ -36,14 +37,19 @@ function onProjectPageLoaded() {
   });
 
   var filename = window.location.href.split('?')[0].split('/').pop();
+  // NOTE: left-sidebar doesn't exist for new template, RJH Sep2019
   $('#left-sidebar').find('#page-nav option[value="' + filename + '"]').attr('selected', 'selected');
 
   $.getJSON("build_log.json", function (myLog) {
-    var $revisions = $('#left-sidebar').find('#revisions');
-    processBuildLogJson(myLog, $('#download_menu_button'), $('#build-status-icon'), $('#last-updated'), $revisions);
+    // NOTE: Only the older template has Revisions in the left sidebar
+    //       We use the length of this variable (zero/non-zero) to detect the template type
+    //          i.e., Revision in left sidebar (old template) or in button (newer template)
+    $revisions = $('#left-sidebar').find('#revisions');
+
+    processBuildLogJson(myLog, $('#download_menu_button'), $('#build-status-icon'), $('#last-updated'));
 
     $.getJSON("../project.json", function (project) {
-        processProjectJson(project, $revisions);
+        processProjectJson(project); // Updates the revision list
     })
       .done(function () {
         console.log("processed project.json");
@@ -104,7 +110,8 @@ function onProjectPageLoaded() {
   }
 
   $(window).on('scroll resize', function () {
-    $('#left-sidebar-nav, #right-sidebar-nav').css('bottom', getVisibleHeight('footer'));
+    // RJH Aug2019 $('#left-sidebar-nav, #right-sidebar-nav').css('bottom', getVisibleHeight('footer'));
+    $('#right-sidebar-nav').css('bottom', getVisibleHeight('footer'));
   });
 
   setPageViews($('#num-of-views'),window.location.href,1);
@@ -118,36 +125,97 @@ function onProjectPageLoaded() {
     $(window).resize(onWindowResize());
 }
 
-function processProjectJson(project, $revisions) {
+
+function processProjectJson(project) {
+    if ($revisions.length) { // old template with Revisions in left-sidebar
+        console.log("processProjectJson() with revisions IN LEFT-SIDEBAR");
+    // if (!$revisions.length) { // not old template with Revisions in left-sidebar
+    } else { // newer template with Versions in drop-down
+        // RJH Aug2019
+        console.log("processProjectJson() with versions IN DROP-DOWN");
+        // Disable the drop-down button if there's only one commit
+        if (project.commits.length == 1) {
+            $('#versions_menu_button').prop('disabled', true);
+            // $('#versions_menu_button .glyphicon').hide();
+            $('#versions_menu_button .caret').hide();
+        } // Assuming no need to ever unhide these, i.e., project file can't change dynamically
+        $versionsMenuList = $('#versions_menu ul');
+        if (!$versionsMenuList.length)
+            console.log("Unable to find versions menu list!");
+    }
+
+    // For both the old-style revisions list on the left, and the new-style drop-down button:
+    // Assemble a list of up to 10 commits with intelligent dates or times
+    //  and makes into live links except for the current one.
+    var todaysDate = new Date()
+    todaysDate.setHours(0,0,0,0)
+    var thisYear = todaysDate.getFullYear();
     var counter = 1;
     $.each(project.commits.reverse(), function (index, commit) {
-        var date = new Date(commit.created_at);
-        var options = {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            timeZone: "UTC"
-        };
-
-        var display = (counter++ > 10) ? 'style="display: none"' : '';
+        var commitDateTime = new Date(commit.created_at);
+        var commitDate = new Date(commit.created_at)
+        commitDate.setHours(0,0,0,0);
+        try { // moment library was not included in older templates
+            cdtMoment = moment(commitDateTime);
+            // Use time for today's commits, else date (trying to keep the string reasonably short)
+            var dateTimeStr = (commitDate.getTime() == todaysDate.getTime())
+                // undefined below should mean use browser's locale (but it seems only to detect user language, not locate)
+                // Only display the time if it's today
+                ? cdtMoment.format('LT')
+                : (commitDate.getFullYear() == thisYear)
+                    // Only display the date & month if it's this same year
+                    ? cdtMoment.format('ll').replace( ', 2019', '') // TODO: Find a better way to do this
+                    // Display the date & month & year for previous years
+                    : cdtMoment.format('ll');
+        } // Gives a ReferenceError if moment library is not available
+        catch(err) {
+            console.log("Falling back to JS Dates -- limited local time display!")
+            var dateTimeStr = (commitDate.getTime() == todaysDate.getTime())
+                // undefined below should mean use browser's locale (but it seems only to detect user language, not locate)
+                // Only display the time if it's today
+                ? commitDateTime.toLocaleTimeString(undefined, {hour:"numeric", minute:"numeric", timeZone:"UTC"})
+                : (commitDate.getFullYear() == thisYear)
+                    // Only display the date & month if it's this same year
+                    ? commitDateTime.toLocaleDateString(undefined, {month:"short", day:"numeric", timeZone:"UTC"})
+                    // Display the date & month & year for previous years
+                    : commitDateTime.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric", timeZone:"UTC"});
+        }
+        var displayStr = commit.id + ' (' + dateTimeStr + ')'
         var iconHtml = getCommitConversionStatusIcon(commit.status);
-        var dateStr = date.toLocaleString("en-US", options);
 
-        if (commit.id !== myCommitId) {
-            dateStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + dateStr + '</a>';
+        // We still have to handle both the old and new template styles
+        if ($revisions.length) { // old template with Revisions in left-sidebar
+            if (commit.id !== myCommitId) // liven revision links other than the current one
+                displayStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + displayStr + '</a>';
+            var display = (counter > 10) ? 'style="display: none"' : '';
+            $revisions.append('<tr ' + display + '><td>' + displayStr + '</td><td>' + iconHtml + '</td></tr>');
+        } else { // newer template with Versions in left-sidebar
+            if (commit.id == myCommitId) {
+                if ('commit_hash' in commit && commit.commit_hash)
+                    displayStr = '<div><span title="' + commit.commit_hash + '">' + displayStr + '</span>' + iconHtml + '</div>'
+                else
+                    displayStr = '<div>' + displayStr + iconHtml + '</div>'
+            } else {// liven revision links other than the current one
+                if ('commit_hash' in commit && commit.commit_hash)
+                    displayStr = '<a title="' + commit.commit_hash + '" href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + displayStr + iconHtml + '</a>';
+                else
+                    displayStr = '<a href="../' + commit.id + '/index.html" onclick="_StatHat.push(["_trackCount", "pQvhLnxZPaYA0slgLsCR7CBPM2NB", 1.0]);">' + displayStr + iconHtml + '</a>';
+            }
+            $versionsMenuList.append('<li>' + displayStr + '</li>');
         }
 
-        $revisions.append('<tr ' + display + '><td>' + dateStr + '</td><td>' + iconHtml + '</td></tr>');
-    }); // End each
+        if (counter++ > 10) return false; // i.e., break -- only display first 10 entries in the dropdown
+    }); // end each
 
-    if (counter > 10)
-        $revisions.append('<tr id="view_more_tr"><td colspan="2" class="borderless"><a href="javascript:showTenMore();">View More...</a></tr>');
+    // if ($revisions.length && counter > 10)
+        // $revisions.append('<tr id="view_more_tr"><td colspan="2" class="borderless"><a href="javascript:showTenMore();">View More...</a></tr>');
+
 }
 
-function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $lastUpdated, $revisions) {
-    myCommitId = myLog.commit_id.substring(0, 10);
+
+function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $lastUpdated) {
+    myCommitId = myLog.commit_id;
+    myCommitType = myLog.commit_type;
     myOwner = myLog.repo_owner;
     myRepoName = myLog.repo_name;
     $lastUpdated.html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
@@ -156,7 +224,15 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
     setDownloadButtonState($downloadMenuButton);
     updateTextForDownloadItem(myLog.input_format);
     updateConversionStatusOnPage($buildStatusIcon, myLog);
-    $revisions.empty();
+
+    if ($revisions.length) { // old template with Revisions in left-sidebar
+        $revisions.empty();
+    } else { // newer template with Versions in drop-down
+        // RJH Aug2019
+        $('#versions_menu ul').empty()
+        // Set the text of our new button to show the current version name, i.e., branch/tag name
+        // $('#versions_menu_button .hide-on-pinned').text(myCommitId);
+    }
 }
 
 function updateConversionStatusOnPage($buildStatusIcon, myLog) {
@@ -296,7 +372,8 @@ function getVisibleHeight(selector) {
     return 0;
 }
 
-//noinspection JSUnusedGlobalSymbols
+/* RJH Aug2019
+noinspection JSUnusedGlobalSymbols
 function showTenMore(){
   _StatHat.push(["_trackCount", "wShy-AE8rCXbQkCJepSvfSA3eUVzaw~~", 1.0]);
   var $revisions = $('#left-sidebar').find('#revisions');
@@ -319,6 +396,7 @@ function showTenMore(){
     $revisions.find('#view_more_tr').css('display', 'none');
   }
 }
+*/
 
 function printAll(){
   _StatHat.push(["_trackCount", "5o8ZBSJ6yPfmZ28HhXZPaSBNYzRU", 1.0]);
@@ -406,6 +484,7 @@ function getCommid(commitID, pageUrl) {
     return commitID;
 }
 
+
 /**
  * update download menu item with appropriate text based on input_format - markdown for md, and USFM otherwise
  * @param inputFormat
@@ -414,9 +493,10 @@ function updateTextForDownloadItem(inputFormat) {
     var $downloadMenuItem = getSpanForDownloadMenuItem();
     if ($downloadMenuItem) {
         var downloadItemText = getTextForDownloadItem(inputFormat);
-        $downloadMenuItem.html(downloadItemText);
+        $downloadMenuItem.append(' ' + downloadItemText);
     }
 }
+
 
 /**
  * get span that has text for download menu item
@@ -425,7 +505,9 @@ function updateTextForDownloadItem(inputFormat) {
 function getSpanForDownloadMenuItem() {
     var $downloadMenuItem = $('#download_menu_source_item'); // quickest way
     if (! $downloadMenuItem.length) { // if not found on older pages, try to drill down in menu
-        $downloadMenuItem = $("#download_menu ul li span");
+        //$downloadMenuItem = $("#download_menu ul li span");
+        // The above puts the text inside the glyphicon span !!!
+        $downloadMenuItem = $("#download_menu ul li a");
         if (! $downloadMenuItem.length) { // if still not found, return null
             return null;
         }
@@ -439,7 +521,7 @@ function getSpanForDownloadMenuItem() {
  * @return {string}
  */
 function getTextForDownloadItem(inputFormat) {
-    var downloadItemText = (inputFormat === 'md') ? "Markdown" : 'USFM';
+    var downloadItemText = (inputFormat === 'md') ? 'Markdown' : 'USFM';
     return downloadItemText;
 }
 
@@ -497,6 +579,7 @@ function extractCommitFromUrl(pageUrl) {
     return commitID;
 }
 
+
 /**
  * get URL for download
  * @param [pageUrl] if not set will use page href
@@ -508,9 +591,10 @@ function getDownloadUrl(pageUrl) {
         return source_download;
     }
     var commitID = extractCommitFromUrl(pageUrl);
-    var download = DEFAULT_DOWNLOAD_LOCATION + commitID + ".zip";
+    var download = DEFAULT_DOWNLOAD_LOCATION + commitID + '.zip';
     return download;
 }
+
 
 /**
  * get download link from build log
@@ -561,7 +645,8 @@ function onProjectPageChange(){
     nav_height = $('.navbar').outerHeight(true);
     header_height = $('#pinned-header').outerHeight(true);
     /* Set/update the affix offset for left, right and content (if mobile) */
-    $('#left-sidebar-nav, #right-sidebar-nav').affix({
+    // RJH Aug2019 $('#left-sidebar-nav, #right-sidebar-nav').affix({
+    $('#right-sidebar-nav').affix({
         offset: {
             top: nav_height + header_height - 100
         }
