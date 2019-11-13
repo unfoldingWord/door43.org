@@ -216,7 +216,7 @@ function processProjectJson(project) {
 function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $lastUpdated) {
     myCommitId = myLog.commit_id;
     myCommitType = myLog.commit_type;
-    myOwner = myLog.repo_owner;
+    myOwner = myLog.repo_owner_username;
     myRepoName = myLog.repo_name;
     $lastUpdated.html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
 
