@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 8d");
+console.log("project-page-functions.js version 8e");
 var myCommitId, myRepoName, myOwner, nav_height, header_height;
 var projectPageLoaded = false;
 var _StatHat = _StatHat || [];
@@ -217,6 +217,8 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
     myCommitId = myLog.commit_id;
     myCommitType = myLog.commit_type;
     myOwner = myLog.repo_owner_username;
+    if (myOwner == null) // couldn't find it -- try something different
+        myOwner = myLog.repo_owner; // deprecated name still on older builds
     myRepoName = myLog.repo_name;
     $lastUpdated.html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
 
