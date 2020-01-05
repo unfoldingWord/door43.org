@@ -275,8 +275,8 @@ describe('Test Download Link', function () {
         });
     });
 
-    describe('Test saveDownloadLink()', function () {
-        it('saveDownloadLink() should use source download for USFM', function () {
+    describe('Test saveDownloadFilesLink()', function () {
+        it('saveDownloadFilesLink() should use source download for USFM', function () {
             //given
             const myLog = {
                 input_format: "usfm",
@@ -287,13 +287,13 @@ describe('Test Download Link', function () {
             source_download = "something";
 
             //when
-            saveDownloadLink(myLog);
+            saveDownloadFilesLink(myLog);
 
             //then
             expect(source_download).toEqual(expectedDownload);
         });
 
-        it('saveDownloadLink() should use source download for other formats', function () {
+        it('saveDownloadFilesLink() should use source download for other formats', function () {
             //given
             const myLog = {
                 source: "http://source",
@@ -303,31 +303,31 @@ describe('Test Download Link', function () {
             source_download = "something";
 
             //when
-            saveDownloadLink(myLog);
+            saveDownloadFilesLink(myLog);
 
             //then
             expect(source_download).toEqual(expectedDownload);
         });
 
-        it('saveDownloadLink() should fail gracefully if log file is empty', function () {
+        it('saveDownloadFilesLink() should fail gracefully if log file is empty', function () {
             //given
             const myLog = {};
             source_download = "something";
 
             //when
-            saveDownloadLink(myLog);
+            saveDownloadFilesLink(myLog);
 
             //then
             expect(source_download).toBeNull();
         });
 
-        it('saveDownloadLink() should fail gracefully if log file is null', function () {
+        it('saveDownloadFilesLink() should fail gracefully if log file is null', function () {
             //given
             const myLog = null;
             source_download = "something";
 
             //when
-            saveDownloadLink(myLog);
+            saveDownloadFilesLink(myLog);
 
             //then
             expect(source_download).toBeNull();
