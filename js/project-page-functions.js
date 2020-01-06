@@ -1,6 +1,8 @@
 console.log("project-page-functions.js version 9a"); // Helps identify if you have an older cached page or the latest
-var myCommitId, myCommitType, myRepoName, myRepoOwner, nav_height, header_height;
+var myCommitId, myCommitType, myRepoName, myRepoOwner;
+var nav_height, header_height;
 var projectPageLoaded = false;
+
 var _StatHat = _StatHat || [];
 _StatHat.push(['_setUser', 'NzMzIAPKpWipEWR8_hWIhqlgmew~']);
 (function() {

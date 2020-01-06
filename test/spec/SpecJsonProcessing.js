@@ -118,7 +118,8 @@ describe('Test Processing of Json files', function () {
             attrTextSet = null;
             htmlSet = null;
             myCommitId = null;
-            myOwner = null;
+            myCommitType = null;
+            myRepoOwner = null;
             myRepoName = null;
         });
 

@@ -1,6 +1,6 @@
 describe('Test Warning Modal', function () {
     it('showWarningModel() should generate modal HTML', function () {
-        myOwner = 'Door43';
+        myRepoOwner = 'Door43';
         myRepoName = 'en_obs';
         showWarningModal('<ul><li>'+['Missing Chapter 1', 'Missing Chapter 2'].join('</li><li>')+'</li></ul>');
 
