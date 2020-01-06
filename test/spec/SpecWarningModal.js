@@ -9,7 +9,7 @@ describe('Test Warning Modal', function () {
         var expectedLength = 2;
         expect($('#warning-modal .modal-body li').length).toEqual(expectedLength);
 
-        var expectedText = 'mailto:help@door43.org?subject='+encodeURIComponent('Build Warning: '+myOwner+'/'+myRepoName);
+        var expectedText = 'mailto:help@door43.org?subject='+encodeURIComponent('Build Warning: '+myRepoOwner+'/'+myRepoName);
         const $help_button = $('#warning-modal .btn-secondary:first');
         expect($help_button.attr('href')).toContain(expectedText);
     });
