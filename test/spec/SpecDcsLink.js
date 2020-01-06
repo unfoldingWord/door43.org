@@ -62,7 +62,7 @@ describe('Test DCS Links', function () {
       }
     };
 
-    myOwner = 'unit-tester';
+    myRepoOwner = 'unit-tester';
     myRepoName = 'unit-test-repo';
 
     //noinspection WithStatementJS

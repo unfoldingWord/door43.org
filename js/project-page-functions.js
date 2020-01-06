@@ -1,6 +1,8 @@
-console.log("project-page-functions.js version 8e");
-var myCommitId, myRepoName, myOwner, nav_height, header_height;
+console.log("project-page-functions.js version 9a"); // Helps identify if you have an older cached page or the latest
+var myCommitId, myCommitType, myRepoName, myRepoOwner;
+var nav_height, header_height;
 var projectPageLoaded = false;
+
 var _StatHat = _StatHat || [];
 _StatHat.push(['_setUser', 'NzMzIAPKpWipEWR8_hWIhqlgmew~']);
 (function() {
@@ -19,7 +21,7 @@ $(document).ready(function(){
  * Called to initialize the project page
  */
 function onProjectPageLoaded() {
-  if(projectPageLoaded)
+  if (projectPageLoaded)
     return;
   projectPageLoaded = true;
 
@@ -119,7 +121,7 @@ function onProjectPageLoaded() {
   var $footer = $("[property='dct:title']");
   updateFooter($footer, $("title"));
 
-    if(get_window_width() <= 990) {
+    if (get_window_width() <= 990) {
         setupMobileContentNavigation();
     }
     $(window).resize(onWindowResize());
@@ -127,12 +129,11 @@ function onProjectPageLoaded() {
 
 
 function processProjectJson(project) {
-    if ($revisions.length) { // old template with Revisions in left-sidebar
-        console.log("processProjectJson() with revisions IN LEFT-SIDEBAR");
-    // if (!$revisions.length) { // not old template with Revisions in left-sidebar
-    } else { // newer template with Versions in drop-down
-        // RJH Aug2019
-        console.log("processProjectJson() with versions IN DROP-DOWN");
+    // if ($revisions.length) { // old template with Revisions in left-sidebar
+    //     console.log("processProjectJson() with revisions IN LEFT-SIDEBAR");
+    // } else { // newer template with Versions in drop-down -- RJH Aug2019
+    if (!$revisions.length) { // not old template with Revisions in left-sidebar
+        // console.log("processProjectJson() with versions IN DROP-DOWN");
         // Disable the drop-down button if there's only one commit
         if (project.commits.length == 1) {
             $('#versions_menu_button').prop('disabled', true);
@@ -216,15 +217,15 @@ function processProjectJson(project) {
 function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $lastUpdated) {
     myCommitId = myLog.commit_id;
     myCommitType = myLog.commit_type;
-    myOwner = myLog.repo_owner_username;
-    if (myOwner == null) // couldn't find it -- try something different
-        myOwner = myLog.repo_owner; // deprecated name still on older builds
+    myRepoOwner = myLog.repo_owner_username;
+    if (myRepoOwner == null) // couldn't find it -- try something different
+        myRepoOwner = myLog.repo_owner; // deprecated name still on older builds
     myRepoName = myLog.repo_name;
     $lastUpdated.html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
 
-    saveDownloadLink(myLog);
+    saveDownloadLinks(myLog);
     setDownloadButtonState($downloadMenuButton);
-    updateTextForDownloadItem(myLog.input_format);
+    updateDownloadItems(myLog.input_format);
     updateConversionStatusOnPage($buildStatusIcon, myLog);
 
     if ($revisions.length) { // old template with Revisions in left-sidebar
@@ -238,9 +239,9 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
 }
 
 function updateConversionStatusOnPage($buildStatusIcon, myLog) {
-    if(CONVERSION_TIMED_OUT) {
+    if (CONVERSION_TIMED_OUT) {
         myLog.status = "failed";
-        if(!myLog.errors) {
+        if (!myLog.errors) {
             myLog.errors = [];
         }
         const errorMsg = "Conversion Timed Out!\nStarted " + timeSince(new Date(myLog.created_at)) + " ago";
@@ -252,7 +253,7 @@ function updateConversionStatusOnPage($buildStatusIcon, myLog) {
     $buildStatusIcon.find('i').attr("class", "fa " + faSpinnerClass); // default to spinner
     setOverallConversionStatus(myLog.status);
 
-    if(myLog.warnings.length) {
+    if (myLog.warnings.length) {
         var modal_html = '<ul><li>' + myLog.warnings.join("</li><li>") + '</li></ul>';
         $buildStatusIcon.on('click', function () {
             _StatHat.push(["_trackCount", "PgNkqAnDE37z2tStLTSmTyBLb2Zo", 1.0]);
@@ -276,7 +277,7 @@ function showWarningModal(modal_body){
             '      </div>'+
             '      <div class="modal-footer">'+
             '        <a href="mailto:help@door43.org'+
-            '?subject='+encodeURIComponent('Build Warning: '+myOwner+'/'+myRepoName)+
+            '?subject='+encodeURIComponent('Build Warning: '+myRepoOwner+'/'+myRepoName)+
             '&body='+encodeURIComponent("Type your question here\n\nSee the failure at "+window.location.href+"\n\n")+
             '" class="btn btn-secondary raised">Ask the Help Desk</a>'+
             '        <span class="btn btn-primary raised" data-dismiss="modal">Ok, Got it!</span>'+
@@ -297,7 +298,7 @@ var printLoaded = false;
 function printWarnings() {
     const $warnings = $("#warnings-list");
     const title = "Conversion Warnings";
-    if(printLoaded) {
+    if (printLoaded) {
         printWarningsSub($warnings, title);
     } else {
         $.getScript('/js/jQuery.print.js', function () {
@@ -402,7 +403,7 @@ function showTenMore(){
 
 function printAll(){
   _StatHat.push(["_trackCount", "5o8ZBSJ6yPfmZ28HhXZPaSBNYzRU", 1.0]);
-  var id = myOwner+"/"+myRepoName+"/"+myCommitId;
+  var id = myRepoOwner+"/"+myRepoName+"/"+myCommitId;
   var api_domain = "api.door43.org";
   var api_prefix = "";
   switch(window.location.hostname){
@@ -460,8 +461,8 @@ function setDcsHref(location) {
 
   var href;
 
-  if (myRepoName && myOwner)
-    href = 'https://git.door43.org/' + myOwner + '/' + myRepoName;
+  if (myRepoName && myRepoOwner)
+    href = 'https://git.door43.org/' + myRepoOwner + '/' + myRepoName;
   else
     href = getDcsLink(location.pathname);
 
@@ -475,7 +476,7 @@ function setDcsHref(location) {
  * @returns commitID
  */
 function getCommid(commitID, pageUrl) {
-    if(!commitID) { // if found in build_log.json
+    if (!commitID) { // if found in build_log.json
         if (myCommitId) { // if found in build_log.json
             commitID = myCommitId;
         } else {
@@ -487,34 +488,44 @@ function getCommid(commitID, pageUrl) {
 }
 
 
-/**
- * update download menu item with appropriate text based on input_format - markdown for md, and USFM otherwise
- * @param inputFormat
- */
-function updateTextForDownloadItem(inputFormat) {
-    var $downloadMenuItem = getSpanForDownloadMenuItem();
-    if ($downloadMenuItem) {
-        var downloadItemText = getTextForDownloadItem(inputFormat);
-        $downloadMenuItem.append(' ' + downloadItemText);
+function updateDownloadItems(inputFormat) {
+    // Update the download menu
+    //  1/ Set the download (compressed) files option to show USFM or MARKDOWN
+    //  2/ Add PDF for OBS repos
+    setDownloadFilesMenuItem(inputFormat);
+    addOptionalPDFDownload();
+}
+
+function addOptionalPDFDownload() {
+    // Uses global variable: myRepoName
+    // If the repo name ends with '_obs', add a PDF download option
+    if (myRepoName.indexOf('_obs', myRepoName.length - 4) !== -1) { // ends with '_obs'
+        console.log("Have OBS repo: " + myRepoName)
+        var $downloadMenu = $("#download_menu ul");
+        if ($downloadMenu) {
+            $downloadMenu.append('<li><a type="submit" onclick="window.open(getDownloadPDFUrl())"><span id="menu_source_item" class="glyphicon glyphicon-file"></span>PDF</a></li>');
+        }
+        else console.log("Unable to find download menu");
     }
 }
 
-
-/**
- * get span that has text for download menu item
- * @return {*} jQuery item or null if not found
- */
-function getSpanForDownloadMenuItem() {
+function setDownloadFilesMenuItem(inputFormat) {
+    // Set the download (compressed) files option to show USFM or MARKDOWN
     var $downloadMenuItem = $('#download_menu_source_item'); // quickest way
     if (! $downloadMenuItem.length) { // if not found on older pages, try to drill down in menu
         //$downloadMenuItem = $("#download_menu ul li span");
         // The above puts the text inside the glyphicon span !!!
         $downloadMenuItem = $("#download_menu ul li a");
         if (! $downloadMenuItem.length) { // if still not found, return null
-            return null;
+            console.log("Unable to find download menu item");
+            // return null;
         }
     }
-    return $downloadMenuItem;
+    if ($downloadMenuItem.length) {
+        var downloadItemText = getTextForSourceDownloadItem(inputFormat);
+        $downloadMenuItem.append(' ' + downloadItemText);
+    }
+    // return $downloadMenuItem;
 }
 
 /**
@@ -522,7 +533,7 @@ function getSpanForDownloadMenuItem() {
  * @param inputFormat
  * @return {string}
  */
-function getTextForDownloadItem(inputFormat) {
+function getTextForSourceDownloadItem(inputFormat) {
     var downloadItemText = (inputFormat === 'md') ? 'Markdown' : 'USFM';
     return downloadItemText;
 }
@@ -539,7 +550,7 @@ function setDownloadButtonState($button, commitID, pageUrl) {
     var commitID_ = getCommid(commitID, pageUrl);
     var url = getCheckDownloadsUrl(commitID_, pageUrl);
 
-    if($button) {
+    if ($button) {
         $button.prop('disabled', true)
     }
     $.ajax({
@@ -548,8 +559,8 @@ function setDownloadButtonState($button, commitID, pageUrl) {
         cache: "false",
         dataType: 'jsonp',
         success: function (data, status) {
-                if(data.download_exists) {
-                    if($button) {
+                if (data.download_exists) {
+                    if ($button) {
                         $button.prop('disabled', false)
                     }
                 }
@@ -563,8 +574,13 @@ function setDownloadButtonState($button, commitID, pageUrl) {
     });
 }
 
-const DEFAULT_DOWNLOAD_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
-var source_download = null;
+const DEFAULT_DOWNLOAD_FILES_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
+var source_download_url = null;
+
+// https://cdn.door43.org/obs/auto_PDFs/Catalog--en_obs-v6.pdf
+const DEFAULT_DOWNLOAD_PDF_LOCATION = "https://s3-us-west-2.amazonaws.com/cdn.door43.org/obs/auto_PDFs/"
+var PDF_download_url = null;
+
 
 /**
  * parse page url to get commit key
@@ -583,34 +599,89 @@ function extractCommitFromUrl(pageUrl) {
 
 
 /**
- * get URL for download
+ * get URL for (compressed) files download
  * @param [pageUrl] if not set will use page href
  * @returns {*}
  */
 function getDownloadUrl(pageUrl) {
     _StatHat.push(["_trackCount", "eBQk6-wY9ziv3D77-qhJuiBYM3Z2", 1.0]);
-    if(source_download) { // if found in build_log.json
-        return source_download;
+    if (source_download_url) { // if found ealier in build_log.json
+        return source_download_url;
     }
     var commitID = extractCommitFromUrl(pageUrl);
-    var download = DEFAULT_DOWNLOAD_LOCATION + commitID + '.zip';
-    return download;
+    var downloadURL = DEFAULT_DOWNLOAD_FILES_LOCATION + commitID + '.zip';
+    return downloadURL;
 }
 
 
 /**
- * get download link from build log
+ * get URL for PDF files download
+ * @returns {*}
+ */
+function getDownloadPDFUrl() {
+    console.log("getDownloadPDFUrl()")
+    // _StatHat.push(["_trackCount", "eBQk6-wY9ziv3D77-qhJuiBYM3Z2", 1.0]);
+    if (PDF_download_url) { // if found ealier
+        console.log("  Returning ealier " + PDF_download_url)
+        return PDF_download_url;
+    }
+    console.log("  What should we be doing here?")
+}
+
+
+/**
+ * set download links from build log
  * @param myLog
  */
-function saveDownloadLink(myLog) {
+function saveDownloadLinks(myLog) {
+    saveDownloadFilesLink(myLog);
+    saveOptionalDownloadPDFLink(myLog);
+}
+
+/**
+ * set download files link from build log
+ * @param myLog
+ */
+function saveDownloadFilesLink(myLog) {
     try {
-        source_download = myLog.source;
-        if(source_download) {
+        source_download_url = myLog.source;
+        if (source_download_url) {
             return;
         }
     } catch(e) {
     }
-    source_download = null;
+    source_download_url = null;
+}
+
+/**
+ * set download PDF link from build log for OBS repos
+ * @param myLog
+ */
+function saveOptionalDownloadPDFLink(myLog) {
+    if (myLog.resource_type == "Open_Bible_Stories") {
+    // || myRepoName.indexOf('_obs', myRepoName.length - 4) !== -1) { // ends with '_obs'
+        console.log("saveOptionalDownloadPDFLink(…) for OBS")
+        console.log("  What should we be doing here???")
+        console.log("  Repo owner username = " + myRepoOwner)
+        console.log("  Repo name = " + myRepoName)
+        console.log("  Commit type = " + myCommitType)
+        console.log("  Commit ID = " + myCommitId)
+        console.log("  What should we be doing here???");
+        // Only the manifest.yaml (saved in s3 bucket alongside the buildlog) has this
+        versionNum = '6' // Temp for en_obs
+        console.log("  versionNum = " + versionNum)
+        PDF_download_url = DEFAULT_DOWNLOAD_PDF_LOCATION + myRepoOwner + '--' + myRepoName + '-v' + versionNum + '.pdf'
+        console.log("  PDF_download_url = " + PDF_download_url)
+        return
+        // try {
+        //     // PDF_download_url = myLog.source; // XXX
+        //     if (PDF_download_url) {
+        //         return;
+        //     }
+        // } catch(e) {
+        // }
+    }
+    PDF_download_url = null;
 }
 
 function getPageViewUrl(pageUrl) {
@@ -714,7 +785,7 @@ function teardownMobileContentNavigation() {
 }
 
 function toggleMobileContentNav(){
-    if($('#mobile-content-nav').is(':visible')) {
+    if ($('#mobile-content-nav').is(':visible')) {
         closeMobileContentNav();
     } else {
         openMobileContentNav();
@@ -772,7 +843,7 @@ function showBuildStatusAsTimedOut($buildStatusIcon) {
 }
 
 function checkAgainForBuildCompletion() {
-    if((new Date() - conversion_start_time) > MAX_CHECKING_INTERVAL) {
+    if ((new Date() - conversion_start_time) > MAX_CHECKING_INTERVAL) {
         showBuildStatusAsTimedOut($('#build-status-icon'));
     } else {
         setTimeout(checkConversionStatus, 10000); // wait 10 second before checking
@@ -788,7 +859,7 @@ var lastStatus = -1;
 function checkConversionStatus() {
     $.getJSON("build_log.json", function (myLog) {
         var iconType = eConvStatus.ERROR;
-        if(myLog) {
+        if (myLog) {
             recent_build_log = myLog;
             iconType = getDisplayIconType(myLog.status);
         }
@@ -796,7 +867,7 @@ function checkConversionStatus() {
             console.log("conversion error");
         } else if (iconType !== eConvStatus.IN_PROGRESS) {
             console.log("conversion completed");
-            if(lastStatus === eConvStatus.IN_PROGRESS) {
+            if (lastStatus === eConvStatus.IN_PROGRESS) {
                 reloadPage(); // only reload page if we went from in_progress to a final state
             }
         } else {
@@ -812,7 +883,7 @@ function checkConversionStatus() {
 }
 
 function checkForConversionRequested($conversion_requested) {
-    if($conversion_requested && ($conversion_requested.length)) {
+    if ($conversion_requested && ($conversion_requested.length)) {
         console.log("conversion in process");
         checkConversionStatus();
     }
