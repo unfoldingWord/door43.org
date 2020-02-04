@@ -621,13 +621,13 @@ function getDownloadPDFUrl() {
     // This is the function responding to a user click on download (OBS) PDF
     console.log("getDownloadPDFUrl()")
     // _StatHat.push(["_trackCount", "eBQk6-wY9ziv3D77-qhJuiBYM3Z2", 1.0]);
-    if (PDF_download_url) { // if found earlier
-        console.log("  Found earlier " + PDF_download_url)
+    if (PDF_download_url) { // if found URL earlier
+        console.log("  Found URL earlier " + PDF_download_url)
 
         console.log("  See if the PDF already exists?")
-        var req = new XMLHttpRequest();
+        var req = new XMLHttpRequest(); // Synchronous request coz it should be quick
         req.open('HEAD', PDF_download_url, false); // Gets headers only
-        req.send();
+        req.send(); // Hopefully it's fast
         if (req.status==200) { // seems that the PDF is already there
             console.log("  Seems that the PDF already exists."); // Are we sure that it's up-to-date???
             return PDF_download_url;
@@ -700,7 +700,8 @@ function saveOptionalDownloadPDFLink(myLog) {
             prefix = "dev-";
         else prefix = "";
         console.log("  Prefix = " + prefix)
-        var base_download_url = 'https://s3-us-west-2.amazonaws.com/' + prefix + 'cdn.door43.org/u/'
+        // var base_download_url = 'https://s3-us-west-2.amazonaws.com/' + prefix + 'cdn.door43.org/u/'
+        var base_download_url = 'https://' + prefix + 'cdn.door43.org/u/'
         var repo_part = myRepoOwner + '/' + myRepoName + '/' + myCommitId + '/'
         var PDF_filename = myRepoOwner + '--' + myRepoName + '--' + myCommitId + '.pdf'
         PDF_download_url = base_download_url + repo_part + PDF_filename
