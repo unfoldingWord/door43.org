@@ -230,8 +230,7 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
 
     if ($revisions.length) { // old template with Revisions in left-sidebar
         $revisions.empty();
-    } else { // newer template with Versions in drop-down
-        // RJH Aug2019
+    } else { // newer template with Versions in drop-down -- RJH Aug2019
         $('#versions_menu ul').empty()
         // Set the text of our new button to show the current version name, i.e., branch/tag name
         // $('#versions_menu_button .hide-on-pinned').text(myCommitId);
@@ -402,6 +401,7 @@ function showTenMore(){
 */
 
 function printAll(){
+  // Called when the "Print" button is clicked on
   _StatHat.push(["_trackCount", "5o8ZBSJ6yPfmZ28HhXZPaSBNYzRU", 1.0]);
   var id = myRepoOwner+"/"+myRepoName+"/"+myCommitId;
   var api_domain = "api.door43.org";
@@ -577,8 +577,6 @@ function setDownloadButtonState($button, commitID, pageUrl) {
 const DEFAULT_DOWNLOAD_FILES_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
 var source_download_url = null;
 
-// https://cdn.door43.org/obs/auto_PDFs/Catalog--en_obs-v6.pdf
-const DEFAULT_DOWNLOAD_PDF_LOCATION = "https://s3-us-west-2.amazonaws.com/cdn.door43.org/obs/auto_PDFs/"
 var PDF_download_url = null;
 
 
@@ -604,8 +602,9 @@ function extractCommitFromUrl(pageUrl) {
  * @returns {*}
  */
 function getDownloadUrl(pageUrl) {
+    // This is the function responding to a user click on download USFM/Markdown
     _StatHat.push(["_trackCount", "eBQk6-wY9ziv3D77-qhJuiBYM3Z2", 1.0]);
-    if (source_download_url) { // if found ealier in build_log.json
+    if (source_download_url) { // if found earlier in build_log.json
         return source_download_url;
     }
     var commitID = extractCommitFromUrl(pageUrl);
@@ -619,13 +618,46 @@ function getDownloadUrl(pageUrl) {
  * @returns {*}
  */
 function getDownloadPDFUrl() {
+    // This is the function responding to a user click on download (OBS) PDF
     console.log("getDownloadPDFUrl()")
     // _StatHat.push(["_trackCount", "eBQk6-wY9ziv3D77-qhJuiBYM3Z2", 1.0]);
-    if (PDF_download_url) { // if found ealier
-        console.log("  Returning ealier " + PDF_download_url)
-        return PDF_download_url;
-    }
-    console.log("  What should we be doing here?")
+    if (PDF_download_url) { // if found earlier
+        console.log("  Found earlier " + PDF_download_url)
+
+        console.log("  See if the PDF already exists?")
+        var req = new XMLHttpRequest();
+        req.open('HEAD', PDF_download_url, false); // Gets headers only
+        req.send();
+        if (req.status==200) { // seems that the PDF is already there
+            console.log("  Seems that the PDF already exists."); // Are we sure that it's up-to-date???
+            return PDF_download_url;
+        }
+        console.log("  Request tX to build the PDF!")
+        if (window.location.hostname == "dev.door43.org")
+            prefix = "dev-";
+        else prefix = "";
+        console.log("  Prefix = " + prefix)
+        var tx_payload = {
+            job_id: 'Door43-PDF',
+            identifier: myRepoOwner + '--' + myRepoName + '--' + myCommitId,
+            resource_type: 'Open_Bible_Stories',
+            input_format: 'md',
+            output_format: 'pdf',
+            source: 'https://git.door43.org/' + myRepoOwner + '/' + myRepoName + '/archive/' + myCommitId + '.zip'
+            };
+        console.log("  tx_payload = " + tx_payload);
+        $.ajax({
+            type: "POST",
+            url: 'https://git.door43.org/' + prefix + 'tx/',
+            data: JSON.stringify(tx_payload),
+            dataType: 'json',
+            contentType : 'application/json',
+            success: function(response_data){
+                console.log("Got response data" + response_data)
+            }
+          });
+        }
+    console.log("  Seems we don't know about any PDF to download!!!")
 }
 
 
@@ -658,28 +690,22 @@ function saveDownloadFilesLink(myLog) {
  * @param myLog
  */
 function saveOptionalDownloadPDFLink(myLog) {
+    // Optional coz only calculated for OBS repos
+    // Done at page build time
     if (myLog.resource_type == "Open_Bible_Stories") {
-    // || myRepoName.indexOf('_obs', myRepoName.length - 4) !== -1) { // ends with '_obs'
         console.log("saveOptionalDownloadPDFLink(…) for OBS")
-        console.log("  What should we be doing here???")
-        console.log("  Repo owner username = " + myRepoOwner)
-        console.log("  Repo name = " + myRepoName)
-        console.log("  Commit type = " + myCommitType)
-        console.log("  Commit ID = " + myCommitId)
-        console.log("  What should we be doing here???");
-        // Only the manifest.yaml (saved in s3 bucket alongside the buildlog) has this
-        versionNum = '6' // Temp for en_obs
-        console.log("  versionNum = " + versionNum)
-        PDF_download_url = DEFAULT_DOWNLOAD_PDF_LOCATION + myRepoOwner + '--' + myRepoName + '-v' + versionNum + '.pdf'
+        console.log("  Repo owner username = " + myRepoOwner + "  Repo name = " + myRepoName)
+        console.log("  Commit type = " + myCommitType + "  Commit ID = " + myCommitId)
+        if (window.location.hostname == "dev.door43.org")
+            prefix = "dev-";
+        else prefix = "";
+        console.log("  Prefix = " + prefix)
+        var base_download_url = 'https://s3-us-west-2.amazonaws.com/' + prefix + 'cdn.door43.org/u/'
+        var repo_part = myRepoOwner + '/' + myRepoName + '/' + myCommitId + '/'
+        var PDF_filename = myRepoOwner + '--' + myRepoName + '--' + myCommitId + '.pdf'
+        PDF_download_url = base_download_url + repo_part + PDF_filename
         console.log("  PDF_download_url = " + PDF_download_url)
         return
-        // try {
-        //     // PDF_download_url = myLog.source; // XXX
-        //     if (PDF_download_url) {
-        //         return;
-        //     }
-        // } catch(e) {
-        // }
     }
     PDF_download_url = null;
 }
