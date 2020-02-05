@@ -597,7 +597,7 @@ function extractCommitFromUrl(pageUrl) {
         pageUrl = window.location.href
     }
 
-    var parts = pageUrl.split("/");
+    var parts = pageUrl.split('/');
     var commitID = parts[6];
     return commitID;
 }
@@ -732,6 +732,7 @@ function requestPDFbuild() {
         {
             console.log("Got AJAX error: " + JSON.stringify(request));
             console.log("Got AJAX errorString: " + errorString);
+            resetPDFbuild();
             alert("Request: "+JSON.stringify(request));
         }
     });
