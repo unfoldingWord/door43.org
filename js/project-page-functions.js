@@ -1,6 +1,7 @@
-console.log("project-page-functions.js version 10b"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 10c"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
-var myCommitId, myCommitType, myRepoName, myRepoOwner;
+var myRepoName, myRepoOwner;
+var myCommitId, myCommitType, myCommitHash;
 var nav_height, header_height;
 var API_prefix = '';
 if (window.location.hostname == 'dev.door43.org')
@@ -219,12 +220,20 @@ function processProjectJson(project) {
 
 
 function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $lastUpdated) {
-    myCommitId = myLog.commit_id;
-    myCommitType = myLog.commit_type;
     myRepoOwner = myLog.repo_owner_username;
     if (myRepoOwner == null) // couldn't find it -- try something different
         myRepoOwner = myLog.repo_owner; // deprecated name still on older builds
     myRepoName = myLog.repo_name;
+
+    myCommitId = myLog.commit_id;
+    myCommitType = myLog.commit_type;
+    try {
+        myCommitHash = myLog.commit_hash;
+    } catch(e) {
+        console.log("No commit hash: " + e);
+        myCommitHash = null;
+    }
+
     $lastUpdated.html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
 
     saveDownloadLinks(myLog);
@@ -762,16 +771,16 @@ function saveOptionalDownloadPDFLink(myLog) {
     // Optional coz only calculated for OBS repos
     // Done at page build time
     if (myLog.resource_type == "Open_Bible_Stories") {
-        console.log("saveOptionalDownloadPDFLink(…) for OBS")
-        console.log("  Repo owner username = " + myRepoOwner + "  Repo name = " + myRepoName)
-        console.log("  Commit type = " + myCommitType + "  Commit ID = " + myCommitId)
+        console.log("saveOptionalDownloadPDFLink(…) for OBS");
+        console.log("  Repo owner username = " + myRepoOwner + "  Repo name = " + myRepoName);
+        console.log("  Commit type = " + myCommitType + ",  Commit ID = " + myCommitId + ",  Commit hash = " + myCommitHash);
         // var base_download_url = 'https://s3-us-west-2.amazonaws.com/' + API_prefix + 'cdn.door43.org/u/'
-        var base_download_url = 'https://' + API_prefix + 'cdn.door43.org/u/'
-        var repo_part = myRepoOwner + '/' + myRepoName + '/' + myCommitId + '/'
-        var PDF_filename = myRepoOwner + '--' + myRepoName + '--' + myCommitId + '.pdf'
-        PDF_download_url = base_download_url + repo_part + PDF_filename
-        console.log("  PDF_download_url = " + PDF_download_url)
-        return
+        var base_download_url = 'https://' + API_prefix + 'cdn.door43.org/u/';
+        var repo_part = myRepoOwner + '/' + myRepoName + '/' + myCommitId + '/';
+        var PDF_filename = myRepoOwner + '--' + myRepoName + '--' + myCommitId + '.pdf';
+        PDF_download_url = base_download_url + repo_part + PDF_filename;
+        console.log("  PDF_download_url = " + PDF_download_url);
+        return;
     }
     PDF_download_url = null;
 }
