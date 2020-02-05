@@ -1,7 +1,13 @@
-console.log("project-page-functions.js version 9aY"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 10"); // Helps identify if you have an older cached page or the latest
 var myCommitId, myCommitType, myRepoName, myRepoOwner;
 var nav_height, header_height;
 var projectPageLoaded = false;
+var prefix = '';
+if (window.location.hostname == 'dev.door43.org')
+    prefix = 'dev-';
+console.log("Prefix = " + prefix)
+// TODO: Can remove some tests (at least 2) further down if the above prefix works
+
 
 var _StatHat = _StatHat || [];
 _StatHat.push(['_setUser', 'NzMzIAPKpWipEWR8_hWIhqlgmew~']);
@@ -577,7 +583,10 @@ function setDownloadButtonState($button, commitID, pageUrl) {
 const DEFAULT_DOWNLOAD_FILES_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
 var source_download_url = null;
 
+var MAX_PDF_BUILD_SECONDS = 180; // Three minutes
 var PDF_download_url = null;
+var requested_PDF_build_time = null;
+var PDF_wait_timer = null;
 
 
 /**
@@ -623,49 +632,112 @@ function getDownloadPDFUrl() {
     // _StatHat.push(["_trackCount", "eBQk6-wY9ziv3D77-qhJuiBYM3Z2", 1.0]);
     if (PDF_download_url) { // if found URL earlier
         console.log("  Found URL earlier " + PDF_download_url)
-        PDF_download_url = "https://s3-us-west-2.amazonaws.com/cdn.door43.org/u/unfoldingWord/en_obs/master/index.json";
-        console.log("  Rewritten (for testing) to " + PDF_download_url)
+        // PDF_download_url = "https://s3-us-west-2.amazonaws.com/cdn.door43.org/u/unfoldingWord/en_obs/master/index.json";
+        // console.log("  Rewritten (for testing) to " + PDF_download_url)
 
         console.log("  See if the PDF already exists?")
-        try {
-            var req = new XMLHttpRequest(); // Synchronous request coz it should be quick
-            req.open('HEAD', PDF_download_url, false); // Gets headers only
-            req.send(); // Hopefully it's fast
-            if (req.status==200) { // seems that the PDF is already there
-                console.log("  Seems that the PDF already exists."); // Are we sure that it's up-to-date???
-                return PDF_download_url;
-            }
-            else console.log("  Seems that we'll need to build the PDF")
-        } catch(err) {
-            console.log("In Catch block with: " + err)
+        if (doesPDFexist()) {
+            console.log("  Seems that the PDF already exists."); // Are we sure that it's up-to-date???
+            return PDF_download_url;
         }
 
-        console.log("  Request tX to build the PDF!")
-        if (window.location.hostname == "dev.door43.org")
-            prefix = "dev-";
-        else prefix = "";
-        console.log("  Prefix = " + prefix)
-        var tx_payload = {
-            job_id: 'Door43-PDF',
-            identifier: myRepoOwner + '--' + myRepoName + '--' + myCommitId,
-            resource_type: 'Open_Bible_Stories',
-            input_format: 'md',
-            output_format: 'pdf',
-            source: 'https://git.door43.org/' + myRepoOwner + '/' + myRepoName + '/archive/' + myCommitId + '.zip'
-            };
-        console.log("  tx_payload = " + tx_payload);
-        $.ajax({
-            type: "POST",
-            url: 'https://git.door43.org/' + prefix + 'tx/',
-            data: JSON.stringify(tx_payload),
-            dataType: 'json',
-            contentType : 'application/json',
-            success: function(response_data){
-                console.log("Got response data" + response_data)
-            }
-          });
+        console.log("  See if we've already requested a PDF build?")
+        if (requested_PDF_build_time == null){
+            console.log("  Request tX to build the PDF!")
+            requestPDFbuild();
         }
-    console.log("  Seems we don't know about any PDF to download!!!")
+
+        // Loop while waiting
+        PDF_wait_timer = setInterval(waitingForPDF, 2000);
+    }
+    else alert("Sorry, seems we don't know about any PDF to download!")
+}
+
+
+function waitingForPDF() {
+    console.log("waitingForPDF()");
+    console.log("Check if PDF exists now?");
+    if (doesPDFexist()) {
+        console.log("  Seems that the PDF exists now.");
+        console.log("  What do we do here????")
+        return PDF_download_url; // TODO: Fix this
+    }
+    console.log("Check if waiting time is up yet?");
+    currentTime = new Date();
+    var timeDiff = currentTime - requested_PDF_build_time;
+    timeDiff /= 1000; // Strip the ms
+    var elapsedSeconds = Math.round(timeDiff);
+    if (elapsedSeconds > MAX_PDF_BUILD_SECONDS) {
+        console.log("Seems we timed out after " + elapsedSeconds + " seconds!")
+        resetPDFbuild();
+    }
+}
+
+
+function doesPDFexist() {
+    // Looks for PDF at PDF_download_url
+    console.log("doesPDFexist()");
+    try {
+        var req = new XMLHttpRequest();
+        req.open('HEAD', PDF_download_url, false); // Gets headers only
+                                             // Synchronous request coz it should be quick
+        req.send(); // Hopefully it's fast
+        if (req.status==200) { // seems that the PDF is already there
+            console.log("  Seems that the PDF already exists."); // Are we sure that it's up-to-date???
+            return true;
+        } else {
+            console.log("  Seems that the PDF doesn't exist.")
+            return false;
+        }
+    } catch(err) {
+        console.log("  In Catch block with: " + err)
+    }
+    console.log("  Returning false!")
+    return false;
+}
+
+
+function resetPDFbuild() {
+    console.log("resetPDFbuild()")
+    clearInterval(PDF_wait_timer);
+    requested_PDF_build_time = null;
+    $("body").css("cursor", "default");
+}
+
+
+function requestPDFbuild() {
+    console.log("requestPDFbuild()");
+
+    $("body").css("cursor", "progress");
+
+    var tx_payload = {
+        job_id: 'Door43-PDF',
+        identifier: myRepoOwner + '--' + myRepoName + '--' + myCommitId,
+        resource_type: 'Open_Bible_Stories',
+        input_format: 'md',
+        output_format: 'pdf',
+        source: 'https://git.door43.org/' + myRepoOwner + '/' + myRepoName + '/archive/' + myCommitId + '.zip'
+        };
+    console.log("  tx_payload = " + stringify(tx_payload));
+    $.ajax({
+        type: 'POST',
+        crossDomain: 'true',
+        url: 'https://git.door43.org/' + prefix + 'tx/',
+        data: JSON.stringify(tx_payload),
+        dataType: 'json',
+        contentType : 'application/json',
+        success: function(response_data){
+            console.log("Got AJAX response data: " + response_data);
+            alert('Data: '+data);
+        },
+        error: function(request,errorString)
+        {
+            console.log("Got AJAX error: " + JSON.stringify(request));
+            console.log("Got AJAX errorString: " + errorString);
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+    requested_PDF_build_time = new Date();
 }
 
 
