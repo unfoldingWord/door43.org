@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 9a"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 9aX"); // Helps identify if you have an older cached page or the latest
 var myCommitId, myCommitType, myRepoName, myRepoOwner;
 var nav_height, header_height;
 var projectPageLoaded = false;
@@ -623,6 +623,8 @@ function getDownloadPDFUrl() {
     // _StatHat.push(["_trackCount", "eBQk6-wY9ziv3D77-qhJuiBYM3Z2", 1.0]);
     if (PDF_download_url) { // if found URL earlier
         console.log("  Found URL earlier " + PDF_download_url)
+        PDF_download_url = "https://cdn.door43.org/u/unfoldingWord/en_obs/master/index.json";
+        console.log("  Rewritten to " + PDF_download_url)
 
         console.log("  See if the PDF already exists?")
         var req = new XMLHttpRequest(); // Synchronous request coz it should be quick
@@ -632,6 +634,7 @@ function getDownloadPDFUrl() {
             console.log("  Seems that the PDF already exists."); // Are we sure that it's up-to-date???
             return PDF_download_url;
         }
+
         console.log("  Request tX to build the PDF!")
         if (window.location.hostname == "dev.door43.org")
             prefix = "dev-";
