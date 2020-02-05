@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 10a"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 10b"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
 var myCommitId, myCommitType, myRepoName, myRepoOwner;
 var nav_height, header_height;
@@ -777,8 +777,8 @@ function saveOptionalDownloadPDFLink(myLog) {
 }
 
 function getPageViewUrl(pageUrl) {
-    // var prefix = getSiteFromPage(pageUrl);
-    return 'https://' + API_prefix + 'api.door43.org/page_view_count';
+    var prefix = getSiteFromPage(pageUrl);
+    return 'https://' + prefix + 'api.door43.org/page_view_count';
 }
 
 function setPageViews(span, pageUrl, increment) {
