@@ -1,12 +1,10 @@
-console.log("project-page-functions.js version 10"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 10a"); // Helps identify if you have an older cached page or the latest
+var projectPageLoaded = false;
 var myCommitId, myCommitType, myRepoName, myRepoOwner;
 var nav_height, header_height;
-var projectPageLoaded = false;
-var prefix = '';
+var API_prefix = '';
 if (window.location.hostname == 'dev.door43.org')
-    prefix = 'dev-';
-console.log("Prefix = " + prefix)
-// TODO: Can remove some tests (at least 2) further down if the above prefix works
+    API_prefix = 'dev-';
 
 
 var _StatHat = _StatHat || [];
@@ -411,17 +409,8 @@ function printAll(){
   _StatHat.push(["_trackCount", "5o8ZBSJ6yPfmZ28HhXZPaSBNYzRU", 1.0]);
   var id = myRepoOwner+"/"+myRepoName+"/"+myCommitId;
   var api_domain = "api.door43.org";
-  var api_prefix = "";
-  switch(window.location.hostname){
-    case "dev.door43.org":
-      api_prefix = "dev-";
-      break;
-    case "test-door43.org.s3-website-us-west-2.amazonaws.com":
-      api_prefix = "test-";
-      break;
-  }
   $.ajax({
-    url: "https://"+api_prefix+api_domain+"/tx/print?id="+id,
+    url: "https://"+API_prefix+api_domain+"/tx/print?id="+id,
     success: function(data) {
       // response body is url to printed HTML
       if (!data.startsWith('http')) {
@@ -545,8 +534,8 @@ function getTextForSourceDownloadItem(inputFormat) {
 }
 
 function getCheckDownloadsUrl(commitID, pageUrl) {
-    var prefix = getSiteFromPage(pageUrl);
-    return 'https://' + prefix + 'api.door43.org/check_download?commit_id=' + commitID;
+    // var prefix = getSiteFromPage(pageUrl);
+    return 'https://' + API_prefix + 'api.door43.org/check_download?commit_id=' + commitID;
 }
 
 function setDownloadButtonState($button, commitID, pageUrl) {
@@ -683,7 +672,7 @@ function doesPDFexist() {
                                              // Synchronous request coz it should be quick
         req.send(); // Hopefully it's fast
         if (req.status==200) { // seems that the PDF is already there
-            console.log("  Seems that the PDF already exists."); // Are we sure that it's up-to-date???
+            console.log("  Yes, the PDF already exists."); // Are we sure that it's up-to-date???
             return true;
         } else {
             console.log("  Seems that the PDF doesn't exist.")
@@ -718,11 +707,11 @@ function requestPDFbuild() {
         output_format: 'pdf',
         source: 'https://git.door43.org/' + myRepoOwner + '/' + myRepoName + '/archive/' + myCommitId + '.zip'
         };
-    console.log("  tx_payload = " + stringify(tx_payload));
+    console.log("  tx_payload = " + JSON.stringify(tx_payload));
     $.ajax({
         type: 'POST',
         crossDomain: 'true',
-        url: 'https://git.door43.org/' + prefix + 'tx/',
+        url: 'https://git.door43.org/' + API_prefix + 'tx/',
         data: JSON.stringify(tx_payload),
         dataType: 'json',
         contentType : 'application/json',
@@ -776,12 +765,8 @@ function saveOptionalDownloadPDFLink(myLog) {
         console.log("saveOptionalDownloadPDFLink(…) for OBS")
         console.log("  Repo owner username = " + myRepoOwner + "  Repo name = " + myRepoName)
         console.log("  Commit type = " + myCommitType + "  Commit ID = " + myCommitId)
-        if (window.location.hostname == "dev.door43.org")
-            prefix = "dev-";
-        else prefix = "";
-        console.log("  Prefix = " + prefix)
-        // var base_download_url = 'https://s3-us-west-2.amazonaws.com/' + prefix + 'cdn.door43.org/u/'
-        var base_download_url = 'https://' + prefix + 'cdn.door43.org/u/'
+        // var base_download_url = 'https://s3-us-west-2.amazonaws.com/' + API_prefix + 'cdn.door43.org/u/'
+        var base_download_url = 'https://' + API_prefix + 'cdn.door43.org/u/'
         var repo_part = myRepoOwner + '/' + myRepoName + '/' + myCommitId + '/'
         var PDF_filename = myRepoOwner + '--' + myRepoName + '--' + myCommitId + '.pdf'
         PDF_download_url = base_download_url + repo_part + PDF_filename
@@ -792,8 +777,8 @@ function saveOptionalDownloadPDFLink(myLog) {
 }
 
 function getPageViewUrl(pageUrl) {
-    var prefix = getSiteFromPage(pageUrl);
-    return 'https://' + prefix + 'api.door43.org/page_view_count';
+    // var prefix = getSiteFromPage(pageUrl);
+    return 'https://' + API_prefix + 'api.door43.org/page_view_count';
 }
 
 function setPageViews(span, pageUrl, increment) {
