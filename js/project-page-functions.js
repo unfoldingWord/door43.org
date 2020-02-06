@@ -1,6 +1,6 @@
-console.log("project-page-functions.js version 10c"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 10d"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
-var myRepoName, myRepoOwner;
+var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash;
 var nav_height, header_height;
 var API_prefix = '';
@@ -220,15 +220,17 @@ function processProjectJson(project) {
 
 
 function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $lastUpdated) {
+    // Save some useful variables globally
     myRepoOwner = myLog.repo_owner_username;
     if (myRepoOwner == null) // couldn't find it -- try something different
         myRepoOwner = myLog.repo_owner; // deprecated name still on older builds
     myRepoName = myLog.repo_name;
+    myResourceType = myLog.resource_type;
 
-    myCommitId = myLog.commit_id;
-    myCommitType = myLog.commit_type;
+    myCommitId = myLog.commit_id; // tag name or branch name
+    myCommitType = myLog.commit_type; // 'defaultBranch', 'branch', 'tag', or 'unknown'
     try {
-        myCommitHash = myLog.commit_hash;
+        myCommitHash = myLog.commit_hash; // 10-hex-digit hash
     } catch(e) {
         console.log("No commit hash: " + e);
         myCommitHash = null;
@@ -708,15 +710,19 @@ function requestPDFbuild() {
 
     $("body").css("cursor", "progress");
 
+    var myIdentifier = myRepoOwner + '--' + myRepoName + '--' + myCommitId
+    if (myCommitHash != null && myCommitHash != '')
+        myIdentifier += '--' + myCommitHash
     var tx_payload = {
         job_id: 'Door43-PDF',
-        identifier: myRepoOwner + '--' + myRepoName + '--' + myCommitId,
-        resource_type: 'Open_Bible_Stories',
+        identifier: myIdentifier,
+        resource_type: myResourceType,
         input_format: 'md',
         output_format: 'pdf',
         source: 'https://git.door43.org/' + myRepoOwner + '/' + myRepoName + '/archive/' + myCommitId + '.zip'
         };
     console.log("  tx_payload = " + JSON.stringify(tx_payload));
+    requested_PDF_build_time = new Date();
     $.ajax({
         type: 'POST',
         crossDomain: 'true',
@@ -736,7 +742,6 @@ function requestPDFbuild() {
             alert("Request: "+JSON.stringify(request));
         }
     });
-    requested_PDF_build_time = new Date();
 }
 
 
@@ -746,7 +751,7 @@ function requestPDFbuild() {
  */
 function saveDownloadLinks(myLog) {
     saveDownloadFilesLink(myLog);
-    saveOptionalDownloadPDFLink(myLog);
+    saveOptionalDownloadPDFLink();
 }
 
 /**
@@ -768,22 +773,29 @@ function saveDownloadFilesLink(myLog) {
  * set download PDF link from build log for OBS repos
  * @param myLog
  */
-function saveOptionalDownloadPDFLink(myLog) {
-    // Optional coz only calculated for OBS repos
+function saveOptionalDownloadPDFLink() {
+    // Optional coz only calculated for certain repos
     // Done at page build time
-    if (myLog.resource_type == "Open_Bible_Stories") {
-        console.log("saveOptionalDownloadPDFLink(…) for OBS");
-        console.log("  Repo owner username = " + myRepoOwner + "  Repo name = " + myRepoName);
+    if (myResourceType == 'Open_Bible_Stories'
+     || myResourceType == 'OBS_Study_Notes'
+     || myResourceType == 'OBS_Study_Questions'
+     || myResourceType == 'OBS_Translation_Notes'
+     || myResourceType == 'Translation_Academy'
+      ) {
+        console.log("saveOptionalDownloadPDFLink(…) for " + myResourceType);
+        console.log("  Repo ownerUsername = " + myRepoOwner + ",  Repo name = " + myRepoName);
         console.log("  Commit type = " + myCommitType + ",  Commit ID = " + myCommitId + ",  Commit hash = " + myCommitHash);
         // var base_download_url = 'https://s3-us-west-2.amazonaws.com/' + API_prefix + 'cdn.door43.org/u/'
         var base_download_url = 'https://' + API_prefix + 'cdn.door43.org/u/';
         var repo_part = myRepoOwner + '/' + myRepoName + '/' + myCommitId + '/';
-        var PDF_filename = myRepoOwner + '--' + myRepoName + '--' + myCommitId + '.pdf';
+        var PDF_filename = myRepoOwner + '--' + myRepoName + '--' + myCommitId;
+        if (myCommitHash != null && myCommitHash != '')
+            PDF_filename += '--' + myCommitHash;
+        PDF_filename += '.pdf'
         PDF_download_url = base_download_url + repo_part + PDF_filename;
         console.log("  PDF_download_url = " + PDF_download_url);
-        return;
-    }
-    PDF_download_url = null;
+    } else
+        PDF_download_url = null;
 }
 
 function getPageViewUrl(pageUrl) {
