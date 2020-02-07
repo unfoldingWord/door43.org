@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 10d"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 10e"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash;
@@ -629,7 +629,7 @@ function getDownloadPDFUrl() {
     // This is the function responding to a user click on download (OBS) PDF
     console.log("getDownloadPDFUrl()")
     // _StatHat.push(["_trackCount", "eBQk6-wY9ziv3D77-qhJuiBYM3Z2", 1.0]);
-    if (PDF_download_url) { // if expected URL formed earlier
+    if (PDF_download_url != null) { // if expected URL formed earlier
         console.log("  Formed PDF_download_url earlier = " + PDF_download_url)
         if (doesPDFexist()) {
             console.log("  Seems that the expected PDF already exists.");
@@ -644,8 +644,10 @@ function getDownloadPDFUrl() {
 
         // Loop while waiting
         PDF_wait_timer = setInterval(waitingForPDF, 2000);
+    } else {
+        console.log("  Seems PDF_download_url empty with: " + PDF_download_url);
+        alert("Sorry, seems we don't know about any PDF to download!");
     }
-    else alert("Sorry, seems we don't know about any PDF to download!")
 }
 
 
