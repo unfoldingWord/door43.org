@@ -503,15 +503,14 @@ function updateDownloadItems(inputFormat) {
 }
 
 function addOptionalPDFDownload() {
-    // Uses global variable: myRepoName
-    // If the repo name ends with '_obs', add a PDF download option
-    if (myRepoName.indexOf('_obs', myRepoName.length - 4) !== -1) { // ends with '_obs'
-        console.log("Have OBS repo: " + myRepoName)
+    // Add a PDF button to the Download dropdown for certain types of repos
+    if (wantDownloadPDFOption()) {
+        console.log("Want PDF button for " + myRepoName + " repo (" + myResourceType + ")");
         var $downloadMenu = $("#download_menu ul");
         if ($downloadMenu) {
             $downloadMenu.append('<li><a type="submit" onclick="window.open(getDownloadPDFUrl())"><span id="menu_source_item" class="glyphicon glyphicon-file"></span>PDF</a></li>');
         }
-        else console.log("Unable to find download menu");
+        else console.log("addOptionalPDFDownload ERROR: Unable to find download menu");
     }
 }
 
@@ -630,14 +629,10 @@ function getDownloadPDFUrl() {
     // This is the function responding to a user click on download (OBS) PDF
     console.log("getDownloadPDFUrl()")
     // _StatHat.push(["_trackCount", "eBQk6-wY9ziv3D77-qhJuiBYM3Z2", 1.0]);
-    if (PDF_download_url) { // if found URL earlier
-        console.log("  Found URL earlier " + PDF_download_url)
-        // PDF_download_url = "https://s3-us-west-2.amazonaws.com/cdn.door43.org/u/unfoldingWord/en_obs/master/index.json";
-        // console.log("  Rewritten (for testing) to " + PDF_download_url)
-
-        console.log("  See if the PDF already exists?")
+    if (PDF_download_url) { // if expected URL formed earlier
+        console.log("  Formed PDF_download_url earlier = " + PDF_download_url)
         if (doesPDFexist()) {
-            console.log("  Seems that the PDF already exists."); // Are we sure that it's up-to-date???
+            console.log("  Seems that the expected PDF already exists.");
             return PDF_download_url;
         }
 
@@ -683,16 +678,16 @@ function doesPDFexist() {
                                              // Synchronous request coz it should be quick
         req.send(); // Hopefully it's fast
         if (req.status==200) { // seems that the PDF is already there
-            console.log("  Yes, the PDF already exists."); // Are we sure that it's up-to-date???
+            console.log("  Yes, the PDF already exists.");
             return true;
         } else {
-            console.log("  Seems that the PDF doesn't exist.")
+            console.log("  Seems that the PDF doesn't exist: status = " + req.status);
             return false;
         }
     } catch(err) {
         console.log("  In Catch block with: " + err)
     }
-    console.log("  Returning false!")
+    console.log("  Returning false at end!")
     return false;
 }
 
@@ -769,6 +764,24 @@ function saveDownloadFilesLink(myLog) {
     source_download_url = null;
 }
 
+
+function wantDownloadPDFOption() {
+    console.log("wantDownloadPDFOption() for " + myResourceType);
+    if (myResourceType == 'Open_Bible_Stories'
+     || myResourceType == 'OBS_Study_Notes'
+     || myResourceType == 'OBS_Study_Questions'
+     || myResourceType == 'OBS_Translation_Notes'
+     || myResourceType == 'Translation_Academy'
+      ) {
+          console.log("  wantDownloadPDFOption() returning true")
+          return true;
+    } else {
+        console.log("  wantDownloadPDFOption() returning false")
+        return false;
+    }
+}
+
+
 /**
  * set download PDF link from build log for OBS repos
  * @param myLog
@@ -776,13 +789,8 @@ function saveDownloadFilesLink(myLog) {
 function saveOptionalDownloadPDFLink() {
     // Optional coz only calculated for certain repos
     // Done at page build time
-    if (myResourceType == 'Open_Bible_Stories'
-     || myResourceType == 'OBS_Study_Notes'
-     || myResourceType == 'OBS_Study_Questions'
-     || myResourceType == 'OBS_Translation_Notes'
-     || myResourceType == 'Translation_Academy'
-      ) {
-        console.log("saveOptionalDownloadPDFLink(…) for " + myResourceType);
+    console.log("saveOptionalDownloadPDFLink() for " + myResourceType);
+    if (wantDownloadPDFOption()) {
         console.log("  Repo ownerUsername = " + myRepoOwner + ",  Repo name = " + myRepoName);
         console.log("  Commit type = " + myCommitType + ",  Commit ID = " + myCommitId + ",  Commit hash = " + myCommitHash);
         // var base_download_url = 'https://s3-us-west-2.amazonaws.com/' + API_prefix + 'cdn.door43.org/u/'
@@ -793,8 +801,9 @@ function saveOptionalDownloadPDFLink() {
             PDF_filename += '--' + myCommitHash;
         PDF_filename += '.pdf'
         PDF_download_url = base_download_url + repo_part + PDF_filename;
-        console.log("  PDF_download_url = " + PDF_download_url);
+        console.log("  Expected PDF_download_url = " + PDF_download_url);
     } else
+        console.log("  Not trying to form PDF link for " + myResourceType);
         PDF_download_url = null;
 }
 
