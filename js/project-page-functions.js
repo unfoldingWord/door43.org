@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 10e"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 10f"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash;
@@ -804,9 +804,10 @@ function saveOptionalDownloadPDFLink() {
         PDF_filename += '.pdf'
         PDF_download_url = base_download_url + repo_part + PDF_filename;
         console.log("  Expected PDF_download_url = " + PDF_download_url);
-    } else
+    } else {
         console.log("  Not trying to form PDF link for " + myResourceType);
         PDF_download_url = null;
+    }
 }
 
 function getPageViewUrl(pageUrl) {
