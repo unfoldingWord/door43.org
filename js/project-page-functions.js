@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 10h"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 10j"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash;
@@ -715,7 +715,7 @@ function requestPDFbuild() {
     if (myCommitHash)
         myIdentifier += '--' + myCommitHash
     var tx_payload = {
-        job_id: 'Door43-PDF',
+        job_id: 'Door43_' + myRepoName + '_PDF_request',
         identifier: myIdentifier,
         resource_type: myResourceType,
         input_format: 'md',
@@ -731,10 +731,25 @@ function requestPDFbuild() {
         data: JSON.stringify(tx_payload),
         dataType: 'json',
         contentType : 'application/json',
-        success: function(responseDataObject, responseStatusString){
-            console.log("Got AJAX response status: " + responseStatusString);
+        success: function(responseDataObject){
             console.log("Got AJAX response data: " + JSON.stringify(responseDataObject));
+            // Typically returns our fields from above plus: {
+            //  "eta":"Sat, 08 Feb 2020 03:54:22 GMT",
+            //  "expires_at":"Sun, 09 Feb 2020 03:49:22 GMT",
+            //  "output":"https://dev-cdn.door43.org/u//unfoldingWord/master/master/unfoldingWord--en_obs-sn--master--3453ee106f.pdf",
+            //  "queue_name":"dev-tX_other_PDF_webhook",
+            //  "status":"queued",
+            //  "success":true,
+            //  "tx_job_queued_at":"Sat, 08 Feb 2020 03:49:22 GMT",
+            //  "tx_retry_count":0}
             alert("Requested PDF build -- might take a minute or two… (It's ok to close this.)")
+            // Just double-check that we agree on the name of the PDF
+            if (responseDataObject.output != PDF_download_url) {
+                console.log("Oh dear, PDF URLs don't match:");
+                console.log(" Expected: " + PDF_download_url);
+                console.log(" tX gave:  " + responseDataObject.output);
+                PDF_download_url = responseDataObject.output; // Adjust our guess
+            }
         },
         error: function(request,errorString)
         {
