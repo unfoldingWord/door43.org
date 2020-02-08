@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 10g"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 10h"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash;
@@ -667,6 +667,7 @@ function waitingForPDF() {
     if (elapsedSeconds > MAX_PDF_BUILD_SECONDS) {
         console.log("Seems we timed out after " + elapsedSeconds + " seconds!")
         resetPDFbuild();
+        alert("Sorry, it seems that the PDF creation process failed!")
     }
 }
 
@@ -700,6 +701,7 @@ function resetPDFbuild() {
     PDF_wait_timer = null;
     requested_PDF_build_time = null;
     $("body").css("cursor", "default");
+    // NOTE: Could re-enabled PDF button here
 }
 
 
@@ -707,6 +709,7 @@ function requestPDFbuild() {
     console.log("requestPDFbuild()");
 
     $("body").css("cursor", "progress");
+    // TODO: Could disable PDF button here
 
     var myIdentifier = myRepoOwner + '--' + myRepoName + '--' + myCommitId
     if (myCommitHash)
@@ -728,16 +731,17 @@ function requestPDFbuild() {
         data: JSON.stringify(tx_payload),
         dataType: 'json',
         contentType : 'application/json',
-        success: function(response_data){
-            console.log("Got AJAX response data: " + response_data);
-            alert('Data: '+response_data);
+        success: function(responseDataObject, responseStatusString){
+            console.log("Got AJAX response status: " + responseStatusString);
+            console.log("Got AJAX response data: " + JSON.stringify(responseDataObject));
+            alert("Requested PDF build -- might take a minute or two… (It's ok to close this.)")
         },
         error: function(request,errorString)
         {
             console.log("Got AJAX error: " + JSON.stringify(request));
             console.log("Got AJAX errorString: " + errorString);
             resetPDFbuild();
-            alert("Request: "+JSON.stringify(request));
+            alert("Sorry, we were unable to initiate a build of the PDF.");
         }
     });
 }
