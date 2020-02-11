@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 10n"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 10p"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash;
@@ -587,6 +587,7 @@ var PDF_download_url = null;
 var requested_PDF_build_time = null;
 var PDF_wait_timer = null;
 var PDF_build_details = {};
+var PDF_already_existed = false;
 
 
 /**
@@ -632,13 +633,15 @@ function userWantsPDF() {
         console.log("  Formed PDF_download_url earlier = " + PDF_download_url)
         if (doesPDFexist()) {
             console.log("  Seems that a PDF exists with the correct name");
+            PDF_already_existed = true;
             if (isPDFcurrent()) {
                 console.log("    and seems it's current.");
                 window.open(PDF_download_url);
                 return;
             } else
             console.log("    but seems it might not be current!");
-        }
+        } else
+            PDF_already_existed = false;
 
         console.log("  See if we've already requested a PDF build?")
         if (requested_PDF_build_time == null){
@@ -666,7 +669,8 @@ function waitingForPDF() {
     var elapsedSeconds = Math.round(timeDiff);
 
     console.log("Check if PDF exists now (after requesting build)?");
-    if (doesPDFexist() && isPDFcurrent()) {
+    if (doesPDFexist()
+    && (!PDF_already_existed || isPDFcurrent())) {
         console.log("  Seems that the current PDF exists now after " + elapsedSeconds + " seconds.");
         resetPDFbuild(); // Close everything cleanly
         window.open(PDF_download_url);
@@ -679,7 +683,7 @@ function waitingForPDF() {
             console.log("Have PDF but could be out of date?");
             var alert_msg = "This PDF might be outdated";
             if (myCommitHash) alert_msg += " -- your hash is " + myCommitHash;
-            alert("Warning: " + alert_msg + ". (Close this now and check the PDF.)");
+            alert("Warning: " + alert_msg + ". (Close this now and check the information at the bottom of the third page of the PDF.)");
             window.open(PDF_download_url);
         } else {
             console.log("No PDF appeared");
