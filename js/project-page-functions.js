@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 10s"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 10t"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash;
@@ -650,7 +650,7 @@ function userWantsPDF() {
                 console.log("  UNEXPECTED: A PDF build has already been requested!!!")
             }
 
-        loadPDFBuildInfo(); // See if there's a build log yet
+        loadPDFBuildInfo(); // See if there's a PDF build log yet
 
         // Start an interval function to check for results
         if (PDF_wait_timer == null) // only ever start one timer
@@ -664,7 +664,7 @@ function userWantsPDF() {
 
 
 function waitingForPDF() {
-    // Called automatically (from userWantsPDF()) every few seconds
+    // Called automatically from userWantsPDF() every few seconds
     console.log("waitingForPDF()");
     var elapsedSeconds;
     if (requested_PDF_build_time == null) elapsedSeconds = 0;
@@ -684,7 +684,22 @@ function waitingForPDF() {
         return;
     }
 
-    loadPDFBuildInfo(); // See if there's a build log yet
+    // Could there be a PDF build failure?
+    console.log("  See if we've had a PDF build failure?")
+    try {
+        console.log("    Have status = " + PDF_build_details[myCommitId].status);
+        console.log("    Have message = " + PDF_build_details[myCommitId].message);
+        if (PDF_build_details[myCommitId].status != 'success') {
+            console.log("    Have build fail with '" + PDF_build_details[myCommitId].status + "' = " + PDF_build_details[myCommitId].message);
+            resetPDFbuild(); // Close everything cleanly
+            alert("Sorry, seems last PDF build failed with '" + PDF_build_details[myCommitId].status + "' = " + PDF_build_details[myCommitId].message);
+            return;
+        }
+    } catch(e) {
+        console.log("    No build failure info for " + myCommitType + ": " + e);
+    }
+
+    loadPDFBuildInfo(); // Keep our copy of the PDF build log updated
 
     // Request a (newer) PDF build if we haven't done that already
     console.log("  See if we've already requested a PDF build?")
@@ -742,20 +757,37 @@ function isPDFcurrent() {
     // For release tags, they're always current
     console.log("isPDFcurrent() for " + myCommitType);
     if (myCommitType == 'tag') {
-        console.log("  Returning true for tag");
+        console.log("  Always returning true for tag");
         return true;
     } else if (myCommitType=='defaultBranch' || myCommitType=='branch' || myCommitType=='default') {
         console.log("  Investigating…");
-        // The build log should have downloaded by now
+        // The build log should have downloaded by now -- see if the commit hashes match?
         try {
-            console.log("    Have details = " + PDF_build_details[myCommitId]);
+            console.log("    Have build log details for " + myCommitId);
+            console.log("    Have status = " + PDF_build_details[myCommitId].status);
             console.log("    Have hash = " + PDF_build_details[myCommitId].commit_hash);
-            if (PDF_build_details[myCommitId].commit_hash == myCommitHash) {
-                console.log("  Returning true for " + myCommitType);
+            if (PDF_build_details[myCommitId].status == 'success'
+            && PDF_build_details[myCommitId].commit_hash == myCommitHash) {
+                console.log("    Hashes match -- returning true for " + myCommitType);
                 return true;
+            } else {
+                console.log("    Hashes don't match (need to build updated PDF) -- returning false");
+                return false;
             }
         } catch(e) {
             console.log("  Hash missing or something went wrong in isPDFcurrent() for " + myCommitType + ": " + e);
+        }
+        // Ok, let's check in case we got a PDF build error
+        try {
+            console.log("    Have build log details for " + myCommitId);
+            console.log("    Have status = " + PDF_build_details[myCommitId].status);
+            console.log("    Have message = " + PDF_build_details[myCommitId].message);
+            if (PDF_build_details[myCommitId].status != 'success') {
+                console.log("    Have build fail with '" + PDF_build_details[myCommitId].status + "' = " + PDF_build_details[myCommitId].message);
+                return false;
+            }
+        } catch(e) {
+            console.log("  Status missing or something went wrong in isPDFcurrent() for " + myCommitType + ": " + e);
         }
     }
     console.log("  Return false (at end) for " + myCommitType);
