@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 10r"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 10s"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash;
@@ -666,10 +666,14 @@ function userWantsPDF() {
 function waitingForPDF() {
     // Called automatically (from userWantsPDF()) every few seconds
     console.log("waitingForPDF()");
-    currentTime = new Date();
-    var timeDiff = currentTime - requested_PDF_build_time;
-    timeDiff /= 1000; // Strip the ms
-    var elapsedSeconds = Math.round(timeDiff);
+    var elapsedSeconds;
+    if (requested_PDF_build_time == null) elapsedSeconds = 0;
+    else {
+        currentTime = new Date();
+        var timeDiff = currentTime - requested_PDF_build_time;
+        timeDiff /= 1000; // Strip the ms
+        var elapsedSeconds = Math.round(timeDiff);
+    }
 
     console.log("Check if PDF exists now (after requesting build)?");
     if (doesPDFexist()
@@ -677,6 +681,7 @@ function waitingForPDF() {
         console.log("  Seems that the current PDF exists now after " + elapsedSeconds + " seconds.");
         resetPDFbuild(); // Close everything cleanly
         window.open(PDF_download_url);
+        return;
     }
 
     loadPDFBuildInfo(); // See if there's a build log yet
@@ -718,7 +723,7 @@ function doesPDFexist() {
                                              // Synchronous request coz it should be quick
         req.send(); // Hopefully it's fast
         if (req.status==200) { // seems that the PDF is already there
-            console.log("  Yes, the PDF already exists.");
+            console.log("  Yes, a correctly named PDF already exists -- returning true");
             return true;
         } else {
             console.log("  Seems that the PDF doesn't exist: status = " + req.status);
@@ -741,14 +746,16 @@ function isPDFcurrent() {
         return true;
     } else if (myCommitType=='defaultBranch' || myCommitType=='branch' || myCommitType=='default') {
         console.log("  Investigating…");
+        // The build log should have downloaded by now
         try {
-            console.log("Have hash = " + PDF_build_details[myCommitId].commit_hash);
-            if (PDF_build_details[myCommitId]['commit_hash'] == myCommitHash) {
+            console.log("    Have details = " + PDF_build_details[myCommitId]);
+            console.log("    Have hash = " + PDF_build_details[myCommitId].commit_hash);
+            if (PDF_build_details[myCommitId].commit_hash == myCommitHash) {
                 console.log("  Returning true for " + myCommitType);
                 return true;
             }
         } catch(e) {
-            console.log("  Something went wrong in isPDFcurrent() for " + myCommitType + ": " + e);
+            console.log("  Hash missing or something went wrong in isPDFcurrent() for " + myCommitType + ": " + e);
         }
     }
     console.log("  Return false (at end) for " + myCommitType);
@@ -757,20 +764,22 @@ function isPDFcurrent() {
 
 
 function loadPDFBuildInfo() {
+    // Download the PDF build log if it exists
     console.log("loadPDFBuildInfo()");
     var base_download_url = 'https://s3-us-west-2.amazonaws.com/' + API_prefix + 'cdn.door43.org/u/';
     var repo_part = myRepoOwner + '/' + myRepoName + '/';
-    var filename_part = 'PDF-details.json';
+    var filename_part = 'PDF_details.json';
     var wanted_url = base_download_url + repo_part + filename_part;
     console.log("  Want URL = " + wanted_url);
     $.getJSON(wanted_url, function (received_data) {
         PDF_build_details = received_data;
-        console.log("Got PDF_build_details = " + PDF_build_details);
-        try {
-            console.log("Got PDF_build_details[myCommitId] = " + PDF_build_details[myCommitId]);
-        } catch(e) {
-            console.log("Seems no data for " + myCommitId + ": " + e);
-        }
+        // console.log("Got PDF_build_details = " + PDF_build_details);
+        // try {
+        //     console.log("Got PDF_build_details[myCommitId] = " + PDF_build_details[myCommitId]);
+        //     console.log("Got PDF_build_details[myCommitId].commit_hash = " + PDF_build_details[myCommitId].commit_hash);
+        // } catch(e) {
+        //     console.log("Seems no data for " + myCommitId + ": " + e);
+        // }
     })
       .done(function () {
         console.log("processed " + wanted_url);
