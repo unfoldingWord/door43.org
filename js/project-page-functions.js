@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 10q"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 10r"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash;
@@ -742,7 +742,8 @@ function isPDFcurrent() {
     } else if (myCommitType=='defaultBranch' || myCommitType=='branch' || myCommitType=='default') {
         console.log("  Investigating…");
         try {
-            if (PDF_build_details.commit_id == myCommitId) {
+            console.log("Have hash = " + PDF_build_details[myCommitId].commit_hash);
+            if (PDF_build_details[myCommitId]['commit_hash'] == myCommitHash) {
                 console.log("  Returning true for " + myCommitType);
                 return true;
             }
@@ -764,7 +765,12 @@ function loadPDFBuildInfo() {
     console.log("  Want URL = " + wanted_url);
     $.getJSON(wanted_url, function (received_data) {
         PDF_build_details = received_data;
-        console.log("Got " + PDF_build_details);
+        console.log("Got PDF_build_details = " + PDF_build_details);
+        try {
+            console.log("Got PDF_build_details[myCommitId] = " + PDF_build_details[myCommitId]);
+        } catch(e) {
+            console.log("Seems no data for " + myCommitId + ": " + e);
+        }
     })
       .done(function () {
         console.log("processed " + wanted_url);
