@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 10k"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 10m"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash;
@@ -662,7 +662,7 @@ function waitingForPDF() {
 
     console.log("Check if PDF exists now (after requesting build)?");
     if (doesPDFexist()) {
-        console.log("  Seems that the PDF exists now after " + elapsedSeconds + "seconds.");
+        console.log("  Seems that the PDF exists now after " + elapsedSeconds + " seconds.");
         resetPDFbuild(); // Close everything cleanly
         window.open(PDF_download_url);
     }
@@ -676,11 +676,15 @@ function waitingForPDF() {
 
 
 function doesPDFexist() {
-    // Looks for PDF at PDF_download_url
+    // Looks for PDF at PDF_download_url -- doesn't work well coz of CloudFront caching
+    //  so look at S3 URL instead
     console.log("doesPDFexist()");
+    console.log("  Given URL = " + PDF_download_url);
+    var adjusted_PDF_download_url = PDF_download_url.replace('https://', 'https://s3-us-west-2.amazonaws.com/');
+    console.log("  Changed URL = " + adjusted_PDF_download_url);
     try {
         var req = new XMLHttpRequest();
-        req.open('HEAD', PDF_download_url, false); // Gets headers only
+        req.open('HEAD', adjusted_PDF_download_url, false); // Gets headers only
                                              // Synchronous request coz it should be quick
         req.send(); // Hopefully it's fast
         if (req.status==200) { // seems that the PDF is already there
@@ -751,7 +755,7 @@ function requestPDFbuild() {
                 console.log("Oh dear!!! PDF URLs don't match:");
                 console.log("  Expected: " + PDF_download_url);
                 console.log("  tX gave:  " + responseDataObject.output);
-                //PDF_download_url = responseDataObject.output; // Adjust our guess
+                PDF_download_url = responseDataObject.output; // Adjust our guess
             }
         },
         error: function(request,errorString)
@@ -822,8 +826,8 @@ function saveOptionalDownloadPDFLink() {
         var base_download_url = 'https://' + API_prefix + 'cdn.door43.org/u/';
         var repo_part = myRepoOwner + '/' + myRepoName + '/' + myCommitId + '/';
         var PDF_filename = myRepoOwner + '--' + myRepoName + '--' + myCommitId;
-        if (myCommitHash)
-            PDF_filename += '--' + myCommitHash;
+        // if (myCommitHash)
+        //     PDF_filename += '--' + myCommitHash;
         PDF_filename += '.pdf'
         PDF_download_url = base_download_url + repo_part + PDF_filename;
         console.log("  Expected PDF_download_url = " + PDF_download_url);
