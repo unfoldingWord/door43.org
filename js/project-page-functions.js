@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 10p"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 10q"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash;
@@ -640,17 +640,19 @@ function userWantsPDF() {
                 return;
             } else
             console.log("    but seems it might not be current!");
-        } else
+        } else {
             PDF_already_existed = false;
+            // Request a PDF build
+            if (requested_PDF_build_time == null) {
+                console.log("  Request1 tX to build the PDF!")
+                requestPDFbuild();
+            } else
+                console.log("  UNEXPECTED: A PDF build has already been requested!!!")
+            }
 
-        console.log("  See if we've already requested a PDF build?")
-        if (requested_PDF_build_time == null){
-            console.log("  Request tX to build the PDF!")
-            requestPDFbuild();
-        } else
-            console.log("  A PDF build has already been requested!")
+        loadPDFBuildInfo(); // See if there's a build log yet
 
-        // Loop while waiting
+        // Start an interval function to check for results
         if (PDF_wait_timer == null) // only ever start one timer
             PDF_wait_timer = setInterval(waitingForPDF, 3000); // Check every three seconds
 
@@ -662,6 +664,7 @@ function userWantsPDF() {
 
 
 function waitingForPDF() {
+    // Called automatically (from userWantsPDF()) every few seconds
     console.log("waitingForPDF()");
     currentTime = new Date();
     var timeDiff = currentTime - requested_PDF_build_time;
@@ -675,14 +678,25 @@ function waitingForPDF() {
         resetPDFbuild(); // Close everything cleanly
         window.open(PDF_download_url);
     }
+
+    loadPDFBuildInfo(); // See if there's a build log yet
+
+    // Request a (newer) PDF build if we haven't done that already
+    console.log("  See if we've already requested a PDF build?")
+    if (requested_PDF_build_time == null){
+        console.log("  Request2 tX to build the PDF!")
+        requestPDFbuild();
+    } else
+        console.log("  A PDF build has already been requested!")
+
     // console.log("Check if waiting time is up yet?");
     if (elapsedSeconds > MAX_PDF_BUILD_SECONDS) {
         console.log("Seems we timed out after " + elapsedSeconds + " seconds!");
         resetPDFbuild();
         if (doesPDFexist()) {
             console.log("Have PDF but could be out of date?");
-            var alert_msg = "This PDF might be outdated";
-            if (myCommitHash) alert_msg += " -- your hash is " + myCommitHash;
+            var alert_msg = "There's a small chance that this PDF might be outdated";
+            if (myCommitHash) alert_msg += " -- remember your hash is " + myCommitHash;
             alert("Warning: " + alert_msg + ". (Close this now and check the information at the bottom of the third page of the PDF.)");
             window.open(PDF_download_url);
         } else {
@@ -721,11 +735,12 @@ function doesPDFexist() {
 function isPDFcurrent() {
     // Assumes that the PDF exists
     // For release tags, they're always current
-    console.log("isPDFcurrent()")
+    console.log("isPDFcurrent() for " + myCommitType);
     if (myCommitType == 'tag') {
         console.log("  Returning true for tag");
         return true;
     } else if (myCommitType=='defaultBranch' || myCommitType=='branch' || myCommitType=='default') {
+        console.log("  Investigating…");
         try {
             if (PDF_build_details.commit_id == myCommitId) {
                 console.log("  Returning true for " + myCommitType);
@@ -807,7 +822,7 @@ function requestPDFbuild() {
             //  "success":true,
             //  "tx_job_queued_at":"Sat, 08 Feb 2020 03:49:22 GMT",
             //  "tx_retry_count":0}
-            alert("Requested PDF build -- might take a minute or two… (It's ok to close this.)")
+            alert("Requested PDF build -- might take a minute or two… (Please close this box meanwhile.)")
             // Just double-check that we agree on the name of the PDF
             if (responseDataObject.output != PDF_download_url) {
                 console.log("Oh dear!!! PDF URLs don't match:");
