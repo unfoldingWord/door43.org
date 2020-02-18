@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 10t"); // Helps identify if you have an older cached page or the latest
+console.log("project-page-functions.js version 10u"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash;
@@ -851,10 +851,12 @@ function requestPDFbuild() {
         };
     console.log("  tx_payload = " + JSON.stringify(tx_payload));
     requested_PDF_build_time = new Date();
+    var long_prefix = '';
+    if (API_prefix) long_prefix = 'develop.';
     $.ajax({
         type: 'POST',
         crossDomain: 'true',
-        url: 'https://git.door43.org/' + API_prefix + 'tx/',
+        url: 'https://' + long_prefix + 'door43.org/tx/',
         data: JSON.stringify(tx_payload),
         dataType: 'json',
         contentType : 'application/json',
@@ -917,10 +919,11 @@ function saveDownloadFilesLink(myLog) {
 function wantDownloadPDFOption() {
     console.log("wantDownloadPDFOption() for " + myResourceType);
     if (myResourceType == 'Open_Bible_Stories'
-     || myResourceType == 'OBS_Study_Notes'
-     || myResourceType == 'OBS_Study_Questions'
-     || myResourceType == 'OBS_Translation_Notes'
-     || myResourceType == 'Translation_Academy'
+    // Temporarily disabled -- queue is working but no worker yet
+    //  || myResourceType == 'OBS_Study_Notes'
+    //  || myResourceType == 'OBS_Study_Questions'
+    //  || myResourceType == 'OBS_Translation_Notes'
+    //  || myResourceType == 'Translation_Academy'
       ) {
           console.log("  wantDownloadPDFOption() returning true")
           return true;
