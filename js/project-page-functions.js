@@ -1,4 +1,4 @@
-console.log("project-page-functions.js version 10u"); // Helps identify if you have an older cached page or the latest
+// console.log("project-page-functions.js version 10v"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash;
@@ -505,7 +505,7 @@ function updateDownloadItems(inputFormat) {
 function addOptionalPDFDownload() {
     // Add a PDF button to the Download dropdown for certain types of repos
     if (wantDownloadPDFOption()) {
-        console.log("Want PDF button for " + myRepoName + " repo (" + myResourceType + ")");
+        // console.log("Want PDF button for " + myRepoName + " repo (" + myResourceType + ")");
         var $downloadMenu = $("#download_menu ul");
         if ($downloadMenu) {
             $downloadMenu.append('<li><a type="submit" onclick="userWantsPDF()"><span id="menu_source_item" class="glyphicon glyphicon-file"></span>PDF</a></li>');
@@ -627,7 +627,7 @@ function getDownloadUrl(pageUrl) {
 function userWantsPDF() {
     // This is the function responding to a user click on download (OBS) PDF button
     //  and it must handle everything including the window.open()
-    console.log("userWantsPDF()")
+    // console.log("userWantsPDF()")
     // _StatHat.push(["_trackCount", "eBQk6-wY9ziv3D77-qhJuiBYM3Z2", 1.0]);
     if (PDF_download_url) { // if expected URL formed earlier
         console.log("  Formed PDF_download_url earlier = " + PDF_download_url)
@@ -657,7 +657,7 @@ function userWantsPDF() {
             PDF_wait_timer = setInterval(waitingForPDF, 3000); // Check every three seconds
 
     } else { // we don't have a PDF_download_url
-        console.log("  Seems PDF_download_url empty with: " + PDF_download_url);
+        // console.log("  Seems PDF_download_url empty with: " + PDF_download_url);
         alert("Sorry, seems we don't know about any PDF to download!");
     }
 }
@@ -665,7 +665,7 @@ function userWantsPDF() {
 
 function waitingForPDF() {
     // Called automatically from userWantsPDF() every few seconds
-    console.log("waitingForPDF()");
+    // console.log("waitingForPDF()");
     var elapsedSeconds;
     if (requested_PDF_build_time == null) elapsedSeconds = 0;
     else {
@@ -675,10 +675,10 @@ function waitingForPDF() {
         var elapsedSeconds = Math.round(timeDiff);
     }
 
-    console.log("Check if PDF exists now (after requesting build)?");
+    // console.log("Check if PDF exists now (after requesting build)?");
     if (doesPDFexist()
     && (!PDF_already_existed || isPDFcurrent())) {
-        console.log("  Seems that the current PDF exists now after " + elapsedSeconds + " seconds.");
+        // console.log("  Seems that the current PDF exists now after " + elapsedSeconds + " seconds.");
         resetPDFbuild(); // Close everything cleanly
         window.open(PDF_download_url);
         return;
@@ -702,12 +702,13 @@ function waitingForPDF() {
     loadPDFBuildInfo(); // Keep our copy of the PDF build log updated
 
     // Request a (newer) PDF build if we haven't done that already
-    console.log("  See if we've already requested a PDF build?")
+    // console.log("  See if we've already requested a PDF build?")
     if (requested_PDF_build_time == null){
-        console.log("  Request2 tX to build the PDF!")
+        // console.log("  Request2 tX to build the PDF!")
         requestPDFbuild();
-    } else
-        console.log("  A PDF build has already been requested!")
+    } else {
+        // console.log("  A PDF build has already been requested!");
+    }
 
     // console.log("Check if waiting time is up yet?");
     if (elapsedSeconds > MAX_PDF_BUILD_SECONDS) {
@@ -720,7 +721,7 @@ function waitingForPDF() {
             alert("Warning: " + alert_msg + ". (Close this now and check the information at the bottom of the third page of the PDF.)");
             window.open(PDF_download_url);
         } else {
-            console.log("No PDF appeared");
+            // console.log("No PDF appeared");
             alert("Sorry, it seems that the PDF creation process failed!");
         }
     }
@@ -730,7 +731,7 @@ function waitingForPDF() {
 function doesPDFexist() {
     // Looks for PDF at PDF_download_url -- doesn't work well coz of CloudFront caching
     //  so look at S3 URL instead
-    console.log("doesPDFexist()");
+    // console.log("doesPDFexist()");
     var adjusted_PDF_download_url = PDF_download_url.replace('https://', 'https://s3-us-west-2.amazonaws.com/');
     try {
         var req = new XMLHttpRequest();
@@ -738,16 +739,16 @@ function doesPDFexist() {
                                              // Synchronous request coz it should be quick
         req.send(); // Hopefully it's fast
         if (req.status==200) { // seems that the PDF is already there
-            console.log("  Yes, a correctly named PDF already exists -- returning true");
+            // console.log("  Yes, a correctly named PDF already exists -- returning true");
             return true;
         } else {
-            console.log("  Seems that the PDF doesn't exist: status = " + req.status);
+            // console.log("  Seems that the PDF doesn't exist: status = " + req.status);
             return false;
         }
     } catch(err) {
         console.log("  In doesPDFexist() catch block with: " + err)
     }
-    console.log("  Returning false at end!")
+    // console.log("  Returning false at end!")
     return false;
 }
 
@@ -755,12 +756,12 @@ function doesPDFexist() {
 function isPDFcurrent() {
     // Assumes that the PDF exists
     // For release tags, they're always current
-    console.log("isPDFcurrent() for " + myCommitType);
+    // console.log("isPDFcurrent() for " + myCommitType);
     if (myCommitType == 'tag') {
-        console.log("  Always returning true for tag");
+        // console.log("  Always returning true for tag");
         return true;
     } else if (myCommitType=='defaultBranch' || myCommitType=='branch' || myCommitType=='default') {
-        console.log("  Investigating…");
+        // console.log("  Investigating…");
         // The build log should have downloaded by now -- see if the commit hashes match?
         try {
             console.log("    Have build log details for " + myCommitId);
@@ -790,28 +791,21 @@ function isPDFcurrent() {
             console.log("  Status missing or something went wrong in isPDFcurrent() for " + myCommitType + ": " + e);
         }
     }
-    console.log("  Return false (at end) for " + myCommitType);
+    // console.log("  Return false (at end) for " + myCommitType);
     return false;
 }
 
 
 function loadPDFBuildInfo() {
     // Download the PDF build log if it exists
-    console.log("loadPDFBuildInfo()");
+    // console.log("loadPDFBuildInfo()");
     var base_download_url = 'https://s3-us-west-2.amazonaws.com/' + API_prefix + 'cdn.door43.org/u/';
     var repo_part = myRepoOwner + '/' + myRepoName + '/';
     var filename_part = 'PDF_details.json';
     var wanted_url = base_download_url + repo_part + filename_part;
-    console.log("  Want URL = " + wanted_url);
+    // console.log("  Want URL = " + wanted_url);
     $.getJSON(wanted_url, function (received_data) {
         PDF_build_details = received_data;
-        // console.log("Got PDF_build_details = " + PDF_build_details);
-        // try {
-        //     console.log("Got PDF_build_details[myCommitId] = " + PDF_build_details[myCommitId]);
-        //     console.log("Got PDF_build_details[myCommitId].commit_hash = " + PDF_build_details[myCommitId].commit_hash);
-        // } catch(e) {
-        //     console.log("Seems no data for " + myCommitId + ": " + e);
-        // }
     })
       .done(function () {
         console.log("processed " + wanted_url);
@@ -823,7 +817,7 @@ function loadPDFBuildInfo() {
 
 
 function resetPDFbuild() {
-    console.log("resetPDFbuild()")
+    // console.log("resetPDFbuild()")
     clearInterval(PDF_wait_timer);
     PDF_wait_timer = null;
     requested_PDF_build_time = null;
@@ -833,7 +827,7 @@ function resetPDFbuild() {
 
 
 function requestPDFbuild() {
-    console.log("requestPDFbuild()");
+    // console.log("requestPDFbuild()");
 
     $("body").css("cursor", "progress");
     // TODO: Could disable PDF button here
@@ -917,7 +911,7 @@ function saveDownloadFilesLink(myLog) {
 
 
 function wantDownloadPDFOption() {
-    console.log("wantDownloadPDFOption() for " + myResourceType);
+    // console.log("wantDownloadPDFOption() for " + myResourceType);
     if (myResourceType == 'Open_Bible_Stories'
     // Temporarily disabled -- queue is working but no worker yet
     //  || myResourceType == 'OBS_Study_Notes'
@@ -925,10 +919,10 @@ function wantDownloadPDFOption() {
     //  || myResourceType == 'OBS_Translation_Notes'
     //  || myResourceType == 'Translation_Academy'
       ) {
-          console.log("  wantDownloadPDFOption() returning true")
+        //   console.log("  wantDownloadPDFOption() returning true")
           return true;
     } else {
-        console.log("  wantDownloadPDFOption() returning false")
+        // console.log("  wantDownloadPDFOption() returning false")
         return false;
     }
 }
@@ -941,16 +935,13 @@ function wantDownloadPDFOption() {
 function saveOptionalDownloadPDFLink() {
     // Optional coz only calculated for certain repos
     // Done at page build time
-    console.log("saveOptionalDownloadPDFLink() for " + myResourceType);
+    // console.log("saveOptionalDownloadPDFLink() for " + myResourceType);
     if (wantDownloadPDFOption()) {
-        console.log("  Repo ownerUsername = " + myRepoOwner + ",  Repo name = " + myRepoName);
-        console.log("  Commit type = " + myCommitType + ",  Commit ID = " + myCommitId + ",  Commit hash = " + myCommitHash);
-        // var base_download_url = 'https://s3-us-west-2.amazonaws.com/' + API_prefix + 'cdn.door43.org/u/'
+        // console.log("  Repo ownerUsername = " + myRepoOwner + ",  Repo name = " + myRepoName);
+        // console.log("  Commit type = " + myCommitType + ",  Commit ID = " + myCommitId + ",  Commit hash = " + myCommitHash);
         var base_download_url = 'https://' + API_prefix + 'cdn.door43.org/u/';
         var repo_part = myRepoOwner + '/' + myRepoName + '/' + myCommitId + '/';
         var PDF_filename = myRepoOwner + '--' + myRepoName + '--' + myCommitId;
-        // if (myCommitHash)
-        //     PDF_filename += '--' + myCommitHash;
         PDF_filename += '.pdf'
         PDF_download_url = base_download_url + repo_part + PDF_filename;
         console.log("  Expected PDF_download_url = " + PDF_download_url);
