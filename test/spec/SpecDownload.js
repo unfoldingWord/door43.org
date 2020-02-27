@@ -1,9 +1,10 @@
 describe('Test Download Link', function () {
 
-    describe('Test updateTextForDownloadItem()', function () {
+    describe('Test updateDownloadItems()', function () {
         var htmlSet = null;
         var $downloadMenuItem = null;
 
+        /*
         beforeEach(function () {
             $downloadMenuItem = {
                 html: jasmine.createSpy().and.callFake(mockJqueryHtml)
@@ -13,15 +14,16 @@ describe('Test Download Link', function () {
             });
             htmlSet = null;
         });
+        */
 
         /*
-        it('updateTextForDownloadItem() valid $downloadMenuItem should set text', function () {
+        it('updateDownloadItems() valid $downloadMenuItem should set text', function () {
             //given
             const input_format = 'md';
             const expectedText = 'Markdown';
 
             //when
-            updateTextForDownloadItem(input_format);
+            updateDownloadItems(input_format);
 
             //then
             // expect($downloadMenuItem.html).toHaveBeenCalled();
@@ -30,18 +32,18 @@ describe('Test Download Link', function () {
         });
         */
 
-        it('updateTextForDownloadItem() null $downloadMenuItem should not text', function () {
+        it('updateDownloadItems() null $downloadMenuItem should not text', function () {
             //given
             const input_format = 'md';
             const expectedText = 'Markdown';
             $downloadMenuItem = null;
-            spyOn(window, 'getTextForDownloadItem');
+            spyOn(window, 'getTextForSourceDownloadItem');
 
             //when
-            updateTextForDownloadItem(input_format);
+            updateDownloadItems(input_format);
 
             //then
-            expect(window.getTextForDownloadItem).not.toHaveBeenCalled();
+            expect(window.getTextForSourceDownloadItem).not.toHaveBeenCalled();
             expect(htmlSet).toBeNull();
         });
 
@@ -50,6 +52,7 @@ describe('Test Download Link', function () {
         }
     });
 
+    /*
     describe('Test getSpanForDownloadMenuItem()', function () {
         it('getSpanForDownloadMenuItem() should return', function () {
             //given
@@ -61,39 +64,40 @@ describe('Test Download Link', function () {
             expect(span).toBeNull();
         });
     });
+    */
 
-    describe('Test getTextForDownloadItem()', function () {
-        it('getTextForDownloadItem() input_format md should return Markdown', function () {
+    describe('Test getTextForSourceDownloadItem()', function () {
+        it('getTextForSourceDownloadItem() input_format md should return Markdown', function () {
             //given
             const input_format = 'md';
             const expectedText = 'Markdown';
 
             //when
-            var text = getTextForDownloadItem(input_format);
+            var text = getTextForSourceDownloadItem(input_format);
 
             //then
             expect(text).toEqual(expectedText);
         });
 
-        it('getTextForDownloadItem() input_format not md should return USFM', function () {
+        it('getTextForSourceDownloadItem() input_format not md should return USFM', function () {
             //given
             const input_format = '';
             const expectedText = 'USFM';
 
             //when
-            var text = getTextForDownloadItem(input_format);
+            var text = getTextForSourceDownloadItem(input_format);
 
             //then
             expect(text).toEqual(expectedText);
         });
 
-        it('getTextForDownloadItem() input_format null should return USFM', function () {
+        it('getTextForSourceDownloadItem() input_format null should return USFM', function () {
             //given
             const input_format = null;
             const expectedText = 'USFM';
 
             //when
-            var text = getTextForDownloadItem(input_format);
+            var text = getTextForSourceDownloadItem(input_format);
 
             //then
             expect(text).toEqual(expectedText);
@@ -237,7 +241,7 @@ describe('Test Download Link', function () {
         it('getDownloadUrl() should pick up cached source', function () {
             //given
             const expectedURL = 'http://SOMETHING/SAVED';
-            source_download = expectedURL;
+            source_download_url = expectedURL;
 
             //when
             var downloadUrl = getDownloadUrl();
@@ -249,9 +253,9 @@ describe('Test Download Link', function () {
         it('getDownloadUrl() should generate default URL if no cached source', function () {
             //given
             const expectedCommit = "123455678";
-            const expectedURL = DEFAULT_DOWNLOAD_LOCATION + expectedCommit + ".zip";
+            const expectedURL = DEFAULT_DOWNLOAD_FILES_LOCATION + expectedCommit + ".zip";
             const dummyPage = 'http://location/u/user/repo/' + expectedCommit + '/01.html';
-            source_download = null;
+            source_download_url = null;
 
             //when
             var downloadUrl = getDownloadUrl(dummyPage);
@@ -263,9 +267,9 @@ describe('Test Download Link', function () {
         it('getDownloadUrl() should fail gracefully if no commitID in URL and no cached source', function () {
             //given
             const expectedCommit = "undefined";
-            const expectedURL = DEFAULT_DOWNLOAD_LOCATION + expectedCommit + ".zip";
+            const expectedURL = DEFAULT_DOWNLOAD_FILES_LOCATION + expectedCommit + ".zip";
             const dummyPage = 'http://location/u/user/repo'; // no commit
-            source_download = null;
+            source_download_url = null;
 
             //when
             var downloadUrl = getDownloadUrl(dummyPage);
@@ -275,8 +279,8 @@ describe('Test Download Link', function () {
         });
     });
 
-    describe('Test saveDownloadLink()', function () {
-        it('saveDownloadLink() should use source download for USFM', function () {
+    describe('Test saveDownloadFilesLink()', function () {
+        it('saveDownloadFilesLink() should use source download for USFM', function () {
             //given
             const myLog = {
                 input_format: "usfm",
@@ -284,53 +288,53 @@ describe('Test Download Link', function () {
                 commit_url: "http://commit"
             };
             var expectedDownload = myLog.source;
-            source_download = "something";
+            source_download_url = "something";
 
             //when
-            saveDownloadLink(myLog);
+            saveDownloadFilesLink(myLog);
 
             //then
-            expect(source_download).toEqual(expectedDownload);
+            expect(source_download_url).toEqual(expectedDownload);
         });
 
-        it('saveDownloadLink() should use source download for other formats', function () {
+        it('saveDownloadFilesLink() should use source download for other formats', function () {
             //given
             const myLog = {
                 source: "http://source",
                 commit_url: "http://somthing/commit"
             };
             var expectedDownload = myLog.source;
-            source_download = "something";
+            source_download_url = "something";
 
             //when
-            saveDownloadLink(myLog);
+            saveDownloadFilesLink(myLog);
 
             //then
-            expect(source_download).toEqual(expectedDownload);
+            expect(source_download_url).toEqual(expectedDownload);
         });
 
-        it('saveDownloadLink() should fail gracefully if log file is empty', function () {
+        it('saveDownloadFilesLink() should fail gracefully if log file is empty', function () {
             //given
             const myLog = {};
-            source_download = "something";
+            source_download_url = "something";
 
             //when
-            saveDownloadLink(myLog);
+            saveDownloadFilesLink(myLog);
 
             //then
-            expect(source_download).toBeNull();
+            expect(source_download_url).toBeNull();
         });
 
-        it('saveDownloadLink() should fail gracefully if log file is null', function () {
+        it('saveDownloadFilesLink() should fail gracefully if log file is null', function () {
             //given
             const myLog = null;
-            source_download = "something";
+            source_download_url = "something";
 
             //when
-            saveDownloadLink(myLog);
+            saveDownloadFilesLink(myLog);
 
             //then
-            expect(source_download).toBeNull();
+            expect(source_download_url).toBeNull();
         });
     });
 

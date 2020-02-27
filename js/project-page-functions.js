@@ -1,6 +1,13 @@
-console.log("project-page-functions.js version 8e");
-var myCommitId, myRepoName, myOwner, nav_height, header_height;
+// console.log("project-page-functions.js version 10v"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
+var myRepoName, myRepoOwner, myResourceType;
+var myCommitId, myCommitType, myCommitHash;
+var nav_height, header_height;
+var API_prefix = '';
+if (window.location.hostname == 'dev.door43.org')
+    API_prefix = 'dev-';
+
+
 var _StatHat = _StatHat || [];
 _StatHat.push(['_setUser', 'NzMzIAPKpWipEWR8_hWIhqlgmew~']);
 (function() {
@@ -19,7 +26,7 @@ $(document).ready(function(){
  * Called to initialize the project page
  */
 function onProjectPageLoaded() {
-  if(projectPageLoaded)
+  if (projectPageLoaded)
     return;
   projectPageLoaded = true;
 
@@ -119,7 +126,7 @@ function onProjectPageLoaded() {
   var $footer = $("[property='dct:title']");
   updateFooter($footer, $("title"));
 
-    if(get_window_width() <= 990) {
+    if (get_window_width() <= 990) {
         setupMobileContentNavigation();
     }
     $(window).resize(onWindowResize());
@@ -127,12 +134,11 @@ function onProjectPageLoaded() {
 
 
 function processProjectJson(project) {
-    if ($revisions.length) { // old template with Revisions in left-sidebar
-        console.log("processProjectJson() with revisions IN LEFT-SIDEBAR");
-    // if (!$revisions.length) { // not old template with Revisions in left-sidebar
-    } else { // newer template with Versions in drop-down
-        // RJH Aug2019
-        console.log("processProjectJson() with versions IN DROP-DOWN");
+    // if ($revisions.length) { // old template with Revisions in left-sidebar
+    //     console.log("processProjectJson() with revisions IN LEFT-SIDEBAR");
+    // } else { // newer template with Versions in drop-down -- RJH Aug2019
+    if (!$revisions.length) { // not old template with Revisions in left-sidebar
+        // console.log("processProjectJson() with versions IN DROP-DOWN");
         // Disable the drop-down button if there's only one commit
         if (project.commits.length == 1) {
             $('#versions_menu_button').prop('disabled', true);
@@ -214,23 +220,32 @@ function processProjectJson(project) {
 
 
 function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $lastUpdated) {
-    myCommitId = myLog.commit_id;
-    myCommitType = myLog.commit_type;
-    myOwner = myLog.repo_owner_username;
-    if (myOwner == null) // couldn't find it -- try something different
-        myOwner = myLog.repo_owner; // deprecated name still on older builds
+    // Save some useful variables globally
+    myRepoOwner = myLog.repo_owner_username;
+    if (myRepoOwner == null) // couldn't find it -- try something different
+        myRepoOwner = myLog.repo_owner; // deprecated name still on older builds
     myRepoName = myLog.repo_name;
+    myResourceType = myLog.resource_type;
+
+    myCommitId = myLog.commit_id; // tag name or branch name
+    myCommitType = myLog.commit_type; // 'defaultBranch', 'branch', 'tag', or 'unknown'
+    try {
+        myCommitHash = myLog.commit_hash; // 10-hex-digit hash
+    } catch(e) {
+        console.log("No commit hash: " + e);
+        myCommitHash = null;
+    }
+
     $lastUpdated.html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
 
-    saveDownloadLink(myLog);
+    saveDownloadLinks(myLog);
     setDownloadButtonState($downloadMenuButton);
-    updateTextForDownloadItem(myLog.input_format);
+    updateDownloadItems(myLog.input_format);
     updateConversionStatusOnPage($buildStatusIcon, myLog);
 
     if ($revisions.length) { // old template with Revisions in left-sidebar
         $revisions.empty();
-    } else { // newer template with Versions in drop-down
-        // RJH Aug2019
+    } else { // newer template with Versions in drop-down -- RJH Aug2019
         $('#versions_menu ul').empty()
         // Set the text of our new button to show the current version name, i.e., branch/tag name
         // $('#versions_menu_button .hide-on-pinned').text(myCommitId);
@@ -238,9 +253,9 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
 }
 
 function updateConversionStatusOnPage($buildStatusIcon, myLog) {
-    if(CONVERSION_TIMED_OUT) {
+    if (CONVERSION_TIMED_OUT) {
         myLog.status = "failed";
-        if(!myLog.errors) {
+        if (!myLog.errors) {
             myLog.errors = [];
         }
         const errorMsg = "Conversion Timed Out!\nStarted " + timeSince(new Date(myLog.created_at)) + " ago";
@@ -252,7 +267,7 @@ function updateConversionStatusOnPage($buildStatusIcon, myLog) {
     $buildStatusIcon.find('i').attr("class", "fa " + faSpinnerClass); // default to spinner
     setOverallConversionStatus(myLog.status);
 
-    if(myLog.warnings.length) {
+    if (myLog.warnings.length) {
         var modal_html = '<ul><li>' + myLog.warnings.join("</li><li>") + '</li></ul>';
         $buildStatusIcon.on('click', function () {
             _StatHat.push(["_trackCount", "PgNkqAnDE37z2tStLTSmTyBLb2Zo", 1.0]);
@@ -276,7 +291,7 @@ function showWarningModal(modal_body){
             '      </div>'+
             '      <div class="modal-footer">'+
             '        <a href="mailto:help@door43.org'+
-            '?subject='+encodeURIComponent('Build Warning: '+myOwner+'/'+myRepoName)+
+            '?subject='+encodeURIComponent('Build Warning: '+myRepoOwner+'/'+myRepoName)+
             '&body='+encodeURIComponent("Type your question here\n\nSee the failure at "+window.location.href+"\n\n")+
             '" class="btn btn-secondary raised">Ask the Help Desk</a>'+
             '        <span class="btn btn-primary raised" data-dismiss="modal">Ok, Got it!</span>'+
@@ -297,7 +312,7 @@ var printLoaded = false;
 function printWarnings() {
     const $warnings = $("#warnings-list");
     const title = "Conversion Warnings";
-    if(printLoaded) {
+    if (printLoaded) {
         printWarningsSub($warnings, title);
     } else {
         $.getScript('/js/jQuery.print.js', function () {
@@ -401,20 +416,12 @@ function showTenMore(){
 */
 
 function printAll(){
+  // Called when the "Print" button is clicked on
   _StatHat.push(["_trackCount", "5o8ZBSJ6yPfmZ28HhXZPaSBNYzRU", 1.0]);
-  var id = myOwner+"/"+myRepoName+"/"+myCommitId;
+  var id = myRepoOwner+"/"+myRepoName+"/"+myCommitId;
   var api_domain = "api.door43.org";
-  var api_prefix = "";
-  switch(window.location.hostname){
-    case "dev.door43.org":
-      api_prefix = "dev-";
-      break;
-    case "test-door43.org.s3-website-us-west-2.amazonaws.com":
-      api_prefix = "test-";
-      break;
-  }
   $.ajax({
-    url: "https://"+api_prefix+api_domain+"/tx/print?id="+id,
+    url: "https://"+API_prefix+api_domain+"/tx/print?id="+id,
     success: function(data) {
       // response body is url to printed HTML
       if (!data.startsWith('http')) {
@@ -460,8 +467,8 @@ function setDcsHref(location) {
 
   var href;
 
-  if (myRepoName && myOwner)
-    href = 'https://git.door43.org/' + myOwner + '/' + myRepoName;
+  if (myRepoName && myRepoOwner)
+    href = 'https://git.door43.org/' + myRepoOwner + '/' + myRepoName;
   else
     href = getDcsLink(location.pathname);
 
@@ -475,7 +482,7 @@ function setDcsHref(location) {
  * @returns commitID
  */
 function getCommid(commitID, pageUrl) {
-    if(!commitID) { // if found in build_log.json
+    if (!commitID) { // if found in build_log.json
         if (myCommitId) { // if found in build_log.json
             commitID = myCommitId;
         } else {
@@ -487,34 +494,43 @@ function getCommid(commitID, pageUrl) {
 }
 
 
-/**
- * update download menu item with appropriate text based on input_format - markdown for md, and USFM otherwise
- * @param inputFormat
- */
-function updateTextForDownloadItem(inputFormat) {
-    var $downloadMenuItem = getSpanForDownloadMenuItem();
-    if ($downloadMenuItem) {
-        var downloadItemText = getTextForDownloadItem(inputFormat);
-        $downloadMenuItem.append(' ' + downloadItemText);
+function updateDownloadItems(inputFormat) {
+    // Update the download menu
+    //  1/ Set the download (compressed) files option to show USFM or MARKDOWN
+    //  2/ Add PDF for OBS repos
+    setDownloadFilesMenuItem(inputFormat);
+    addOptionalPDFDownload();
+}
+
+function addOptionalPDFDownload() {
+    // Add a PDF button to the Download dropdown for certain types of repos
+    if (wantDownloadPDFOption()) {
+        // console.log("Want PDF button for " + myRepoName + " repo (" + myResourceType + ")");
+        var $downloadMenu = $("#download_menu ul");
+        if ($downloadMenu) {
+            $downloadMenu.append('<li><a type="submit" onclick="userWantsPDF()"><span id="menu_source_item" class="glyphicon glyphicon-file"></span>PDF</a></li>');
+        }
+        else console.log("addOptionalPDFDownload ERROR: Unable to find download menu");
     }
 }
 
-
-/**
- * get span that has text for download menu item
- * @return {*} jQuery item or null if not found
- */
-function getSpanForDownloadMenuItem() {
+function setDownloadFilesMenuItem(inputFormat) {
+    // Set the download (compressed) files option to show USFM or MARKDOWN
     var $downloadMenuItem = $('#download_menu_source_item'); // quickest way
     if (! $downloadMenuItem.length) { // if not found on older pages, try to drill down in menu
         //$downloadMenuItem = $("#download_menu ul li span");
         // The above puts the text inside the glyphicon span !!!
         $downloadMenuItem = $("#download_menu ul li a");
         if (! $downloadMenuItem.length) { // if still not found, return null
-            return null;
+            console.log("Unable to find download menu item");
+            // return null;
         }
     }
-    return $downloadMenuItem;
+    if ($downloadMenuItem.length) {
+        var downloadItemText = getTextForSourceDownloadItem(inputFormat);
+        $downloadMenuItem.append(' ' + downloadItemText);
+    }
+    // return $downloadMenuItem;
 }
 
 /**
@@ -522,14 +538,14 @@ function getSpanForDownloadMenuItem() {
  * @param inputFormat
  * @return {string}
  */
-function getTextForDownloadItem(inputFormat) {
+function getTextForSourceDownloadItem(inputFormat) {
     var downloadItemText = (inputFormat === 'md') ? 'Markdown' : 'USFM';
     return downloadItemText;
 }
 
 function getCheckDownloadsUrl(commitID, pageUrl) {
-    var prefix = getSiteFromPage(pageUrl);
-    return 'https://' + prefix + 'api.door43.org/check_download?commit_id=' + commitID;
+    // var prefix = getSiteFromPage(pageUrl);
+    return 'https://' + API_prefix + 'api.door43.org/check_download?commit_id=' + commitID;
 }
 
 function setDownloadButtonState($button, commitID, pageUrl) {
@@ -539,7 +555,7 @@ function setDownloadButtonState($button, commitID, pageUrl) {
     var commitID_ = getCommid(commitID, pageUrl);
     var url = getCheckDownloadsUrl(commitID_, pageUrl);
 
-    if($button) {
+    if ($button) {
         $button.prop('disabled', true)
     }
     $.ajax({
@@ -548,8 +564,8 @@ function setDownloadButtonState($button, commitID, pageUrl) {
         cache: "false",
         dataType: 'jsonp',
         success: function (data, status) {
-                if(data.download_exists) {
-                    if($button) {
+                if (data.download_exists) {
+                    if ($button) {
                         $button.prop('disabled', false)
                     }
                 }
@@ -563,8 +579,16 @@ function setDownloadButtonState($button, commitID, pageUrl) {
     });
 }
 
-const DEFAULT_DOWNLOAD_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
-var source_download = null;
+const DEFAULT_DOWNLOAD_FILES_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
+var source_download_url = null;
+
+var MAX_PDF_BUILD_SECONDS = 180; // Three minutes
+var PDF_download_url = null;
+var requested_PDF_build_time = null;
+var PDF_wait_timer = null;
+var PDF_build_details = {};
+var PDF_already_existed = false;
+
 
 /**
  * parse page url to get commit key
@@ -576,41 +600,355 @@ function extractCommitFromUrl(pageUrl) {
         pageUrl = window.location.href
     }
 
-    var parts = pageUrl.split("/");
+    var parts = pageUrl.split('/');
     var commitID = parts[6];
     return commitID;
 }
 
 
 /**
- * get URL for download
+ * get URL for (compressed) files download
  * @param [pageUrl] if not set will use page href
  * @returns {*}
  */
 function getDownloadUrl(pageUrl) {
+    // This is the function responding to a user click on download USFM/Markdown
+    //  and it must return a URL to go in window.open(getDownloadUrl())
     _StatHat.push(["_trackCount", "eBQk6-wY9ziv3D77-qhJuiBYM3Z2", 1.0]);
-    if(source_download) { // if found in build_log.json
-        return source_download;
+    if (source_download_url) { // if found earlier in build_log.json
+        return source_download_url;
     }
     var commitID = extractCommitFromUrl(pageUrl);
-    var download = DEFAULT_DOWNLOAD_LOCATION + commitID + '.zip';
-    return download;
+    var downloadURL = DEFAULT_DOWNLOAD_FILES_LOCATION + commitID + '.zip';
+    return downloadURL;
+}
+
+
+function userWantsPDF() {
+    // This is the function responding to a user click on download (OBS) PDF button
+    //  and it must handle everything including the window.open()
+    // console.log("userWantsPDF()")
+    // _StatHat.push(["_trackCount", "eBQk6-wY9ziv3D77-qhJuiBYM3Z2", 1.0]);
+    if (PDF_download_url) { // if expected URL formed earlier
+        console.log("  Formed PDF_download_url earlier = " + PDF_download_url)
+        if (doesPDFexist()) {
+            console.log("  Seems that a PDF exists with the correct name");
+            PDF_already_existed = true;
+            if (isPDFcurrent()) {
+                console.log("    and seems it's current.");
+                window.open(PDF_download_url);
+                return;
+            } else
+            console.log("    but seems it might not be current!");
+        } else {
+            PDF_already_existed = false;
+            // Request a PDF build
+            if (requested_PDF_build_time == null) {
+                console.log("  Request1 tX to build the PDF!")
+                requestPDFbuild();
+            } else
+                console.log("  UNEXPECTED: A PDF build has already been requested!!!")
+            }
+
+        loadPDFBuildInfo(); // See if there's a PDF build log yet
+
+        // Start an interval function to check for results
+        if (PDF_wait_timer == null) // only ever start one timer
+            PDF_wait_timer = setInterval(waitingForPDF, 3000); // Check every three seconds
+
+    } else { // we don't have a PDF_download_url
+        // console.log("  Seems PDF_download_url empty with: " + PDF_download_url);
+        alert("Sorry, seems we don't know about any PDF to download!");
+    }
+}
+
+
+function waitingForPDF() {
+    // Called automatically from userWantsPDF() every few seconds
+    // console.log("waitingForPDF()");
+    var elapsedSeconds;
+    if (requested_PDF_build_time == null) elapsedSeconds = 0;
+    else {
+        currentTime = new Date();
+        var timeDiff = currentTime - requested_PDF_build_time;
+        timeDiff /= 1000; // Strip the ms
+        var elapsedSeconds = Math.round(timeDiff);
+    }
+
+    // console.log("Check if PDF exists now (after requesting build)?");
+    if (doesPDFexist()
+    && (!PDF_already_existed || isPDFcurrent())) {
+        // console.log("  Seems that the current PDF exists now after " + elapsedSeconds + " seconds.");
+        resetPDFbuild(); // Close everything cleanly
+        window.open(PDF_download_url);
+        return;
+    }
+
+    // Could there be a PDF build failure?
+    console.log("  See if we've had a PDF build failure?")
+    try {
+        console.log("    Have status = " + PDF_build_details[myCommitId].status);
+        console.log("    Have message = " + PDF_build_details[myCommitId].message);
+        if (PDF_build_details[myCommitId].status != 'success') {
+            console.log("    Have build fail with '" + PDF_build_details[myCommitId].status + "' = " + PDF_build_details[myCommitId].message);
+            resetPDFbuild(); // Close everything cleanly
+            alert("Sorry, seems last PDF build failed with '" + PDF_build_details[myCommitId].status + "' = " + PDF_build_details[myCommitId].message);
+            return;
+        }
+    } catch(e) {
+        console.log("    No build failure info for " + myCommitType + ": " + e);
+    }
+
+    loadPDFBuildInfo(); // Keep our copy of the PDF build log updated
+
+    // Request a (newer) PDF build if we haven't done that already
+    // console.log("  See if we've already requested a PDF build?")
+    if (requested_PDF_build_time == null){
+        // console.log("  Request2 tX to build the PDF!")
+        requestPDFbuild();
+    } else {
+        // console.log("  A PDF build has already been requested!");
+    }
+
+    // console.log("Check if waiting time is up yet?");
+    if (elapsedSeconds > MAX_PDF_BUILD_SECONDS) {
+        console.log("Seems we timed out after " + elapsedSeconds + " seconds!");
+        resetPDFbuild();
+        if (doesPDFexist()) {
+            console.log("Have PDF but could be out of date?");
+            var alert_msg = "There's a small chance that this PDF might be outdated";
+            if (myCommitHash) alert_msg += " -- remember your hash is " + myCommitHash;
+            alert("Warning: " + alert_msg + ". (Close this now and check the information at the bottom of the third page of the PDF.)");
+            window.open(PDF_download_url);
+        } else {
+            // console.log("No PDF appeared");
+            alert("Sorry, it seems that the PDF creation process failed!");
+        }
+    }
+}
+
+
+function doesPDFexist() {
+    // Looks for PDF at PDF_download_url -- doesn't work well coz of CloudFront caching
+    //  so look at S3 URL instead
+    // console.log("doesPDFexist()");
+    var adjusted_PDF_download_url = PDF_download_url.replace('https://', 'https://s3-us-west-2.amazonaws.com/');
+    try {
+        var req = new XMLHttpRequest();
+        req.open('HEAD', adjusted_PDF_download_url, false); // Gets headers only
+                                             // Synchronous request coz it should be quick
+        req.send(); // Hopefully it's fast
+        if (req.status==200) { // seems that the PDF is already there
+            // console.log("  Yes, a correctly named PDF already exists -- returning true");
+            return true;
+        } else {
+            // console.log("  Seems that the PDF doesn't exist: status = " + req.status);
+            return false;
+        }
+    } catch(err) {
+        console.log("  In doesPDFexist() catch block with: " + err)
+    }
+    // console.log("  Returning false at end!")
+    return false;
+}
+
+
+function isPDFcurrent() {
+    // Assumes that the PDF exists
+    // For release tags, they're always current
+    // console.log("isPDFcurrent() for " + myCommitType);
+    if (myCommitType == 'tag') {
+        // console.log("  Always returning true for tag");
+        return true;
+    } else if (myCommitType=='defaultBranch' || myCommitType=='branch' || myCommitType=='default') {
+        // console.log("  Investigating…");
+        // The build log should have downloaded by now -- see if the commit hashes match?
+        try {
+            console.log("    Have build log details for " + myCommitId);
+            console.log("    Have status = " + PDF_build_details[myCommitId].status);
+            console.log("    Have hash = " + PDF_build_details[myCommitId].commit_hash);
+            if (PDF_build_details[myCommitId].status == 'success'
+            && PDF_build_details[myCommitId].commit_hash == myCommitHash) {
+                console.log("    Hashes match -- returning true for " + myCommitType);
+                return true;
+            } else {
+                console.log("    Hashes don't match (need to build updated PDF) -- returning false");
+                return false;
+            }
+        } catch(e) {
+            console.log("  Hash missing or something went wrong in isPDFcurrent() for " + myCommitType + ": " + e);
+        }
+        // Ok, let's check in case we got a PDF build error
+        try {
+            console.log("    Have build log details for " + myCommitId);
+            console.log("    Have status = " + PDF_build_details[myCommitId].status);
+            console.log("    Have message = " + PDF_build_details[myCommitId].message);
+            if (PDF_build_details[myCommitId].status != 'success') {
+                console.log("    Have build fail with '" + PDF_build_details[myCommitId].status + "' = " + PDF_build_details[myCommitId].message);
+                return false;
+            }
+        } catch(e) {
+            console.log("  Status missing or something went wrong in isPDFcurrent() for " + myCommitType + ": " + e);
+        }
+    }
+    // console.log("  Return false (at end) for " + myCommitType);
+    return false;
+}
+
+
+function loadPDFBuildInfo() {
+    // Download the PDF build log if it exists
+    // console.log("loadPDFBuildInfo()");
+    var base_download_url = 'https://s3-us-west-2.amazonaws.com/' + API_prefix + 'cdn.door43.org/u/';
+    var repo_part = myRepoOwner + '/' + myRepoName + '/';
+    var filename_part = 'PDF_details.json';
+    var wanted_url = base_download_url + repo_part + filename_part;
+    // console.log("  Want URL = " + wanted_url);
+    $.getJSON(wanted_url, function (received_data) {
+        PDF_build_details = received_data;
+    })
+      .done(function () {
+        console.log("processed " + wanted_url);
+      })
+      .fail(function () {
+        console.log("error reading " + wanted_url);
+      }); // End getJSON}
+}
+
+
+function resetPDFbuild() {
+    // console.log("resetPDFbuild()")
+    clearInterval(PDF_wait_timer);
+    PDF_wait_timer = null;
+    requested_PDF_build_time = null;
+    $("body").css("cursor", "default");
+    // NOTE: Could re-enable PDF button here
+}
+
+
+function requestPDFbuild() {
+    // console.log("requestPDFbuild()");
+
+    $("body").css("cursor", "progress");
+    // TODO: Could disable PDF button here
+
+    var myIdentifier = myRepoOwner + '--' + myRepoName + '--' + myCommitId
+    if (myCommitHash)
+        myIdentifier += '--' + myCommitHash
+    var tx_payload = {
+        job_id: 'Door43_' + myRepoName + '_PDF_request',
+        identifier: myIdentifier,
+        resource_type: myResourceType,
+        input_format: 'md',
+        output_format: 'pdf',
+        source: 'https://git.door43.org/' + myRepoOwner + '/' + myRepoName + '/archive/' + myCommitId + '.zip'
+        };
+    console.log("  tx_payload = " + JSON.stringify(tx_payload));
+    requested_PDF_build_time = new Date();
+    var long_prefix = '';
+    if (API_prefix) long_prefix = 'develop.';
+    $.ajax({
+        type: 'POST',
+        crossDomain: 'true',
+        url: 'https://' + long_prefix + 'door43.org/tx/',
+        data: JSON.stringify(tx_payload),
+        dataType: 'json',
+        contentType : 'application/json',
+        success: function(responseDataObject){
+            console.log("Got AJAX response data: " + JSON.stringify(responseDataObject));
+            // Typically returns our fields from above plus: {
+            //  "eta":"Sat, 08 Feb 2020 03:54:22 GMT",
+            //  "expires_at":"Sun, 09 Feb 2020 03:49:22 GMT",
+            //  "output":"https://dev-cdn.door43.org/u//unfoldingWord/master/master/unfoldingWord--en_obs-sn--master--3453ee106f.pdf",
+            //  "queue_name":"dev-tX_other_PDF_webhook",
+            //  "status":"queued",
+            //  "success":true,
+            //  "tx_job_queued_at":"Sat, 08 Feb 2020 03:49:22 GMT",
+            //  "tx_retry_count":0}
+            alert("Requested PDF build -- might take a minute or two… (Please close this box meanwhile.)")
+            // Just double-check that we agree on the name of the PDF
+            if (responseDataObject.output != PDF_download_url) {
+                console.log("Oh dear!!! PDF URLs don't match:");
+                console.log("  Expected: " + PDF_download_url);
+                console.log("  tX gave:  " + responseDataObject.output);
+                PDF_download_url = responseDataObject.output; // Adjust our guess
+            }
+        },
+        error: function(request,errorString)
+        {
+            console.log("Got AJAX error: " + JSON.stringify(request));
+            console.log("Got AJAX errorString: " + errorString);
+            resetPDFbuild();
+            alert("Sorry, we were unable to initiate a build of the PDF.");
+        }
+    });
 }
 
 
 /**
- * get download link from build log
+ * set download links from build log
  * @param myLog
  */
-function saveDownloadLink(myLog) {
+function saveDownloadLinks(myLog) {
+    saveDownloadFilesLink(myLog);
+    saveOptionalDownloadPDFLink();
+}
+
+/**
+ * set download files link from build log
+ * @param myLog
+ */
+function saveDownloadFilesLink(myLog) {
     try {
-        source_download = myLog.source;
-        if(source_download) {
+        source_download_url = myLog.source;
+        if (source_download_url) {
             return;
         }
     } catch(e) {
     }
-    source_download = null;
+    source_download_url = null;
+}
+
+
+function wantDownloadPDFOption() {
+    // console.log("wantDownloadPDFOption() for " + myResourceType);
+    if (myResourceType == 'Open_Bible_Stories'
+    // Temporarily disabled -- queue is working but no worker yet
+    //  || myResourceType == 'OBS_Study_Notes'
+    //  || myResourceType == 'OBS_Study_Questions'
+    //  || myResourceType == 'OBS_Translation_Notes'
+    //  || myResourceType == 'Translation_Academy'
+      ) {
+        //   console.log("  wantDownloadPDFOption() returning true")
+          return true;
+    } else {
+        // console.log("  wantDownloadPDFOption() returning false")
+        return false;
+    }
+}
+
+
+/**
+ * set download PDF link from build log for OBS repos
+ * @param myLog
+ */
+function saveOptionalDownloadPDFLink() {
+    // Optional coz only calculated for certain repos
+    // Done at page build time
+    // console.log("saveOptionalDownloadPDFLink() for " + myResourceType);
+    if (wantDownloadPDFOption()) {
+        // console.log("  Repo ownerUsername = " + myRepoOwner + ",  Repo name = " + myRepoName);
+        // console.log("  Commit type = " + myCommitType + ",  Commit ID = " + myCommitId + ",  Commit hash = " + myCommitHash);
+        var base_download_url = 'https://' + API_prefix + 'cdn.door43.org/u/';
+        var repo_part = myRepoOwner + '/' + myRepoName + '/' + myCommitId + '/';
+        var PDF_filename = myRepoOwner + '--' + myRepoName + '--' + myCommitId;
+        PDF_filename += '.pdf'
+        PDF_download_url = base_download_url + repo_part + PDF_filename;
+        console.log("  Expected PDF_download_url = " + PDF_download_url);
+    } else {
+        console.log("  Not trying to form PDF link for " + myResourceType);
+        PDF_download_url = null;
+    }
 }
 
 function getPageViewUrl(pageUrl) {
@@ -714,7 +1052,7 @@ function teardownMobileContentNavigation() {
 }
 
 function toggleMobileContentNav(){
-    if($('#mobile-content-nav').is(':visible')) {
+    if ($('#mobile-content-nav').is(':visible')) {
         closeMobileContentNav();
     } else {
         openMobileContentNav();
@@ -772,7 +1110,7 @@ function showBuildStatusAsTimedOut($buildStatusIcon) {
 }
 
 function checkAgainForBuildCompletion() {
-    if((new Date() - conversion_start_time) > MAX_CHECKING_INTERVAL) {
+    if ((new Date() - conversion_start_time) > MAX_CHECKING_INTERVAL) {
         showBuildStatusAsTimedOut($('#build-status-icon'));
     } else {
         setTimeout(checkConversionStatus, 10000); // wait 10 second before checking
@@ -788,7 +1126,7 @@ var lastStatus = -1;
 function checkConversionStatus() {
     $.getJSON("build_log.json", function (myLog) {
         var iconType = eConvStatus.ERROR;
-        if(myLog) {
+        if (myLog) {
             recent_build_log = myLog;
             iconType = getDisplayIconType(myLog.status);
         }
@@ -796,7 +1134,7 @@ function checkConversionStatus() {
             console.log("conversion error");
         } else if (iconType !== eConvStatus.IN_PROGRESS) {
             console.log("conversion completed");
-            if(lastStatus === eConvStatus.IN_PROGRESS) {
+            if (lastStatus === eConvStatus.IN_PROGRESS) {
                 reloadPage(); // only reload page if we went from in_progress to a final state
             }
         } else {
@@ -812,7 +1150,7 @@ function checkConversionStatus() {
 }
 
 function checkForConversionRequested($conversion_requested) {
-    if($conversion_requested && ($conversion_requested.length)) {
+    if ($conversion_requested && ($conversion_requested.length)) {
         console.log("conversion in process");
         checkConversionStatus();
     }
