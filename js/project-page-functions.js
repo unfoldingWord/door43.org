@@ -1,4 +1,4 @@
-// console.log("project-page-functions.js version 10v"); // Helps identify if you have an older cached page or the latest
+// console.log("project-page-functions.js version 10w"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash;
@@ -389,7 +389,7 @@ function getVisibleHeight(selector) {
     return 0;
 }
 
-/* RJH Aug2019
+/* RJH removed Aug2019
 noinspection JSUnusedGlobalSymbols
 function showTenMore(){
   _StatHat.push(["_trackCount", "wShy-AE8rCXbQkCJepSvfSA3eUVzaw~~", 1.0]);
@@ -845,12 +845,12 @@ function requestPDFbuild() {
         };
     console.log("  tx_payload = " + JSON.stringify(tx_payload));
     requested_PDF_build_time = new Date();
-    var long_prefix = '';
-    if (API_prefix) long_prefix = 'develop.';
+    var long_prefix = 'git';
+    if (API_prefix) long_prefix = 'develop';
     $.ajax({
         type: 'POST',
         crossDomain: 'true',
-        url: 'https://' + long_prefix + 'door43.org/tx/',
+        url: 'https://' + long_prefix + '.door43.org/tx/',
         data: JSON.stringify(tx_payload),
         dataType: 'json',
         contentType : 'application/json',
