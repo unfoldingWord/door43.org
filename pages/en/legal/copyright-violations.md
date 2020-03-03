@@ -44,7 +44,7 @@ You may contact us via email, postal mail, or fax, being sure to include the req
 
 To submit a claim, contact our DMCA agent:
 
-* Email: [abiller@coatsandbennett.com](mailto:abiller@coatsandbennett.com)
-* Fax: +1 919.854.2084
-* Address: DMCA Complaints – Door43, Anthony J. Biller, 1400 Crescent Green, Suite 300, Cary, NC 27518, USA
-* Phone: +1 919.854.1844
+* Email: ajbiller@michaelbest.com
+* Phone +1 984-220-8750
+* Fax +1 877-398-5240
+* Address: DMCA Complaints – Door43 Anthony J. Biller, 2501 Blue Ridge Road, Suite 390, Raleigh, NC 27607, USA
