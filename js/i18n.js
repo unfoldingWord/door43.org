@@ -592,9 +592,13 @@ function getSearchPageViewUrl(pageUrl) {
  * @return {'url','params'} - true if search initiated, if false then search error
  */
 function searchManifestTable(criteria, callback, sectionToShow) {
+    console.log('searchManifestTable criteria ' + criteria);
     var searchUrl = getSearchPageViewUrl(window.location.href);
     var params = getParamsToSend(criteria);
     resetSearch(sectionToShow);
+    console.log('searchManifestTable searchUrl ' + searchUrl);
+    console.log('searchManifestTable params ' + params);
+    console.log('searchManifestTable STR in searchUrl ' + searchUrl.includes('STR'));
 
     $.ajax({
         url: searchUrl,
@@ -603,7 +607,8 @@ function searchManifestTable(criteria, callback, sectionToShow) {
         data: params,
         dataType: 'jsonp',
         success: function (data, status) {
-            callback(null, data);
+            console.log('searchManifestTable callback data ' + data);
+            callback(null, data); // null is for err
             return data;
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -611,7 +616,7 @@ function searchManifestTable(criteria, callback, sectionToShow) {
             console.log(error);
             if(!errorShown) {
                 errorShown = true;
-                callback(error, null);
+                callback(error, null); // null is for data
             }
             return error;
         }
@@ -661,6 +666,9 @@ function updateRecentResults(err, entries) {
  * @param entries
  */
 function updateSearchResults(searchType, err, entries) {
+    console.log('updateSearchResults searchType ' + searchType);
+    console.log('updateSearchResults err ' + err);
+    console.log('updateSearchResults entries ' + entries);
     if (!err) {
         if(!searchType) {
             searchResults[SECTION_TYPE_RECENT] = entries.slice();
@@ -810,9 +818,9 @@ function showSearchResults(sectionToShow) {
 }
 
 /**
- * Given N, find its fibonacci 
+ * Given N, find its fibonacci
  *
- * @param {number} num - N for the fibonacci number 
+ * @param {number} num - N for the fibonacci number
  * @returns {number} - The fibonacci number
  */
 function fibonacci(num) {
