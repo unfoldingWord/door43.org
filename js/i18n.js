@@ -1,4 +1,4 @@
-console.log("i18n.js version 2a"); // Helps identify if you have an older cached page or the latest
+console.log("i18n.js version 2b"); // Helps identify if you have an older cached page or the latest
 /**************************************************************************************************
  **********************          DOCUMENT READY FUNCTIONS                **************************
  **************************************************************************************************/
@@ -593,13 +593,13 @@ function getSearchPageViewUrl(pageUrl) {
  * @return {'url','params'} - true if search initiated, if false then search error
  */
 function searchManifestTable(criteria, callback, sectionToShow) {
-    console.log('searchManifestTable criteria ' + criteria);
+    console.log('searchManifestTable criteria ' + JSON.stringify(criteria));
     var searchUrl = getSearchPageViewUrl(window.location.href);
     var params = getParamsToSend(criteria);
     resetSearch(sectionToShow);
     console.log('searchManifestTable searchUrl ' + searchUrl);
-    console.log('searchManifestTable params ' + params);
-    if (searchUrl) console.log('searchManifestTable STR in searchUrl ' + searchUrl.indexOf('STR') !== -1);
+    console.log('searchManifestTable params ' + JSON.stringify(params));
+    if (searchUrl) console.log('searchManifestTable STR in searchUrl ' + (searchUrl.indexOf('STR') !== -1));
 
     $.ajax({
         url: searchUrl,
@@ -608,7 +608,7 @@ function searchManifestTable(criteria, callback, sectionToShow) {
         data: params,
         dataType: 'jsonp',
         success: function (data, status) {
-            console.log('searchManifestTable callback data ' + data);
+            console.log('searchManifestTable callback data ' + JSON.stringify(data));
             callback(null, data); // null is for err
             return data;
         },
@@ -669,7 +669,12 @@ function updateRecentResults(err, entries) {
 function updateSearchResults(searchType, err, entries) {
     console.log('updateSearchResults searchType ' + searchType);
     console.log('updateSearchResults err ' + err);
-    console.log('updateSearchResults entries ' + entries);
+    console.log('updateSearchResults num entries ' + entries.length);
+    console.log('updateSearchResults entries ' + JSON.stringify(entries));
+    for (var i = 0; i < entries.length; i++) {
+        console.log(' ' + i + ' ' + JSON.stringify(entries[i]));
+        //Do something
+    }
     if (!err) {
         if(!searchType) {
             searchResults[SECTION_TYPE_RECENT] = entries.slice();
