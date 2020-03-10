@@ -1,4 +1,4 @@
-console.log("i18n.js version 2d"); // Helps identify if you have an older cached page or the latest
+console.log("i18n.js version 2e"); // Helps identify if you have an older cached page or the latest
 /**************************************************************************************************
  **********************          DOCUMENT READY FUNCTIONS                **************************
  **************************************************************************************************/
@@ -606,19 +606,29 @@ function searchManifestTable(criteria, callback, sectionToShow) {
         data: params,
         dataType: 'jsonp',
         success: function (data, status) {
-            // for (var i = 0; i < data.length; i++)
-            //     console.log(' ' + i + ' ' + data[i].user_name);
-            var needToFilter = true;
-            try {
+            // We filter out unwanted results here, before the callback
+            // Note that we still allow a specific search for 'STR'
+            //  and 'tx-manager-test-data' (exact case) to work
+            var needToFilterSTR = true;
+            var needToFilterTXManagerTestData = true;
+            try { // full_text criteria is not always present
                 if (criteria.full_text.indexOf('STR') !== -1)
-                    needToFilter = false;
-            } catch(e) {
-                console.log("Caught " + e)
+                    needToFilterSTR = false;
+                if (criteria.full_text.indexOf('tx-manager-test-data') !== -1)
+                needToFilterTXManagerTestData = false;
+            } catch(e) { // TypeError: criteria.full_text is null
+                // console.log("Caught " + e);
             }
-            if (needToFilter) {
+            if (needToFilterSTR) {
                 console.log("Filtering out STR usernames…")
                 var filtered_data = data.filter(function(entry, index, arr){ return entry.user_name != 'STR';});
-                console.log( "Got " + data.length + " results;  now " + filtered_data.length);
+                console.log( "  Got " + data.length + " results;  now " + filtered_data.length);
+                data = filtered_data;
+            }
+            if (needToFilterTXManagerTestData) {
+                console.log("Filtering out tx-manager-test-data usernames…")
+                var filtered_data = data.filter(function(entry, index, arr){ return entry.user_name != 'tx-manager-test-data';});
+                console.log( "  Got " + data.length + " results;  now " + filtered_data.length);
                 data = filtered_data;
             }
             callback(null, data); // null is for err
