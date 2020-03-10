@@ -1,4 +1,4 @@
-console.log("i18n.js version 2e"); // Helps identify if you have an older cached page or the latest
+// console.log("i18n.js version 2e"); // Helps identify if you have an older cached page or the latest
 /**************************************************************************************************
  **********************          DOCUMENT READY FUNCTIONS                **************************
  **************************************************************************************************/
@@ -593,11 +593,11 @@ function getSearchPageViewUrl(pageUrl) {
  * @return {'url','params'} - true if search initiated, if false then search error
  */
 function searchManifestTable(criteria, callback, sectionToShow) {
-    console.log('searchManifestTable criteria ' + JSON.stringify(criteria));
+    // console.log('searchManifestTable criteria ' + JSON.stringify(criteria));
     var searchUrl = getSearchPageViewUrl(window.location.href);
+    // console.log('searchManifestTable searchUrl ' + searchUrl);
     var params = getParamsToSend(criteria);
     resetSearch(sectionToShow);
-    console.log('searchManifestTable searchUrl ' + searchUrl);
 
     $.ajax({
         url: searchUrl,
@@ -620,15 +620,15 @@ function searchManifestTable(criteria, callback, sectionToShow) {
                 // console.log("Caught " + e);
             }
             if (needToFilterSTR) {
-                console.log("Filtering out STR usernames…")
+                // console.log("Filtering out STR usernames…")
                 var filtered_data = data.filter(function(entry, index, arr){ return entry.user_name != 'STR';});
-                console.log( "  Got " + data.length + " results;  now " + filtered_data.length);
+                console.log( "Got " + data.length + " results;  filtered for 'STR' now " + filtered_data.length);
                 data = filtered_data;
             }
             if (needToFilterTXManagerTestData) {
-                console.log("Filtering out tx-manager-test-data usernames…")
+                // console.log("Filtering out tx-manager-test-data usernames…")
                 var filtered_data = data.filter(function(entry, index, arr){ return entry.user_name != 'tx-manager-test-data';});
-                console.log( "  Got " + data.length + " results;  now " + filtered_data.length);
+                console.log( "Got " + data.length + " results;  filtered for `tx-manager-test-data` now " + filtered_data.length);
                 data = filtered_data;
             }
             callback(null, data); // null is for err
