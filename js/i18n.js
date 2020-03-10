@@ -1,4 +1,4 @@
-console.log("i18n.js version 2c"); // Helps identify if you have an older cached page or the latest
+console.log("i18n.js version 2d"); // Helps identify if you have an older cached page or the latest
 /**************************************************************************************************
  **********************          DOCUMENT READY FUNCTIONS                **************************
  **************************************************************************************************/
@@ -598,8 +598,6 @@ function searchManifestTable(criteria, callback, sectionToShow) {
     var params = getParamsToSend(criteria);
     resetSearch(sectionToShow);
     console.log('searchManifestTable searchUrl ' + searchUrl);
-    // console.log('searchManifestTable params ' + JSON.stringify(params));
-    // if (searchUrl) console.log('searchManifestTable STR in searchUrl ' + (searchUrl.indexOf('STR') !== -1));
 
     $.ajax({
         url: searchUrl,
@@ -608,16 +606,19 @@ function searchManifestTable(criteria, callback, sectionToShow) {
         data: params,
         dataType: 'jsonp',
         success: function (data, status) {
-            // console.log('searchManifestTable callback data ' + JSON.stringify(data));
-            for (var i = 0; i < data.length; i++) {
-                // console.log(' ' + i + ' ' + JSON.stringify(data[i]));
-                console.log(' ' + i + ' ' + data[i].user_name);
+            // for (var i = 0; i < data.length; i++)
+            //     console.log(' ' + i + ' ' + data[i].user_name);
+            var needToFilter = true;
+            try {
+                if (criteria.full_text.indexOf('STR') !== -1)
+                    needToFilter = false;
+            } catch(e) {
+                console.log("Caught " + e)
             }
-            if (searchUrl.indexOf('STR') === -1) {
+            if (needToFilter) {
                 console.log("Filtering out STR usernames…")
-                // 'STR' wasn't in the search string
                 var filtered_data = data.filter(function(entry, index, arr){ return entry.user_name != 'STR';});
-                console.log( "was " + data.length + " now " + filtered_data.length);
+                console.log( "Got " + data.length + " results;  now " + filtered_data.length);
                 data = filtered_data;
             }
             callback(null, data); // null is for err
@@ -678,15 +679,7 @@ function updateRecentResults(err, entries) {
  * @param entries
  */
 function updateSearchResults(searchType, err, entries) {
-    console.log('updateSearchResults searchType ' + searchType);
-    // console.log('updateSearchResults err ' + err);
-    console.log('updateSearchResults num entries ' + entries.length);
-    // console.log('updateSearchResults entries ' + JSON.stringify(entries));
-    for (var i = 0; i < entries.length; i++) {
-        // console.log(' ' + i + ' ' + JSON.stringify(entries[i]));
-        console.log(' ' + i + ' ' + entries[i].user_name);
-        //Do something
-    }
+    // console.log('updateSearchResults num entries ' + entries.length);
     if (!err) {
         if(!searchType) {
             searchResults[SECTION_TYPE_RECENT] = entries.slice();
