@@ -1,4 +1,4 @@
-console.log("i18n.js version 2b"); // Helps identify if you have an older cached page or the latest
+console.log("i18n.js version 2c"); // Helps identify if you have an older cached page or the latest
 /**************************************************************************************************
  **********************          DOCUMENT READY FUNCTIONS                **************************
  **************************************************************************************************/
@@ -609,6 +609,16 @@ function searchManifestTable(criteria, callback, sectionToShow) {
         dataType: 'jsonp',
         success: function (data, status) {
             console.log('searchManifestTable callback data ' + JSON.stringify(data));
+            for (var i = 0; i < data.length; i++) {
+                // console.log(' ' + i + ' ' + JSON.stringify(data[i]));
+                console.log(' ' + i + ' ' + data[i].user_name);
+            }
+            if (searchUrl.indexOf('STR') === -1) {
+                // 'STR' wasn't in the search string
+                var filtered_data = data.filter(function(entry, index, arr){ return entry.name != 'STR';});
+                console.log( "was " + data.length + " now " + filtered_data.length);
+                data = filtered_data;
+            }
             callback(null, data); // null is for err
             return data;
         },
@@ -668,11 +678,12 @@ function updateRecentResults(err, entries) {
  */
 function updateSearchResults(searchType, err, entries) {
     console.log('updateSearchResults searchType ' + searchType);
-    console.log('updateSearchResults err ' + err);
+    // console.log('updateSearchResults err ' + err);
     console.log('updateSearchResults num entries ' + entries.length);
-    console.log('updateSearchResults entries ' + JSON.stringify(entries));
+    // console.log('updateSearchResults entries ' + JSON.stringify(entries));
     for (var i = 0; i < entries.length; i++) {
-        console.log(' ' + i + ' ' + JSON.stringify(entries[i]));
+        // console.log(' ' + i + ' ' + JSON.stringify(entries[i]));
+        console.log(' ' + i + ' ' + entries[i].user_name);
         //Do something
     }
     if (!err) {
