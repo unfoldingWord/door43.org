@@ -598,8 +598,8 @@ function searchManifestTable(criteria, callback, sectionToShow) {
     var params = getParamsToSend(criteria);
     resetSearch(sectionToShow);
     console.log('searchManifestTable searchUrl ' + searchUrl);
-    console.log('searchManifestTable params ' + JSON.stringify(params));
-    if (searchUrl) console.log('searchManifestTable STR in searchUrl ' + (searchUrl.indexOf('STR') !== -1));
+    // console.log('searchManifestTable params ' + JSON.stringify(params));
+    // if (searchUrl) console.log('searchManifestTable STR in searchUrl ' + (searchUrl.indexOf('STR') !== -1));
 
     $.ajax({
         url: searchUrl,
@@ -608,14 +608,15 @@ function searchManifestTable(criteria, callback, sectionToShow) {
         data: params,
         dataType: 'jsonp',
         success: function (data, status) {
-            console.log('searchManifestTable callback data ' + JSON.stringify(data));
+            // console.log('searchManifestTable callback data ' + JSON.stringify(data));
             for (var i = 0; i < data.length; i++) {
                 // console.log(' ' + i + ' ' + JSON.stringify(data[i]));
                 console.log(' ' + i + ' ' + data[i].user_name);
             }
             if (searchUrl.indexOf('STR') === -1) {
+                console.log("Filtering out STR usernames…")
                 // 'STR' wasn't in the search string
-                var filtered_data = data.filter(function(entry, index, arr){ return entry.name != 'STR';});
+                var filtered_data = data.filter(function(entry, index, arr){ return entry.user_name != 'STR';});
                 console.log( "was " + data.length + " now " + filtered_data.length);
                 data = filtered_data;
             }
