@@ -1,3 +1,4 @@
+console.log("i18n.js version 2a"); // Helps identify if you have an older cached page or the latest
 /**************************************************************************************************
  **********************          DOCUMENT READY FUNCTIONS                **************************
  **************************************************************************************************/
@@ -598,7 +599,7 @@ function searchManifestTable(criteria, callback, sectionToShow) {
     resetSearch(sectionToShow);
     console.log('searchManifestTable searchUrl ' + searchUrl);
     console.log('searchManifestTable params ' + params);
-    console.log('searchManifestTable STR in searchUrl ' + searchUrl.includes('STR'));
+    if (searchUrl) console.log('searchManifestTable STR in searchUrl ' + searchUrl.includes('STR'));
 
     $.ajax({
         url: searchUrl,
