@@ -599,7 +599,7 @@ function searchManifestTable(criteria, callback, sectionToShow) {
     resetSearch(sectionToShow);
     console.log('searchManifestTable searchUrl ' + searchUrl);
     console.log('searchManifestTable params ' + params);
-    if (searchUrl) console.log('searchManifestTable STR in searchUrl ' + searchUrl.includes('STR'));
+    if (searchUrl) console.log('searchManifestTable STR in searchUrl ' + searchUrl.indexOf('STR') !== -1);
 
     $.ajax({
         url: searchUrl,
