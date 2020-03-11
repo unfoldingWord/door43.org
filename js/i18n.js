@@ -1,4 +1,4 @@
-console.log("i18n.js version 3a"); // Helps identify if you have an older cached page or the latest
+console.log("i18n.js version 3b"); // Helps identify if you have an older cached page or the latest
 /**************************************************************************************************
  **********************          DOCUMENT READY FUNCTIONS                **************************
  **************************************************************************************************/
@@ -177,7 +177,7 @@ function getLanguageListItems($searchField, callback) {
     console.log("term = " + term);
     console.log("typeof languageSearchResults[term] = " + typeof languageSearchResults[term]);
     if (typeof languageSearchResults[term] !== 'undefined') {
-        console.log("Calling processLanguages with " + languageSearchResults[term]);
+        console.log("Calling processLanguages with existing (" + languageSearchResults[term].length + ") " + JSON.stringify(languageSearchResults[term]));
         processLanguages($searchField, languageSearchResults[term], callback);
     } else {
         var request = {type: 'GET', url: 'https://us.door43.org:9096/?q=' + encodeURIComponent(term)};
@@ -185,7 +185,7 @@ function getLanguageListItems($searchField, callback) {
         $.ajax(request).done(function (data) {
             if (!data.results) return;
             languageSearchResults[term] = data.results;
-            console.log("Calling processLanguages with " + languageSearchResults[term]);
+            console.log("Calling processLanguages with returned (" + languageSearchResults[term].length + ") " + JSON.stringify(languageSearchResults[term]));
             processLanguages($searchField, data.results, callback);
         });
     }
@@ -628,13 +628,13 @@ function searchManifestTable(criteria, callback, sectionToShow) {
             if (needToFilterSTR) {
                 // console.log("Filtering out STR usernames…")
                 var filtered_data = data.filter(function(entry, index, arr){ return entry.user_name != 'STR';});
-                console.log( "Got " + data.length + " search results;  filtered for 'STR' now " + filtered_data.length);
+                console.log( "Had " + data.length + " search results;  filtered for 'STR' now " + filtered_data.length);
                 data = filtered_data;
             }
             if (needToFilterTXManagerTestData) {
                 // console.log("Filtering out tx-manager-test-data usernames…")
                 var filtered_data = data.filter(function(entry, index, arr){ return entry.user_name != 'tx-manager-test-data';});
-                console.log( "Got " + data.length + " search results;  filtered for `tx-manager-test-data` now " + filtered_data.length);
+                console.log( "Had " + data.length + " search results;  filtered for `tx-manager-test-data` now " + filtered_data.length);
                 data = filtered_data;
             }
             callback(null, data); // null is for err
