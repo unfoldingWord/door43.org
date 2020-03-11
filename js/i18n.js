@@ -1,4 +1,4 @@
-console.log("i18n.js version 3c"); // Helps identify if you have an older cached page or the latest
+console.log("i18n.js version 3d"); // Helps identify if you have an older cached page or the latest
 /**************************************************************************************************
  **********************          DOCUMENT READY FUNCTIONS                **************************
  **************************************************************************************************/
@@ -185,6 +185,7 @@ function getLanguageListItems($searchField, callback) {
         var request = {type: 'GET', url: 'https://td.unfoldingword.org/ac/langnames/?q=' + encodeURIComponent(term)};
         console.log("GETting " + JSON.stringify(request));
         $.ajax(request).done(function (data) {
+            console.log("Got returned data=" + JSON.stringify(data));
             if (!data.results) return;
             languageSearchResults[term] = data.results;
             console.log("Calling processLanguages with the returned (" + languageSearchResults[term].length + ") " + JSON.stringify(languageSearchResults[term]));
