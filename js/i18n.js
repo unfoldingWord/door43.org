@@ -1,4 +1,4 @@
-console.log("i18n.js version 3b"); // Helps identify if you have an older cached page or the latest
+console.log("i18n.js version 3c"); // Helps identify if you have an older cached page or the latest
 /**************************************************************************************************
  **********************          DOCUMENT READY FUNCTIONS                **************************
  **************************************************************************************************/
@@ -164,13 +164,14 @@ function removeLastSearchTerm() {
 }
 
 /**
- * Gets the list of language items from https://us.door43.org:9096
+ * Gets the list of language items from https://us.door43.org:9096 XXX OLD
+ *                      NOW FROM https://td.unfoldingword.org/ac/langnames
  *
  * @param {JQuery} $searchField
  * @param {function|Spy} [callback]  Optional. Initially added for unit testing
  */
 function getLanguageListItems($searchField, callback) {
-    console.log("getLanguageListItems(" + $searchField + ", " + callback + ")");
+    console.log("getLanguageListItems(" + JSON.stringify($searchField) + ", " + callback + ")");
     // reset the timer flag
     languageSelectorTimer = 0;
     var term = extractLastSearchTerm().toLowerCase().substr(0, 4);
@@ -180,12 +181,13 @@ function getLanguageListItems($searchField, callback) {
         console.log("Calling processLanguages with existing (" + languageSearchResults[term].length + ") " + JSON.stringify(languageSearchResults[term]));
         processLanguages($searchField, languageSearchResults[term], callback);
     } else {
-        var request = {type: 'GET', url: 'https://us.door43.org:9096/?q=' + encodeURIComponent(term)};
+        // var request = {type: 'GET', url: 'https://us.door43.org:9096/?q=' + encodeURIComponent(term)};
+        var request = {type: 'GET', url: 'https://td.unfoldingword.org/ac/langnames/?q=' + encodeURIComponent(term)};
         console.log("GETting " + JSON.stringify(request));
         $.ajax(request).done(function (data) {
             if (!data.results) return;
             languageSearchResults[term] = data.results;
-            console.log("Calling processLanguages with returned (" + languageSearchResults[term].length + ") " + JSON.stringify(languageSearchResults[term]));
+            console.log("Calling processLanguages with the returned (" + languageSearchResults[term].length + ") " + JSON.stringify(languageSearchResults[term]));
             processLanguages($searchField, data.results, callback);
         });
     }
