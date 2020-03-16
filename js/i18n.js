@@ -184,12 +184,13 @@ function getLanguageListItems($searchField, callback) {
         processLanguages($searchField, languageSearchResults[term], callback);
     } else {
         // var request = {type: 'GET', url: 'https://us.door43.org:9096/?q=' + encodeURIComponent(term)};
-        extra = API_prefix ? '-demo' : '';
+        var extra = API_prefix ? '-demo' : '';
         var request = {type: 'GET',
                 url: 'https://td' + extra + '.unfoldingword.org/ac/langnames/?q=' + encodeURIComponent(term)
                 };
         console.log("GETting " + JSON.stringify(request));
-        $.ajax(request).done(function (data) {
+        $.ajax(request).done(function (data, responseText, jqXHR) {
+            console.log("Got returned headers=" + jqXHR.getAllResponseHeaders());
             console.log("Got returned data=" + JSON.stringify(data));
             if (!data.results) return;
             languageSearchResults[term] = data.results;
