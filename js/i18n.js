@@ -1,8 +1,9 @@
-console.log("i18n.js version 3e"); // Helps identify if you have an older cached page or the latest
+console.log("i18n.js version 3f"); // Helps identify if you have an older cached page or the latest
 /**************************************************************************************************
  **********************          DOCUMENT READY FUNCTIONS                **************************
  **************************************************************************************************/
 var pageLoaded = false;
+var API_prefix = (window.location.hostname == 'dev.door43.org') ? 'dev-' : '';
 
 /**
  * Functions to setup the language page on document ready
@@ -183,7 +184,7 @@ function getLanguageListItems($searchField, callback) {
         processLanguages($searchField, languageSearchResults[term], callback);
     } else {
         // var request = {type: 'GET', url: 'https://us.door43.org:9096/?q=' + encodeURIComponent(term)};
-        extra = prefix ? '-demo' : '';
+        extra = API_prefix ? '-demo' : '';
         var request = {type: 'GET',
                 url: 'https://td' + extra + '.unfoldingword.org/ac/langnames/?q=' + encodeURIComponent(term)
                 };
