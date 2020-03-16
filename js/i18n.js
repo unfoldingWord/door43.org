@@ -1,4 +1,4 @@
-console.log("i18n.js version 3f"); // Helps identify if you have an older cached page or the latest
+// console.log("i18n.js version 3f"); // Helps identify if you have an older cached page or the latest
 /**************************************************************************************************
  **********************          DOCUMENT READY FUNCTIONS                **************************
  **************************************************************************************************/
@@ -173,14 +173,13 @@ function removeLastSearchTerm() {
  * @param {function|Spy} [callback]  Optional. Initially added for unit testing
  */
 function getLanguageListItems($searchField, callback) {
-    console.log("getLanguageListItems(" + JSON.stringify($searchField) + ", " + callback + ")");
+    // console.log("getLanguageListItems(" + JSON.stringify($searchField) + ", " + callback + ")");
     // reset the timer flag
     languageSelectorTimer = 0;
     var term = extractLastSearchTerm().toLowerCase().substr(0, 4);
-    console.log("term = " + term);
-    console.log("typeof languageSearchResults[term] = " + typeof languageSearchResults[term]);
+    // console.log("typeof languageSearchResults[" + term + "] = " + typeof languageSearchResults[term]);
     if (typeof languageSearchResults[term] !== 'undefined') {
-        console.log("Calling processLanguages with existing (" + languageSearchResults[term].length + ") " + JSON.stringify(languageSearchResults[term]));
+        // console.log("Calling processLanguages with existing (" + languageSearchResults[term].length + ") " + JSON.stringify(languageSearchResults[term]));
         processLanguages($searchField, languageSearchResults[term], callback);
     } else {
         // var request = {type: 'GET', url: 'https://us.door43.org:9096/?q=' + encodeURIComponent(term)};
@@ -190,11 +189,10 @@ function getLanguageListItems($searchField, callback) {
                 };
         console.log("GETting " + JSON.stringify(request));
         $.ajax(request).done(function (data, responseText, jqXHR) {
-            console.log("Got returned headers=" + jqXHR.getAllResponseHeaders());
-            console.log("Got returned data=" + JSON.stringify(data));
+            // console.log("Got returned headers=" + jqXHR.getAllResponseHeaders());
+            // console.log("Got returned data=" + JSON.stringify(data));
             if (!data.results) return;
             languageSearchResults[term] = data.results;
-            console.log("Calling processLanguages with the returned (" + languageSearchResults[term].length + ") " + JSON.stringify(languageSearchResults[term]));
             processLanguages($searchField, data.results, callback);
         });
     }
@@ -608,9 +606,7 @@ function getSearchPageViewUrl(pageUrl) {
  * @return {'url','params'} - true if search initiated, if false then search error
  */
 function searchManifestTable(criteria, callback, sectionToShow) {
-    // console.log('searchManifestTable criteria ' + JSON.stringify(criteria));
     var searchUrl = getSearchPageViewUrl(window.location.href);
-    // console.log('searchManifestTable searchUrl ' + searchUrl);
     var params = getParamsToSend(criteria);
     resetSearch(sectionToShow);
 
@@ -635,13 +631,11 @@ function searchManifestTable(criteria, callback, sectionToShow) {
                 // console.log("Caught " + e);
             }
             if (needToFilterSTR) {
-                // console.log("Filtering out STR usernames…")
                 var filtered_data = data.filter(function(entry, index, arr){ return entry.user_name != 'STR';});
                 console.log( "Had " + data.length + " search results;  filtered for 'STR' now " + filtered_data.length);
                 data = filtered_data;
             }
             if (needToFilterTXManagerTestData) {
-                // console.log("Filtering out tx-manager-test-data usernames…")
                 var filtered_data = data.filter(function(entry, index, arr){ return entry.user_name != 'tx-manager-test-data';});
                 console.log( "Had " + data.length + " search results;  filtered for `tx-manager-test-data` now " + filtered_data.length);
                 data = filtered_data;
@@ -704,7 +698,6 @@ function updateRecentResults(err, entries) {
  * @param entries
  */
 function updateSearchResults(searchType, err, entries) {
-    // console.log('updateSearchResults num entries ' + entries.length);
     if (!err) {
         if(!searchType) {
             searchResults[SECTION_TYPE_RECENT] = entries.slice();
