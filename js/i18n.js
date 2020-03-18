@@ -1,7 +1,9 @@
+// console.log("i18n.js version 3f"); // Helps identify if you have an older cached page or the latest
 /**************************************************************************************************
  **********************          DOCUMENT READY FUNCTIONS                **************************
  **************************************************************************************************/
 var pageLoaded = false;
+var API_prefix = (window.location.hostname == 'dev.door43.org') ? 'dev-' : '';
 
 /**
  * Functions to setup the language page on document ready
@@ -163,20 +165,32 @@ function removeLastSearchTerm() {
 }
 
 /**
- * Gets the list of language items from https://us.door43.org:9096
+ * Gets the list of language items from https://us.door43.org:9096 XXX OLD
+ *                      NOW FROM https://td.unfoldingword.org/ac/langnames
+ *                          OR https://td-demo.unfoldingword.org/ac/langnames
  *
  * @param {JQuery} $searchField
  * @param {function|Spy} [callback]  Optional. Initially added for unit testing
  */
 function getLanguageListItems($searchField, callback) {
+    // console.log("getLanguageListItems(" + JSON.stringify($searchField) + ", " + callback + ")");
     // reset the timer flag
     languageSelectorTimer = 0;
     var term = extractLastSearchTerm().toLowerCase().substr(0, 4);
+    // console.log("typeof languageSearchResults[" + term + "] = " + typeof languageSearchResults[term]);
     if (typeof languageSearchResults[term] !== 'undefined') {
+        // console.log("Calling processLanguages with existing (" + languageSearchResults[term].length + ") " + JSON.stringify(languageSearchResults[term]));
         processLanguages($searchField, languageSearchResults[term], callback);
     } else {
-        var request = {type: 'GET', url: 'https://us.door43.org:9096/?q=' + encodeURIComponent(term)};
-        $.ajax(request).done(function (data) {
+        // var request = {type: 'GET', url: 'https://us.door43.org:9096/?q=' + encodeURIComponent(term)};
+        var extra = API_prefix ? '-demo' : '';
+        var request = {type: 'GET',
+                url: 'https://td' + extra + '.unfoldingword.org/ac/langnames/?q=' + encodeURIComponent(term)
+                };
+        console.log("GETting " + JSON.stringify(request));
+        $.ajax(request).done(function (data, responseText, jqXHR) {
+            // console.log("Got returned headers=" + jqXHR.getAllResponseHeaders());
+            // console.log("Got returned data=" + JSON.stringify(data));
             if (!data.results) return;
             languageSearchResults[term] = data.results;
             processLanguages($searchField, data.results, callback);
@@ -603,7 +617,30 @@ function searchManifestTable(criteria, callback, sectionToShow) {
         data: params,
         dataType: 'jsonp',
         success: function (data, status) {
-            callback(null, data);
+            // We filter out unwanted results here, before the callback
+            // Note that we still allow a specific search for 'STR'
+            //  and 'tx-manager-test-data' (exact case) to work
+            var needToFilterSTR = true;
+            var needToFilterTXManagerTestData = true;
+            try { // full_text criteria is not always present
+                if (criteria.full_text.indexOf('STR') !== -1)
+                    needToFilterSTR = false;
+                if (criteria.full_text.indexOf('tx-manager-test-data') !== -1)
+                needToFilterTXManagerTestData = false;
+            } catch(e) { // TypeError: criteria.full_text is null
+                // console.log("Caught " + e);
+            }
+            if (needToFilterSTR) {
+                var filtered_data = data.filter(function(entry, index, arr){ return entry.user_name != 'STR';});
+                console.log( "Had " + data.length + " search results;  filtered for 'STR' now " + filtered_data.length);
+                data = filtered_data;
+            }
+            if (needToFilterTXManagerTestData) {
+                var filtered_data = data.filter(function(entry, index, arr){ return entry.user_name != 'tx-manager-test-data';});
+                console.log( "Had " + data.length + " search results;  filtered for `tx-manager-test-data` now " + filtered_data.length);
+                data = filtered_data;
+            }
+            callback(null, data); // null is for err
             return data;
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -611,7 +648,7 @@ function searchManifestTable(criteria, callback, sectionToShow) {
             console.log(error);
             if(!errorShown) {
                 errorShown = true;
-                callback(error, null);
+                callback(error, null); // null is for data
             }
             return error;
         }
@@ -810,9 +847,9 @@ function showSearchResults(sectionToShow) {
 }
 
 /**
- * Given N, find its fibonacci 
+ * Given N, find its fibonacci
  *
- * @param {number} num - N for the fibonacci number 
+ * @param {number} num - N for the fibonacci number
  * @returns {number} - The fibonacci number
  */
 function fibonacci(num) {

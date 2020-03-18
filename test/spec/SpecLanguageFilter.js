@@ -26,51 +26,51 @@ describe('Test Language Filters and the Selector Autocomplete', function () {
     $search_field.trigger('keyup', event);
   });
 
-  it('Test autocomplete in the search field. Search for "en" should work', function (done) {
-    var $search_field = $('#search-field');
+  // it('Test autocomplete in the search field. Search for "en" should work', function (done) {
+  //   var $search_field = $('#search-field');
 
-    $search_field.val('e');
+  //   $search_field.val('e');
 
-    var event = {
-      target: $search_field[0],
-      which: 'e'.charCodeAt(0),
-      unitTest: true
-    };
+  //   var event = {
+  //     target: $search_field[0],
+  //     which: 'e'.charCodeAt(0),
+  //     unitTest: true
+  //   };
 
-    // expect not to search on fist key press
-    $search_field.trigger('keyup', event);
+  //   // expect not to search on first key press
+  //   $search_field.trigger('keyup', event);
 
-    $search_field.val('en');
-    event.which = 'n'.charCodeAt(0);
-    $search_field.trigger('keyup', event);
+  //   $search_field.val('en');
+  //   event.which = 'n'.charCodeAt(0);
+  //   $search_field.trigger('keyup', event);
 
-    getLanguageListItems($search_field, function(languages) {
-      // the first item should be 'English (en)'
-      var expectedLength = 0;
-      expect(languages.length).toBeGreaterThan(expectedLength);
-      var expectedLc = 'en';
-      expect(languages[0]['lc']).toEqual(expectedLc);
+  //   getLanguageListItems($search_field, function(languages) {
+  //     // the first item should be 'English (en)'
+  //     var expectedLength = 0;
+  //     expect(languages.length).toBeGreaterThan(expectedLength);
+  //     var expectedLc = 'en';
+  //     expect(languages[0]['lc']).toEqual(expectedLc);
 
-      // each language code should begin with 'en'
-      $('ul.ui-autocomplete li').each(function() {
-        var expectedText = ' (en';
-        expect(this.innerHTML.toLowerCase()).toContain(expectedText);
-      });
-      $('ul.ui-autocomplete li:first-child').first().trigger('click');
-      var expectedVal = '';
-      expect($search_field.val()).toEqual(expectedVal);
-      var expectedLcs = ['en'];
-      expect(getLanguageCodesToFilter()).toEqual(expectedLcs);
+  //     // each language code should begin with 'en'
+  //     $('ul.ui-autocomplete li').each(function() {
+  //       var expectedText = ' (en';
+  //       expect(this.innerHTML.toLowerCase()).toContain(expectedText);
+  //     });
+  //     $('ul.ui-autocomplete li:first-child').first().trigger('click');
+  //     var expectedVal = '';
+  //     expect($search_field.val()).toEqual(expectedVal);
+  //     var expectedLcs = ['en'];
+  //     expect(getLanguageCodesToFilter()).toEqual(expectedLcs);
 
-      expect(languageSearchResults['en'] !== undefined).toBeTruthy();
+  //     expect(languageSearchResults['en'] !== undefined).toBeTruthy();
 
-      // calling getLanguageListItems a second time should not have to do an ajax call
-      $search_field.autocomplete('instance').term = null;
-      getLanguageListItems($search_field);
-      expect($('ul.ui-autocomplete li').length).toBeGreaterThan(0);
-      done();
-    });
-  });
+  //     // calling getLanguageListItems a second time should not have to do an ajax call
+  //     $search_field.autocomplete('instance').term = null;
+  //     getLanguageListItems($search_field);
+  //     expect($('ul.ui-autocomplete li').length).toBeGreaterThan(0);
+  //     done();
+  //   });
+  // });
 
   it('Adding and removing a button for "en"', function () {
     var expectedLcs = [];

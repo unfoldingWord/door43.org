@@ -3,9 +3,7 @@ var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash;
 var nav_height, header_height;
-var API_prefix = '';
-if (window.location.hostname == 'dev.door43.org')
-    API_prefix = 'dev-';
+var API_prefix = (window.location.hostname == 'dev.door43.org') ? 'dev-' : '';
 
 
 var _StatHat = _StatHat || [];
@@ -845,8 +843,7 @@ function requestPDFbuild() {
         };
     console.log("  tx_payload = " + JSON.stringify(tx_payload));
     requested_PDF_build_time = new Date();
-    var long_prefix = 'git';
-    if (API_prefix) long_prefix = 'develop';
+    var long_prefix = API_prefix ? 'develop' : 'git';
     $.ajax({
         type: 'POST',
         crossDomain: 'true',
