@@ -298,6 +298,18 @@ body.ta {
       -webkit-margin-start: 0;
       -webkit-margin-end: 0;
       font-weight: bold;
+
+      /**
+       * Make section headers appear lower appear lower on screen than their link targets, so
+       * they aren't obscured by the page header. Offset of 186px places headers even with the
+       * left column text ("Revisions"), but use about 150px just to clear the header.
+       * http://nicolasgallagher.com/jump-links-and-viewport-positioning/demo/#method-D
+       */
+      border-top: 186px solid transparent;
+      margin-top: -186px;
+      -webkit-background-clip: padding-box;
+      -moz-background-clip: padding;
+      background-clip: padding-box;
     }
 
     h1 + *, h2 + *, h3 + *, h4 + *, h5 + *, h6 + *,
