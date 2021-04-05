@@ -3,7 +3,7 @@ var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash;
 var nav_height, header_height;
-var API_prefix = (window.location.hostname == 'dev.door43.org') ? 'dev-' : '';
+var API_prefix = (window.location.hostname == 'dev.door43.org' || window.location.hostname == 'localhost' || window.location.hostname == '127.0.0.1') ? 'dev-' : '';
 
 
 var _StatHat = _StatHat || [];
