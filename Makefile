@@ -36,3 +36,8 @@ publish: test
 	echo "Ensure the build completed https://travis-ci.org/unfoldingWord-dev/door43.org"
 	echo "Check https://live.door43.org/ in a moment"
 	git checkout develop
+
+composeDoor43Debug:
+	docker-compose --file docker-compose-door43-nginx.yaml build
+	docker-compose --file docker-compose-door43-nginx.yaml up
+

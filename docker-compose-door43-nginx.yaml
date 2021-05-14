@@ -1,0 +1,20 @@
+---
+version: "3.4"
+# 3.4 requires Docker engine release 17.09.0+
+
+services:
+  proxy:
+    image: "nginx:latest"
+    volumes:
+      - ./proxyConf/dev-nginx.conf:/etc/nginx/conf.d/mysite.template:ro
+      - ./:/door43.org
+    ports:
+      - "${LISTEN_IP:-127.0.0.1}:3001:80"
+    environment:
+      - ALLOWED_IPS=${ALLOWED_IPS:-0.0.0.0/0}
+    command: /bin/sh -c "envsubst '$$ALLOWED_IPS' < /etc/nginx/conf.d/mysite.template > /etc/nginx/conf.d/default.conf && cd /door43.org && bundle install && nginx -g 'daemon off;'"
+networks:
+  default:
+    external:
+      name: tx-net
+
