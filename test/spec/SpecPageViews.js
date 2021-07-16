@@ -200,10 +200,12 @@ describe('PageViews', function () {
 
         it('getPageViewUrl() test page should point to dev-api', function () {
             //given
-            var pageUrl = 'https://test.door43.org/u/dummy/repo/96db55378e/';
-            const expectedURL = 'https://test-api.door43.org/page_view_count';
+            var pageUrl = 'https://dev.door43.org/u/dummy/repo/96db55378e/';
+            const expectedURL = 'https://dev-api.door43.org/page_view_count';
 
             //when
+            print("PAGE: "+pageUrl)
+            print("EXP: "+expectedURL)
             var downloadUrl = getPageViewUrl(pageUrl);
 
             //then
