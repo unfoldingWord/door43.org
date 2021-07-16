@@ -546,8 +546,8 @@ describe('Test getAndUpdateLanguagePageViews()', function () {
 
         it('getLanguagePageViewUrl() test page should point to dev-api', function () {
             //given
-            var pageUrl = 'https://test.door43.org/en/';
-            const expectedURL = 'https://test-api.door43.org/language_view_count';
+            var pageUrl = 'https://dev.door43.org/en/';
+            const expectedURL = 'https://dev-api.door43.org/language_view_count';
 
             //when
             var downloadUrl = getLanguagePageViewUrl(pageUrl);
