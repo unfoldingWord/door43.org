@@ -204,8 +204,6 @@ describe('PageViews', function () {
             const expectedURL = 'https://dev-api.door43.org/page_view_count';
 
             //when
-            print("PAGE: "+pageUrl)
-            print("EXP: "+expectedURL)
             var downloadUrl = getPageViewUrl(pageUrl);
 
             //then
