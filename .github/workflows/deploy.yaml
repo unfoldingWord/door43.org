@@ -10,6 +10,7 @@ on:
 jobs:
   build-n-publish:
     name: Publish to S3
+    environment: AWS
     env:
       NOKOGIRI_USE_SYSTEM_LIBRARIES: true
     runs-on: ubuntu-latest
