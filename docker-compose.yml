@@ -6,6 +6,6 @@ services:
     build: .
     volumes:
       - .:/source
-      - ./_site:/usr/share/nginx/html
+      - ./_site:/var/www/html
     ports:
       - "${LISTEN_IP:-127.0.0.1}:${DOOR43_PORT-8080}:80"

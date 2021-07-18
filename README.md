@@ -26,13 +26,28 @@ If you would like to submit an issue,  please do so [here](https://github.com/un
 
 ### Door43.org Jekyll Site
 
-#### Installation
+#### Installation - With Docker
+
+You can use Docker to install everything without needing Ruby and Gem installed on your machine, while it compiles whenever you make changes to your local copy to build the static pages.
+
+[Download and Install Docker](https://www.docker.com/products/docker-desktop) for your machine. Then on the command line, just run:
+
+`docker compose up -d`
+
+This will build a docker container that will build the static pages and then serve the website so continously whenever changes are made. You then visit the website at:
+
+http://localhost:8080
+
+Tail the logs by running:
+
+`docker compose logs -f`
+
+#### Installation - Without Docker
 
 To setup a development environment for developing on this site, you need to run the following commands (after cloning this repo):
 
     cd door43.org
     bundle install
-
 
 This will install the Ruby gems specified in `Gemfile`.
 You may be asked for the `sudo` password to install to the system RubyGems on Linux.

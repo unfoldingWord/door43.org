@@ -5,6 +5,7 @@
 #
 # Example:
 # docker build -t door43-dev . && docker run --rm -d --name door43-dev -v ${PWD}:/source -v ${PWD}/_site:/var/www/html -p 8080:80 door43-dev
+# and then go to http://localhost:8080
 
 FROM ruby:latest
 
