@@ -1,4 +1,0 @@
-# These files will be excluded when syncing to S3
-.DS_Store
-.sync/*
-db-keys.json
