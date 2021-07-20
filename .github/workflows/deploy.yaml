@@ -10,12 +10,21 @@ on:
 jobs:
   build-n-publish:
     name: Publish to S3
-    environment: AWS
     env:
       NOKOGIRI_USE_SYSTEM_LIBRARIES: true
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set environment for branch
+        run: |
+          if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
+              echo "AWS_S3_BUCKET=dev-door43.org" >> "$GITHUB_ENV"
+          elif [[ $GITHUB_REF == 'refs/heads/master' ]]; then
+              echo "AWS_S3_BUCKET=qa-door43.org" >> "$GITHUB_ENV"
+          else
+              echo "AWS_S3_BUCKET=door43.org" >> "$GITHUB_ENV"
+          fi
+
       - uses: actions/checkout@master
 
       - uses: ruby/setup-ruby@v1
@@ -29,7 +38,7 @@ jobs:
           args: --acl public-read --follow-symlinks
 
         env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_S3_BUCKET: $AWS_S3_BUCKET
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'us-west-2'
