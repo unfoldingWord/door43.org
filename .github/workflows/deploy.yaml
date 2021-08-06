@@ -26,6 +26,7 @@ jobs:
           if [[ "$REF" == "develop" ]]; then
             AWS_S3_BUCKET="dev-door43.org"
           fi
+          echo "SETTING AWS_S3_BUCKET: ${AWS_S3_BUCKET}"
           echo "AWS_S3_BUCKET=${AWS_S3_BUCKET}" >> $GITHUB_ENV
 
       - uses: ruby/setup-ruby@v1
