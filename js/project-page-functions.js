@@ -833,21 +833,28 @@ function requestPDFbuild() {
     var myIdentifier = myRepoOwner + '--' + myRepoName + '--' + myCommitId
     if (myCommitHash)
         myIdentifier += '--' + myCommitHash
+    var dcs_subdomain = API_prefix ? 'develop' : 'git';
+    var dcs_domain = 'https://' + dcs_subdomain + '.door43.org'
+    var repo_data_url = dcs_domain + '/' + myRepoOwner + '/' + myRepoName + '/archive/' + myCommitId + '.zip'
     var tx_payload = {
         job_id: 'Door43_' + myRepoName + '_PDF_request',
         identifier: myIdentifier,
+        repo_name: myRepoName,
+        repo_owner: myRepoOwner,
+        repo_ref: myCommitId,
+        repo_data_url: repo_data_url,
         resource_type: myResourceType,
         input_format: 'md',
         output_format: 'pdf',
-        source: 'https://git.door43.org/' + myRepoOwner + '/' + myRepoName + '/archive/' + myCommitId + '.zip'
-        };
+        source: repo_data_url,
+        dcs_domain: dcs_domain,
+    };
     console.log("  tx_payload = " + JSON.stringify(tx_payload));
     requested_PDF_build_time = new Date();
-    var long_prefix = API_prefix ? 'develop' : 'git';
     $.ajax({
         type: 'POST',
         crossDomain: 'true',
-        url: 'https://' + long_prefix + '.door43.org/tx/',
+        url: dcs_domain + '/tx/',
         data: JSON.stringify(tx_payload),
         dataType: 'json',
         contentType : 'application/json',
