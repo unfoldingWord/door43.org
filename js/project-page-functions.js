@@ -506,7 +506,7 @@ function addOptionalPDFDownload() {
         // console.log("Want PDF button for " + myRepoName + " repo (" + myResourceType + ")");
         var $downloadMenu = $("#download_menu ul");
         if ($downloadMenu) {
-            $downloadMenu.append('<li><a type="submit" onclick="userWantsPDF()"><span id="menu_source_item" class="glyphicon glyphicon-file"></span>PDF (ZIP)</a></li>');
+            $downloadMenu.append('<li><a type="submit" onclick="userWantsPDF()"><span id="menu_source_item" class="glyphicon glyphicon-file"></span>PDF</a></li>');
         }
         else console.log("addOptionalPDFDownload ERROR: Unable to find download menu");
     }
@@ -910,10 +910,11 @@ function saveDownloadFilesLink(myLog) {
 function wantDownloadPDFOption() {
     // console.log("wantDownloadPDFOption() for " + myResourceType);
     if (myResourceType == 'Open_Bible_Stories'
-     || myResourceType == 'OBS_Study_Notes'
-     || myResourceType == 'OBS_Study_Questions'
-     || myResourceType == 'OBS_Translation_Notes'
-     || myResourceType == 'Translation_Academy'
+    // Temporarily disabled -- PDFs generated only for releases and put in the repo's release's downloadables
+    //  || myResourceType == 'OBS_Study_Notes'
+    //  || myResourceType == 'OBS_Study_Questions'
+    //  || myResourceType == 'OBS_Translation_Notes'
+    //  || myResourceType == 'Translation_Academy'
       ) {
         //   console.log("  wantDownloadPDFOption() returning true")
           return true;
