@@ -1,0 +1,46 @@
+name: Publish to S3
+
+on:
+  push:
+    branches:
+      - develop
+    release:
+      types: [published]
+
+jobs:
+  build-n-publish:
+    name: Publish to S3
+    env:
+      NOKOGIRI_USE_SYSTEM_LIBRARIES: true
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Set S3_BUCKET_NAME based on branch
+        shell: bash
+        run: |
+          REF=`echo $GITHUB_REF | cut -d "/" -f3-`
+          echo "REF=$REF"
+          AWS_S3_BUCKET="door43.org"
+          if [[ "$REF" == "develop" ]]; then
+            AWS_S3_BUCKET="dev-door43.org"
+          fi
+          echo "SETTING AWS_S3_BUCKET: ${AWS_S3_BUCKET}"
+          echo "AWS_S3_BUCKET=${AWS_S3_BUCKET}" >> $GITHUB_ENV
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0.2
+          bundler-cache: true
+      - run: bundle exec jekyll build
+
+      - uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks
+        env:
+          AWS_S3_BUCKET: ${{ env.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'us-west-2'
+          SOURCE_DIR: '_site/'
