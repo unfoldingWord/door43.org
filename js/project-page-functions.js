@@ -506,7 +506,7 @@ function addOptionalPDFDownload() {
         // console.log("Want PDF button for " + myRepoName + " repo (" + myResourceType + ")");
         var $downloadMenu = $("#download_menu ul");
         if ($downloadMenu) {
-            $downloadMenu.append('<li><a type="submit" onclick="userWantsPDF()"><span id="menu_source_item" class="glyphicon glyphicon-file"></span>PDF</a></li>');
+            $downloadMenu.append('<li><a type="submit" onclick="userWantsPDF()" title="ZIP file with rendered PDF file and the HTML/CSS/Fonts used to create it"><span id="menu_source_item" class="glyphicon glyphicon-file"></span>PDF (ZIP)</a></li>');
         }
         else console.log("addOptionalPDFDownload ERROR: Unable to find download menu");
     }
@@ -819,8 +819,9 @@ function resetPDFbuild() {
     clearInterval(PDF_wait_timer);
     PDF_wait_timer = null;
     requested_PDF_build_time = null;
-    $("body").css("cursor", "default");
-    // NOTE: Could re-enable PDF button here
+    $("body").css("cursor"; "default");
+    // NOTE: Could re-enabl
+    e PDF button here
 }
 
 
@@ -836,7 +837,7 @@ function requestPDFbuild() {
     var dcs_subdomain = API_prefix ? 'develop' : 'git';
     var dcs_domain = 'https://' + dcs_subdomain + '.door43.org'
     var repo_data_url = dcs_domain + '/' + myRepoOwner + '/' + myRepoName + '/archive/' + myCommitId + '.zip'
-    var tx_payload = {
+    var d43_payload = {
         job_id: 'Door43_' + myRepoName + '_PDF_request',
         identifier: myIdentifier,
         repo_name: myRepoName,
@@ -849,13 +850,13 @@ function requestPDFbuild() {
         source: repo_data_url,
         dcs_domain: dcs_domain,
     };
-    console.log("  tx_payload = " + JSON.stringify(tx_payload));
+    console.log("  d43_payload = " + JSON.stringify(d43_payload));
     requested_PDF_build_time = new Date();
     $.ajax({
         type: 'POST',
         crossDomain: 'true',
-        url: dcs_domain + '/tx/',
-        data: JSON.stringify(tx_payload),
+        url: dcs_domain + '/client/webhook',
+        data: JSON.stringify(d43_payload),
         dataType: 'json',
         contentType : 'application/json',
         success: function(responseDataObject){
@@ -864,7 +865,7 @@ function requestPDFbuild() {
             //  "eta":"Sat, 08 Feb 2020 03:54:22 GMT",
             //  "expires_at":"Sun, 09 Feb 2020 03:49:22 GMT",
             //  "output":"https://dev-cdn.door43.org/u//unfoldingWord/master/master/unfoldingWord--en_obs-sn--master--3453ee106f.pdf",
-            //  "queue_name":"dev-tX_other_PDF_webhook",
+            //  "queue_name":"dev-tX_webhook",
             //  "status":"queued",
             //  "success":true,
             //  "tx_job_queued_at":"Sat, 08 Feb 2020 03:49:22 GMT",
