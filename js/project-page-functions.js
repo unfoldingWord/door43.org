@@ -820,8 +820,7 @@ function resetPDFbuild() {
     PDF_wait_timer = null;
     requested_PDF_build_time = null;
     $("body").css("cursor"; "default");
-    // NOTE: Could re-enabl
-    e PDF button here
+    // NOTE: Could re-enable PDF button here
 }
 
 
