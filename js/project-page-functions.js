@@ -819,7 +819,7 @@ function resetPDFbuild() {
     clearInterval(PDF_wait_timer);
     PDF_wait_timer = null;
     requested_PDF_build_time = null;
-    $("body").css("cursor"; "default");
+    $("body").css("cursor", "default");    
     // NOTE: Could re-enable PDF button here
 }
 
