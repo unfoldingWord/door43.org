@@ -854,7 +854,7 @@ function requestPDFbuild() {
     $.ajax({
         type: 'POST',
         crossDomain: 'true',
-        url: dcs_domain + '/client/webhook',
+        url: dcs_domain + '/tx',
         data: JSON.stringify(d43_payload),
         dataType: 'json',
         contentType : 'application/json',
