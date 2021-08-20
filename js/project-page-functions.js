@@ -917,11 +917,16 @@ function saveDownloadFilesLink(myLog) {
 function wantDownloadPDFOption() {
     // console.log("wantDownloadPDFOption() for " + myResourceType);
     if (myResourceType == 'Open_Bible_Stories'
-    // Temporarily disabled -- PDFs generated only for releases and put in the repo's release's downloadables
-    //  || myResourceType == 'OBS_Study_Notes'
-    //  || myResourceType == 'OBS_Study_Questions'
-    //  || myResourceType == 'OBS_Translation_Notes'
-    //  || myResourceType == 'Translation_Academy'
+     || myResourceType == 'OBS_Study_Notes'
+     || myResourceType == 'OBS_Study_Questions'
+     || myResourceType == 'OBS_Translation_Notes'
+     || myResourceType == 'OBS_Translation_Questions'
+     || myResourceType == 'Study_Notes'
+     || myResourceType == 'Study_Questions'
+     || myResourceType == 'Translation_Academy'
+     || myResourceType == 'Translation_Notes'
+     || myResourceType == 'Translation_Questions'
+     || myResourceType == 'Translation_Words'
       ) {
         //   console.log("  wantDownloadPDFOption() returning true")
           return true;
