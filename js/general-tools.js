@@ -199,10 +199,8 @@ function getSiteFromPage(pageUrl) {
         var parts = pageUrl.split('//');
         if (parts.length > 1) {
             var netloc = parts[1];
-            if (beginsWith(netloc, 'dev')) {
+            if (beginsWith(netloc, 'dev') || beginsWith(netloc, 'test') || beginsWith(netloc, 'localhost') || beginsWith(netloc, '127.0.0.1')) {
                 prefix = 'dev-';
-            } else if (beginsWith(netloc, 'test') || beginsWith(netloc, 'localhost') || beginsWith(netloc, '127.0.0.1')) {
-                prefix = 'test-';
             }
         }
     } catch (e) {
