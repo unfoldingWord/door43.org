@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - develop
-    release:
-      types: [published]
+  release:
+    types: [published]
 
 jobs:
   build-n-publish:
