@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - develop
-    tags:
-      - 'v*'
+      - master
 
 jobs:
   build-n-publish:
