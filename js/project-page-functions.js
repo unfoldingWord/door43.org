@@ -30,6 +30,10 @@ function onProjectPageLoaded() {
 
   onProjectPageChange();
 
+  if(! $('#draft-notice').length) {
+    $('#sub-header').append('<span id="draft-notice">Draft Material</span>');
+  }
+
   $('#starred-icon').click(function () {
     if ($(this).hasClass('starred')) {
       $(this).removeClass('starred');
