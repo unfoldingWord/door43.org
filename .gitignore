@@ -20,3 +20,6 @@ karma.log
 npm-debug.log
 .jekyll-cache
 .vscode
+.history
+.jekyll-metadata
+
