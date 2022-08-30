@@ -1,7 +1,7 @@
 // console.log("project-page-functions.js version 10w"); // Helps identify if you have an older cached page or the latest
 var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
-var myCommitId, myCommitType, myCommitHash;
+var myCommitId, myCommitType, myCommitHash, myGitRef;
 var nav_height, header_height;
 var API_prefix = (window.location.hostname == 'dev.door43.org' || window.location.hostname == 'localhost' || window.location.hostname == '127.0.0.1') ? 'dev-' : '';
 
@@ -231,6 +231,7 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
 
     myCommitId = myLog.commit_id; // tag name or branch name
     myCommitType = myLog.commit_type; // 'defaultBranch', 'branch', 'tag', or 'unknown'
+    myGitRef = "refs/" + (myCommitType == "tag" ? "tags" : "heads") + "/" + myCommitId;
     try {
         myCommitHash = myLog.commit_hash; // 10-hex-digit hash
     } catch(e) {
@@ -839,26 +840,26 @@ function requestPDFbuild() {
         myIdentifier += '--' + myCommitHash
     var dcs_subdomain = API_prefix ? 'develop' : 'git';
     var dcs_domain = 'https://' + dcs_subdomain + '.door43.org'
-    var repo_data_url = dcs_domain + '/' + myRepoOwner + '/' + myRepoName + '/archive/' + myCommitId + '.zip'
-    var tx_payload = {
-        job_id: 'Door43_' + myRepoName + '_PDF_request',
-        identifier: myIdentifier,
-        repo_name: myRepoName,
-        repo_owner: myRepoOwner,
-        repo_ref: myCommitId,
-        repo_data_url: repo_data_url,
-        resource_type: myResourceType,
-        input_format: 'md',
-        output_format: 'pdf',
-        source: repo_data_url,
-        dcs_domain: dcs_domain,
-    };
-    console.log("  tx_payload = " + JSON.stringify(tx_payload));
+    var d43_payload = {
+        "ref": myGitRef,
+        "after": myCommitHash,
+        "repository": {
+            'owner': {
+                'username': myRepoOwner,
+            },
+            'name': myRepoName,
+            "full_name": myRepoOwner+"/"+myRepoName,
+            "private": false,
+            "archive": false,
+        },
+    }
+    console.log("  d43_payload = " + JSON.stringify(d43_payload));
     requested_PDF_build_time = new Date();
     $.ajax({
         type: 'POST',
         crossDomain: 'true',
-        url: dcs_domain + '/tx/',
+        url: dcs_domain + '/client/webhook',
+        headers: { 'X-Gitea-Event': 'pdf_request', 'X-Gitea-Event-Type': 'pdf_request' },
         data: JSON.stringify(tx_payload),
         dataType: 'json',
         contentType : 'application/json',

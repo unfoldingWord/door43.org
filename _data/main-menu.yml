@@ -1,8 +1,6 @@
 - title: "About"
   href: "/en/about/"
   subitems:
-    - title: "New Site"
-      href: "/en/about/new_door43/"
     - title: "Statement of Faith"
       href: "/en/statement-of-faith/"
     - title: "Translation Guidelines"
@@ -11,5 +9,10 @@
       href: "/en/legal/"
 - title: "Browse"
   href: "/en/"
+  subitems:
+    - title: "Search"
+      href: "/en/"
+    - title: "Library"
+      href: "/en/library/"
 - title: "Contact"
   href: "/en/contact/"

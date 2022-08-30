@@ -24,6 +24,12 @@ If you would like to submit an issue,  please do so [here](https://github.com/un
 
 ## Developer Quickstart Information
 
+Easiest way to develop is using Docker:
+
+`docker compose up`
+
+will start a docker container that is mapped to port 8080 (http://localhost:8080) or whatever you set DOOR43_PORT to before starting docker compose
+
 ### Door43.org Jekyll Site
 
 #### Installation

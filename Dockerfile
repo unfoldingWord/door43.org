@@ -20,4 +20,4 @@ RUN gem install jekyll bundle
 
 RUN bundle install
 
-CMD bash /source/start.sh
+CMD bash /source/start-dev.sh

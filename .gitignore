@@ -19,4 +19,4 @@ js/db_keys*
 karma.log
 npm-debug.log
 .jekyll-cache
-
+.vscode
