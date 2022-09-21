@@ -860,7 +860,7 @@ function requestPDFbuild() {
         crossDomain: 'true',
         url: dcs_domain + '/client/webhook',
         headers: { 'X-Gitea-Event': 'pdf_request', 'X-Gitea-Event-Type': 'pdf_request' },
-        data: JSON.stringify(tx_payload),
+        data: JSON.stringify(d43_payload),
         dataType: 'json',
         contentType : 'application/json',
         success: function(responseDataObject){
