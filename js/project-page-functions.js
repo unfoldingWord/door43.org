@@ -1,4 +1,5 @@
 // console.log("project-page-functions.js version 10w"); // Helps identify if you have an older cached page or the latest
+var myProject = {};
 var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash, myGitRef;
@@ -58,7 +59,8 @@ function onProjectPageLoaded() {
     processBuildLogJson(myLog, $('#download_menu_button'), $('#build-status-icon'), $('#last-updated'));
 
     $.getJSON("../project.json", function (project) {
-        processProjectJson(project); // Updates the revision list
+        myProject = project;
+        processProjectJson(); // Updates the revision list
     })
       .done(function () {
         console.log("processed project.json");
@@ -135,7 +137,8 @@ function onProjectPageLoaded() {
 }
 
 
-function processProjectJson(project) {
+function processProjectJson() {
+    var project = myProject;
     // if ($revisions.length) { // old template with Revisions in left-sidebar
     //     console.log("processProjectJson() with revisions IN LEFT-SIDEBAR");
     // } else { // newer template with Versions in drop-down -- RJH Aug2019
@@ -843,6 +846,12 @@ function requestPDFbuild() {
     var d43_payload = {
         "ref": myGitRef,
         "after": myCommitHash,
+        "commits": [{
+            "id": myCommitHash,
+            "username": "guest",
+            "url": myProject['repo_url'] + "/commit/" + myCommitHash,
+            "message": "PDF request",
+        }],
         "repository": {
             'owner': {
                 'username': myRepoOwner,
