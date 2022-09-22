@@ -740,7 +740,7 @@ function doesPDFexist() {
     // console.log("doesPDFexist()");
     try {
         var req = new XMLHttpRequest();
-        req.open('HEAD', PDF_download_url, false); // Gets headers only
+        req.open('HEAD', adjusted_PDF_download_url, false); // Gets headers only
                                              // Synchronous request coz it should be quick
         req.send(); // Hopefully it's fast
         if (req.status==200) { // seems that the PDF is already there
@@ -965,7 +965,7 @@ function saveOptionalDownloadPDFLink() {
     if (wantDownloadPDFOption()) {
         // console.log("  Repo ownerUsername = " + myRepoOwner + ",  Repo name = " + myRepoName);
         // console.log("  Commit type = " + myCommitType + ",  Commit ID = " + myCommitId + ",  Commit hash = " + myCommitHash);
-        PDF_download_url = `https://s3-us-west-2.amazonaws.com/${API_prefix}door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}/${PDF_download_url}/${myRepoName.toLowerCase()}_${myCommitId}.zip`;
+        PDF_download_url = `https://s3-us-west-2.amazonaws.com/${API_prefix}door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}/${myRepoName.toLowerCase()}_${myCommitId}.zip`;
         console.log("  Expected PDF_download_url = " + PDF_download_url);
     } else {
         console.log("  Not trying to form PDF link for " + myResourceType);
