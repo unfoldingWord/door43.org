@@ -514,7 +514,7 @@ function addOptionalPDFDownload() {
         // console.log("Want PDF button for " + myRepoName + " repo (" + myResourceType + ")");
         var $downloadMenu = $("#download_menu ul");
         if ($downloadMenu) {
-            $downloadMenu.append('<li><a type="submit" onclick="userWantsPDF()"><span id="menu_source_item" class="glyphicon glyphicon-file"></span>PDF</a></li>');
+            $downloadMenu.append('<li><a type="submit" onclick="userWantsPDF()"><span id="menu_source_item" class="glyphicon glyphicon-file"></span>Printables (PDF & HTML)</a></li>');
         }
         else console.log("addOptionalPDFDownload ERROR: Unable to find download menu");
     }
@@ -933,17 +933,18 @@ function saveDownloadFilesLink(myLog) {
 function wantDownloadPDFOption() {
     // console.log("wantDownloadPDFOption() for " + myResourceType);
     if (myResourceType == 'Open_Bible_Stories'
-    // Temporarily disabled -- queue is working but no worker yet
-    //  || myResourceType == 'OBS_Study_Notes'
-    //  || myResourceType == 'OBS_Study_Questions'
-    //  || myResourceType == 'OBS_Translation_Notes'
-    //  || myResourceType == 'OBS_Translation_Questions'
-    //  || myResourceType == 'Study_Notes'
-    //  || myResourceType == 'Study_Questions'
-    //  || myResourceType == 'Translation_Academy'
-    //  || myResourceType == 'Translation_Notes'
-    //  || myResourceType == 'Translation_Questions'
-    //  || myResourceType == 'Translation_Words'
+     || myResourceType == 'OBS_Study_Notes'
+     || myResourceType == 'OBS_Study_Questions'
+     || myResourceType == 'OBS_Translation_Notes'
+     || myResourceType == 'OBS_Translation_Questions'
+     || myResourceType == 'Study_Notes'
+     || myResourceType == 'Study_Questions'
+     || myResourceType == 'Translation_Academy'
+     || myResourceType == 'Translation_Notes'
+     || myResourceType == 'Translation_Questions'
+     || myResourceType == 'Translation_Words'
+     || myResourceType == 'TSV_Translation_Notes'
+     || myResourceType == 'TSV_Translation_Questions'
       ) {
         //   console.log("  wantDownloadPDFOption() returning true")
           return true;
@@ -965,11 +966,8 @@ function saveOptionalDownloadPDFLink() {
     if (wantDownloadPDFOption()) {
         // console.log("  Repo ownerUsername = " + myRepoOwner + ",  Repo name = " + myRepoName);
         // console.log("  Commit type = " + myCommitType + ",  Commit ID = " + myCommitId + ",  Commit hash = " + myCommitHash);
-        var base_download_url = 'https://' + API_prefix + 'cdn.door43.org/u/';
-        var repo_part = myRepoOwner + '/' + myRepoName + '/' + myCommitId + '/';
-        var PDF_filename = myRepoOwner + '--' + myRepoName + '--' + myCommitId;
-        PDF_filename += '.pdf'
         PDF_download_url = base_download_url + repo_part + PDF_filename;
+        PDF_download_url = `https://${API_prefix}cdn.door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}/${PDF_download_url}/${myRepoName.toLowerCase()}_${myCommitId}.zip`;
         console.log("  Expected PDF_download_url = " + PDF_download_url);
     } else {
         console.log("  Not trying to form PDF link for " + myResourceType);
