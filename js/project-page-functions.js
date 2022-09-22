@@ -890,7 +890,7 @@ function requestPDFbuild() {
                 console.log("Oh dear!!! PDF URLs don't match:");
                 console.log("  Expected: " + PDF_download_url);
                 console.log("  tX gave:  " + responseDataObject.output);
-                PDF_download_url = responseDataObject.output; // Adjust our guess
+                // PDF_download_url = responseDataObject.output; // Adjust our guess
             }
         },
         error: function(request,errorString)
