@@ -740,7 +740,7 @@ function doesPDFexist() {
     // console.log("doesPDFexist()");
     try {
         var req = new XMLHttpRequest();
-        req.open('HEAD', adjusted_PDF_download_url, false); // Gets headers only
+        req.open('HEAD', PDF_download_url, false); // Gets headers only
                                              // Synchronous request coz it should be quick
         req.send(); // Hopefully it's fast
         if (req.status==200) { // seems that the PDF is already there
