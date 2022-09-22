@@ -966,7 +966,6 @@ function saveOptionalDownloadPDFLink() {
     if (wantDownloadPDFOption()) {
         // console.log("  Repo ownerUsername = " + myRepoOwner + ",  Repo name = " + myRepoName);
         // console.log("  Commit type = " + myCommitType + ",  Commit ID = " + myCommitId + ",  Commit hash = " + myCommitHash);
-        PDF_download_url = base_download_url + repo_part + PDF_filename;
         PDF_download_url = `https://${API_prefix}cdn.door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}/${PDF_download_url}/${myRepoName.toLowerCase()}_${myCommitId}.zip`;
         console.log("  Expected PDF_download_url = " + PDF_download_url);
     } else {
