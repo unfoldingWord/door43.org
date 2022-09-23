@@ -648,6 +648,7 @@ function userWantsPDF() {
             PDF_already_existed = true;
             if (isPDFcurrent()) {
                 console.log("    and seems it's current.");
+                console.log("OPENING3", PDF_download_url);
                 window.open(PDF_download_url);
                 return;
             } else
@@ -692,6 +693,7 @@ function waitingForPDF() {
     && (!PDF_already_existed || isPDFcurrent())) {
         // console.log("  Seems that the current PDF exists now after " + elapsedSeconds + " seconds.");
         resetPDFbuild(); // Close everything cleanly
+        console.log("OPENING1", PDF_download_url);
         window.open(PDF_download_url);
         return;
     }
@@ -731,6 +733,7 @@ function waitingForPDF() {
             var alert_msg = "There's a small chance that this PDF might be outdated";
             if (myCommitHash) alert_msg += " -- remember your hash is " + myCommitHash;
             alert("Warning: " + alert_msg + ". (Close this now and check the information at the bottom of the third page of the PDF.)");
+            console.log("OPENING2", PDF_download_url);
             window.open(PDF_download_url);
         } else {
             // console.log("No PDF appeared");
