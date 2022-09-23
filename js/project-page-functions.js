@@ -808,24 +808,19 @@ function isPDFcurrent() {
 
 
 function loadPDFBuildInfo() {
-    // Download the PDF build log if it exists
-    // console.log("loadPDFBuildInfo()");
-    var base_download_url = 'https://s3-us-west-2.amazonaws.com/' + API_prefix + 'cdn.door43.org/u/';
-    var repo_part = myRepoOwner + '/' + myRepoName + '/';
-    var filename_part = 'PDF_details.json';
-    var wanted_url = base_download_url + repo_part + filename_part;
-    // console.log("  Want URL = " + wanted_url);
-    $.getJSON(wanted_url, function (received_data) {
-        PDF_build_details = received_data;
-    })
-      .done(function () {
-        console.log("processed " + wanted_url);
-      })
-      .fail(function () {
-        console.log("error reading " + wanted_url);
-      }); // End getJSON}
-}
+  // Download the PDF build log if it exists
+  // console.log("loadPDFBuildInfo()");
+  var pdf_details_url = `https://s3-us-west-2.amazonaws.com/${API_prefix}door43.org/u/${myRepoOwner}/${myRepoName}/PDF_details.json`
+  // console.log("  PDF Details URL = " + pdf_details_url);
 
+  $.getJSON(pdf_details_url, function (received_data) {
+    PDF_build_details = received_data;
+  }).done(function () {
+    console.log("processed " + pdf_details_url);
+  }).fail(function () {
+    console.log("error reading " + pdf_details_url);
+  }); // End getJSON}
+}
 
 function resetPDFbuild() {
     // console.log("resetPDFbuild()")
