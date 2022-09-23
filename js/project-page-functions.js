@@ -46,7 +46,12 @@ function onProjectPageLoaded() {
     }
   });
 
-  var filename = window.location.href.split('?')[0].split('/').pop();
+  var url_parts = window.location.href.split('?')[0].split('/');
+  var filename = url_parts[url_parts.length - 1];
+  myCommitId = url_parts[url_parts.length - 2];
+  myRepoName = url_parts[url_parts.length - 3];
+  myRepoOwner = url_parts[url_parts.length - 4];
+  PDF_download_url = `https://s3-us-west-2.amazonaws.com/${API_prefix}door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}/${myRepoName.toLowerCase()}_${myCommitId}.zip`;
   // NOTE: left-sidebar doesn't exist for new template, RJH Sep2019
   $('#left-sidebar').find('#page-nav option[value="' + filename + '"]').attr('selected', 'selected');
 
@@ -248,6 +253,7 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
     setDownloadButtonState($downloadMenuButton);
     updateDownloadItems(myLog.input_format);
     updateConversionStatusOnPage($buildStatusIcon, myLog);
+    PDF_download_url = `https://s3-us-west-2.amazonaws.com/${API_prefix}door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}/${myRepoName.toLowerCase()}_${myCommitId}.zip`;
 
     if ($revisions.length) { // old template with Revisions in left-sidebar
         $revisions.empty();
@@ -965,7 +971,6 @@ function saveOptionalDownloadPDFLink() {
     if (wantDownloadPDFOption()) {
         // console.log("  Repo ownerUsername = " + myRepoOwner + ",  Repo name = " + myRepoName);
         // console.log("  Commit type = " + myCommitType + ",  Commit ID = " + myCommitId + ",  Commit hash = " + myCommitHash);
-        PDF_download_url = `https://s3-us-west-2.amazonaws.com/${API_prefix}door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}/${myRepoName.toLowerCase()}_${myCommitId}.zip`;
         console.log("  Expected PDF_download_url = " + PDF_download_url);
     } else {
         console.log("  Not trying to form PDF link for " + myResourceType);
