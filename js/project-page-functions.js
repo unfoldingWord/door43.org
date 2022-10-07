@@ -694,7 +694,7 @@ function waitingForPDF() {
         // console.log("  Seems that the current PDF exists now after " + elapsedSeconds + " seconds.");
         resetPDFbuild(); // Close everything cleanly
         console.log("OPENING1", PDF_download_url);
-        window.open(PDF_download_url);
+        window.open(PDF_download_url, '_blank');
         return;
     }
 
@@ -734,7 +734,7 @@ function waitingForPDF() {
             if (myCommitHash) alert_msg += " -- remember your hash is " + myCommitHash;
             alert("Warning: " + alert_msg + ". (Close this now and check the information at the bottom of the third page of the PDF.)");
             console.log("OPENING2", PDF_download_url);
-            window.open(PDF_download_url);
+            window.open(PDF_download_url, '_blank');
         } else {
             // console.log("No PDF appeared");
             alert("Sorry, it seems that the PDF creation process failed!");
