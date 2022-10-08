@@ -5,7 +5,8 @@ var myRepoName, myRepoOwner, myResourceType;
 var myCommitId, myCommitType, myCommitHash, myGitRef;
 var nav_height, header_height;
 var API_prefix = (window.location.hostname == 'dev.door43.org' || window.location.hostname == 'localhost' || window.location.hostname == '127.0.0.1') ? 'dev-' : '';
-
+var downloadModal = null;
+var title = document.title;
 
 var _StatHat = _StatHat || [];
 _StatHat.push(['_setUser', 'NzMzIAPKpWipEWR8_hWIhqlgmew~']);
@@ -99,6 +100,27 @@ function onProjectPageLoaded() {
       $body.scrollspy('refresh');
   }
 
+  $body.append(`<!-- The Modal -->
+  <div id="pdf-download-modal" class="download-modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <p><a href="${PDF_download_url}">Click here</a> to download the PDF</p>
+    </div>
+  </div>`);
+
+  downloadModal = document.getElementById("myModal");
+  hideDownloadModal();
+  document.getElementsByClassName("modal-close")[0].onClick = function() {
+    hideDownloadModal();
+  };
+  window.onclick = function(event) {
+    if (event.target == downloadModal) {
+      hideDownloadModal();
+    }
+  };
+  setTimeout(showDownloadModal, 3000);
+
   /* smooth scrolling to sections with room for navbar */
   $('#right-sidebar-nav').addClass('content-nav'); // ensure it has this class
   var $contentNav = $(".content-nav");
@@ -134,7 +156,6 @@ function onProjectPageLoaded() {
 
   var $footer = $("[property='dct:title']");
   updateFooter($footer, $("title"));
-
     if (get_window_width() <= 990) {
         setupMobileContentNavigation();
     }
@@ -635,6 +656,19 @@ function getDownloadUrl(pageUrl) {
     return downloadURL;
 }
 
+function showDownloadModal() {
+    if (downloadModal && downloadModal.style.display == "none") {
+        downloadModal.style.display = "block";
+        document.title = "PDF IS AVAILABLE FOR DOWNLOAD";
+    }
+}
+
+function hideDownloadModal() {
+    if (downloadModal && downloadModal.style.display == "block") {
+        downloadModal.style.display = "none";
+        document.title = title;
+    }
+}
 
 function userWantsPDF() {
     // This is the function responding to a user click on download (OBS) PDF button
@@ -649,7 +683,7 @@ function userWantsPDF() {
             if (isPDFcurrent()) {
                 console.log("    and seems it's current.");
                 console.log("OPENING3", PDF_download_url);
-                window.open(PDF_download_url);
+                showDownloadModal();
                 return;
             } else
             console.log("    but seems it might not be current!");
