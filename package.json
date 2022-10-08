@@ -38,6 +38,6 @@
     "karma-phantomjs-launcher": "^1.0.4",
     "phantomjs-prebuilt": "^2.1.16",
     "react-popper": "^2.3.0",
-    "reactstrap": "^9.1.1"
+    "reactstrap": "^9.1.4"
   }
 }
