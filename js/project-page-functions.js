@@ -725,7 +725,7 @@ function waitingForPDF() {
         // console.log("  Seems that the current PDF exists now after " + elapsedSeconds + " seconds.");
         resetPDFbuild(); // Close everything cleanly
         console.log("OPENING1", PDF_download_url);
-        window.open(PDF_download_url, '_blank');
+        showDownloadModal();
         return;
     }
 
