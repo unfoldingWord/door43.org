@@ -10,6 +10,8 @@ FROM ruby:latest
 
 RUN apt-get update -qq && apt-get install -y nginx vim
 
+COPY ./nginx/default /etc/nginx/sites-available/default
+
 WORKDIR /source
 
 COPY . .
@@ -18,4 +20,4 @@ RUN gem install jekyll bundle
 
 RUN bundle install
 
-CMD bash /source/start.sh
+CMD bash /source/start-dev.sh

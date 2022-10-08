@@ -1,10 +1,12 @@
 // console.log("project-page-functions.js version 10w"); // Helps identify if you have an older cached page or the latest
+var myProject = {};
 var projectPageLoaded = false;
 var myRepoName, myRepoOwner, myResourceType;
-var myCommitId, myCommitType, myCommitHash;
+var myCommitId, myCommitType, myCommitHash, myGitRef;
 var nav_height, header_height;
 var API_prefix = (window.location.hostname == 'dev.door43.org' || window.location.hostname == 'localhost' || window.location.hostname == '127.0.0.1') ? 'dev-' : '';
-
+var downloadModal = null;
+var title = document.title;
 
 var _StatHat = _StatHat || [];
 _StatHat.push(['_setUser', 'NzMzIAPKpWipEWR8_hWIhqlgmew~']);
@@ -45,7 +47,12 @@ function onProjectPageLoaded() {
     }
   });
 
-  var filename = window.location.href.split('?')[0].split('/').pop();
+  var url_parts = window.location.href.split('?')[0].split('/');
+  var filename = url_parts[url_parts.length - 1];
+  myCommitId = url_parts[url_parts.length - 2];
+  myRepoName = url_parts[url_parts.length - 3];
+  myRepoOwner = url_parts[url_parts.length - 4];
+  PDF_download_url = `https://s3-us-west-2.amazonaws.com/${API_prefix}door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}/${myRepoName.toLowerCase()}_${myCommitId}.zip`;
   // NOTE: left-sidebar doesn't exist for new template, RJH Sep2019
   $('#left-sidebar').find('#page-nav option[value="' + filename + '"]').attr('selected', 'selected');
 
@@ -58,7 +65,8 @@ function onProjectPageLoaded() {
     processBuildLogJson(myLog, $('#download_menu_button'), $('#build-status-icon'), $('#last-updated'));
 
     $.getJSON("../project.json", function (project) {
-        processProjectJson(project); // Updates the revision list
+        myProject = project;
+        processProjectJson(); // Updates the revision list
     })
       .done(function () {
         console.log("processed project.json");
@@ -91,6 +99,23 @@ function onProjectPageLoaded() {
       $body.data('bs.scrollspy', data);
       $body.scrollspy('refresh');
   }
+
+  // Append modal
+  $body.append(`<div id="pdf-download-modal" class="download-modal" style="display:none">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <p><a href="${PDF_download_url}">Click here</a> to download the PDF Zip file.</p>
+      <p>Click outside this box to close this message.</p>
+    </div>
+  </div>`);
+
+  downloadModal = document.getElementById("pdf-download-modal");
+  window.onclick = function(event) {
+    if (event.target == downloadModal) {
+      hideDownloadModal();
+    }
+  };
+  hideDownloadModal();
 
   /* smooth scrolling to sections with room for navbar */
   $('#right-sidebar-nav').addClass('content-nav'); // ensure it has this class
@@ -127,7 +152,6 @@ function onProjectPageLoaded() {
 
   var $footer = $("[property='dct:title']");
   updateFooter($footer, $("title"));
-
     if (get_window_width() <= 990) {
         setupMobileContentNavigation();
     }
@@ -135,7 +159,8 @@ function onProjectPageLoaded() {
 }
 
 
-function processProjectJson(project) {
+function processProjectJson() {
+    var project = myProject;
     // if ($revisions.length) { // old template with Revisions in left-sidebar
     //     console.log("processProjectJson() with revisions IN LEFT-SIDEBAR");
     // } else { // newer template with Versions in drop-down -- RJH Aug2019
@@ -231,6 +256,7 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
 
     myCommitId = myLog.commit_id; // tag name or branch name
     myCommitType = myLog.commit_type; // 'defaultBranch', 'branch', 'tag', or 'unknown'
+    myGitRef = "refs/" + (myCommitType == "tag" ? "tags" : "heads") + "/" + myCommitId;
     try {
         myCommitHash = myLog.commit_hash; // 10-hex-digit hash
     } catch(e) {
@@ -244,6 +270,7 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
     setDownloadButtonState($downloadMenuButton);
     updateDownloadItems(myLog.input_format);
     updateConversionStatusOnPage($buildStatusIcon, myLog);
+    PDF_download_url = `https://s3-us-west-2.amazonaws.com/${API_prefix}door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}/${myRepoName.toLowerCase()}_${myCommitId}.zip`;
 
     if ($revisions.length) { // old template with Revisions in left-sidebar
         $revisions.empty();
@@ -510,7 +537,7 @@ function addOptionalPDFDownload() {
         // console.log("Want PDF button for " + myRepoName + " repo (" + myResourceType + ")");
         var $downloadMenu = $("#download_menu ul");
         if ($downloadMenu) {
-            $downloadMenu.append('<li><a type="submit" onclick="userWantsPDF()"><span id="menu_source_item" class="glyphicon glyphicon-file"></span>PDF</a></li>');
+            $downloadMenu.append('<li><a type="submit" onclick="userWantsPDF()"><span id="menu_source_item" class="glyphicon glyphicon-file"></span>Printables (PDF & HTML)</a></li>');
         }
         else console.log("addOptionalPDFDownload ERROR: Unable to find download menu");
     }
@@ -625,6 +652,19 @@ function getDownloadUrl(pageUrl) {
     return downloadURL;
 }
 
+function showDownloadModal() {
+    if (downloadModal && downloadModal.style.display == "none") {
+        downloadModal.style.display = "block";
+        document.title = "PDF ZIP FILE IS AVAILABLE FOR DOWNLOAD";
+    }
+}
+
+function hideDownloadModal() {
+    if (downloadModal && downloadModal.style.display == "block") {
+        downloadModal.style.display = "none";
+        document.title = title;
+    }
+}
 
 function userWantsPDF() {
     // This is the function responding to a user click on download (OBS) PDF button
@@ -638,7 +678,12 @@ function userWantsPDF() {
             PDF_already_existed = true;
             if (isPDFcurrent()) {
                 console.log("    and seems it's current.");
-                window.open(PDF_download_url);
+                console.log("OPENING3", PDF_download_url);
+                if (PDF_wait_timer) {
+                    showDownloadModal();
+                } else {
+                    window.open(PDF_download_url);
+                }
                 return;
             } else
             console.log("    but seems it might not be current!");
@@ -655,9 +700,10 @@ function userWantsPDF() {
         loadPDFBuildInfo(); // See if there's a PDF build log yet
 
         // Start an interval function to check for results
-        if (PDF_wait_timer == null) // only ever start one timer
+        if (PDF_wait_timer == null) {
+             // only ever start one timer
             PDF_wait_timer = setInterval(waitingForPDF, 3000); // Check every three seconds
-
+        }
     } else { // we don't have a PDF_download_url
         // console.log("  Seems PDF_download_url empty with: " + PDF_download_url);
         alert("Sorry, seems we don't know about any PDF to download!");
@@ -680,9 +726,15 @@ function waitingForPDF() {
     // console.log("Check if PDF exists now (after requesting build)?");
     if (doesPDFexist()
     && (!PDF_already_existed || isPDFcurrent())) {
-        // console.log("  Seems that the current PDF exists now after " + elapsedSeconds + " seconds.");
+        console.log("  Seems that the current PDF exists now after " + elapsedSeconds + " seconds.");
         resetPDFbuild(); // Close everything cleanly
-        window.open(PDF_download_url);
+        console.log("OPENING1", PDF_download_url);
+        if (PDF_wait_timer) {
+            // We can't do window.open() when setInterval() is going
+            showDownloadModal();
+        } else {
+            window.open(PDF_download_url);
+        }
         return;
     }
 
@@ -721,7 +773,8 @@ function waitingForPDF() {
             var alert_msg = "There's a small chance that this PDF might be outdated";
             if (myCommitHash) alert_msg += " -- remember your hash is " + myCommitHash;
             alert("Warning: " + alert_msg + ". (Close this now and check the information at the bottom of the third page of the PDF.)");
-            window.open(PDF_download_url);
+            console.log("OPENING2", PDF_download_url);
+            showDownloadModal();
         } else {
             // console.log("No PDF appeared");
             alert("Sorry, it seems that the PDF creation process failed!");
@@ -734,10 +787,9 @@ function doesPDFexist() {
     // Looks for PDF at PDF_download_url -- doesn't work well coz of CloudFront caching
     //  so look at S3 URL instead
     // console.log("doesPDFexist()");
-    var adjusted_PDF_download_url = PDF_download_url.replace('https://', 'https://s3-us-west-2.amazonaws.com/');
     try {
         var req = new XMLHttpRequest();
-        req.open('HEAD', adjusted_PDF_download_url, false); // Gets headers only
+        req.open('HEAD', PDF_download_url, false); // Gets headers only
                                              // Synchronous request coz it should be quick
         req.send(); // Hopefully it's fast
         if (req.status==200) { // seems that the PDF is already there
@@ -799,24 +851,19 @@ function isPDFcurrent() {
 
 
 function loadPDFBuildInfo() {
-    // Download the PDF build log if it exists
-    // console.log("loadPDFBuildInfo()");
-    var base_download_url = 'https://s3-us-west-2.amazonaws.com/' + API_prefix + 'cdn.door43.org/u/';
-    var repo_part = myRepoOwner + '/' + myRepoName + '/';
-    var filename_part = 'PDF_details.json';
-    var wanted_url = base_download_url + repo_part + filename_part;
-    // console.log("  Want URL = " + wanted_url);
-    $.getJSON(wanted_url, function (received_data) {
-        PDF_build_details = received_data;
-    })
-      .done(function () {
-        console.log("processed " + wanted_url);
-      })
-      .fail(function () {
-        console.log("error reading " + wanted_url);
-      }); // End getJSON}
-}
+  // Download the PDF build log if it exists
+  // console.log("loadPDFBuildInfo()");
+  var pdf_details_url = `https://s3-us-west-2.amazonaws.com/${API_prefix}door43.org/u/${myRepoOwner}/${myRepoName}/PDF_details.json`
+  // console.log("  PDF Details URL = " + pdf_details_url);
 
+  $.getJSON(pdf_details_url, function (received_data) {
+    PDF_build_details = received_data;
+  }).done(function () {
+    console.log("processed " + pdf_details_url);
+  }).fail(function () {
+    console.log("error reading " + pdf_details_url);
+  }); // End getJSON}
+}
 
 function resetPDFbuild() {
     // console.log("resetPDFbuild()")
@@ -839,27 +886,35 @@ function requestPDFbuild() {
         myIdentifier += '--' + myCommitHash
     var dcs_subdomain = API_prefix ? 'develop' : 'git';
     var dcs_domain = 'https://' + dcs_subdomain + '.door43.org'
-    var repo_data_url = dcs_domain + '/' + myRepoOwner + '/' + myRepoName + '/archive/' + myCommitId + '.zip'
-    var tx_payload = {
-        job_id: 'Door43_' + myRepoName + '_PDF_request',
-        identifier: myIdentifier,
-        repo_name: myRepoName,
-        repo_owner: myRepoOwner,
-        repo_ref: myCommitId,
-        repo_data_url: repo_data_url,
-        resource_type: myResourceType,
-        input_format: 'md',
-        output_format: 'pdf',
-        source: repo_data_url,
-        dcs_domain: dcs_domain,
-    };
-    console.log("  tx_payload = " + JSON.stringify(tx_payload));
+    var d43_payload = {
+        "ref": myGitRef,
+        "after": myCommitHash,
+        "commits": [{
+            "id": myCommitHash,
+            "author" : {
+                "username": "guest",
+            },
+            "url": myProject['repo_url'] + "/commit/" + myCommitHash,
+            "message": "PDF request",
+        }],
+        "repository": {
+            'owner': {
+                'username': myRepoOwner,
+            },
+            'name': myRepoName,
+            "full_name": myRepoOwner+"/"+myRepoName,
+            "private": false,
+            "archive": false,
+        },
+    }
+    console.log("  d43_payload = " + JSON.stringify(d43_payload));
     requested_PDF_build_time = new Date();
     $.ajax({
         type: 'POST',
         crossDomain: 'true',
-        url: dcs_domain + '/tx/',
-        data: JSON.stringify(tx_payload),
+        url: dcs_domain + '/client/webhook',
+        headers: { 'X-Gitea-Event': 'pdf_request', 'X-Gitea-Event-Type': 'pdf_request' },
+        data: JSON.stringify(d43_payload),
         dataType: 'json',
         contentType : 'application/json',
         success: function(responseDataObject){
@@ -879,7 +934,7 @@ function requestPDFbuild() {
                 console.log("Oh dear!!! PDF URLs don't match:");
                 console.log("  Expected: " + PDF_download_url);
                 console.log("  tX gave:  " + responseDataObject.output);
-                PDF_download_url = responseDataObject.output; // Adjust our guess
+                // PDF_download_url = responseDataObject.output; // Adjust our guess
             }
         },
         error: function(request,errorString)
@@ -921,17 +976,18 @@ function saveDownloadFilesLink(myLog) {
 function wantDownloadPDFOption() {
     // console.log("wantDownloadPDFOption() for " + myResourceType);
     if (myResourceType == 'Open_Bible_Stories'
-    // Temporarily disabled -- queue is working but no worker yet
-    //  || myResourceType == 'OBS_Study_Notes'
-    //  || myResourceType == 'OBS_Study_Questions'
-    //  || myResourceType == 'OBS_Translation_Notes'
-    //  || myResourceType == 'OBS_Translation_Questions'
-    //  || myResourceType == 'Study_Notes'
-    //  || myResourceType == 'Study_Questions'
-    //  || myResourceType == 'Translation_Academy'
-    //  || myResourceType == 'Translation_Notes'
-    //  || myResourceType == 'Translation_Questions'
-    //  || myResourceType == 'Translation_Words'
+     || myResourceType == 'OBS_Study_Notes'
+     || myResourceType == 'OBS_Study_Questions'
+     || myResourceType == 'OBS_Translation_Notes'
+     || myResourceType == 'OBS_Translation_Questions'
+     || myResourceType == 'Study_Notes'
+     || myResourceType == 'Study_Questions'
+     || myResourceType == 'Translation_Academy'
+     || myResourceType == 'Translation_Notes'
+     || myResourceType == 'Translation_Questions'
+     || myResourceType == 'Translation_Words'
+     || myResourceType == 'TSV_Translation_Notes'
+     || myResourceType == 'TSV_Translation_Questions'
       ) {
         //   console.log("  wantDownloadPDFOption() returning true")
           return true;
@@ -953,11 +1009,6 @@ function saveOptionalDownloadPDFLink() {
     if (wantDownloadPDFOption()) {
         // console.log("  Repo ownerUsername = " + myRepoOwner + ",  Repo name = " + myRepoName);
         // console.log("  Commit type = " + myCommitType + ",  Commit ID = " + myCommitId + ",  Commit hash = " + myCommitHash);
-        var base_download_url = 'https://' + API_prefix + 'cdn.door43.org/u/';
-        var repo_part = myRepoOwner + '/' + myRepoName + '/' + myCommitId + '/';
-        var PDF_filename = myRepoOwner + '--' + myRepoName + '--' + myCommitId;
-        PDF_filename += '.pdf'
-        PDF_download_url = base_download_url + repo_part + PDF_filename;
         console.log("  Expected PDF_download_url = " + PDF_download_url);
     } else {
         console.log("  Not trying to form PDF link for " + myResourceType);

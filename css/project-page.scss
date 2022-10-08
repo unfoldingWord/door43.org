@@ -9,97 +9,101 @@
  */
 
 header {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 
-    #header-title {
-        padding-bottom: 10px;
+  #header-title {
+    padding-bottom: 10px;
 
-        h1 {
-            margin: 0;
+    h1 {
+      margin: 0;
 
-            #starred-icon {
-                i {
-                    font-size: 26px;
-                    vertical-align: middle;
-                    color: #000000;
-                }
-            }
-
-            #starred-icon.starred {
-                i {
-                    color: #3ebcfe;
-                }
-            }
-
-            #build-status-icon {
-                display: inline-block;
-                vertical-align: middle;
-                i {
-                    font-size: 30px;
-                    font-weight: 300;
-                    vertical-align: middle;
-                }
-                i:hover {
-                    color: #3ebcfe;
-                }
-            }
-
-            #print-button, #download_menu_button, #versions_menu_button {
-              background-color: white;
-              color: #3ebcfe;
-              border: none;
-              -webkit-box-shadow: 1px 3px 6px 1px rgba(0,0,0,0.2);
-              box-shadow: 1px 3px 6px 1px rgba(0,0,0,0.2);
-            }
-            .dropdown-menu {
-              background-color: white;
-              border: none;
-              -webkit-box-shadow: 1px 3px 6px 1px rgba(0,0,0,0.2);
-              box-shadow: 1px 3px 6px 1px rgba(0,0,0,0.2);
-            }
-            .dropdown-menu > li {
-              padding: 0;
-            }
-            .dropdown-menu > li > a  {
-              color: #3ebcfe;
-              // padding: 0 20px;
-            }
-            /* RJH added these, Sept 2019 */
-            .versions-dropdown > li > a, .versions-dropdown > li > div {
-              padding: 5px 10px;
-              line-height: 1.4;
-              display: flex;
-              align-items: center;
-              font-size: 16px;
-              justify-content: space-between;
-          }
-          .versions-dropdown > li > a > img, .versions-dropdown > li > div img {
-              margin-left: 6px;
-          }
+      #starred-icon {
+        i {
+          font-size: 26px;
+          vertical-align: middle;
+          color: #000000;
         }
+      }
+
+      #starred-icon.starred {
+        i {
+          color: #3ebcfe;
+        }
+      }
+
+      #build-status-icon {
+        display: inline-block;
+        vertical-align: middle;
+        i {
+          font-size: 30px;
+          font-weight: 300;
+          vertical-align: middle;
+        }
+        i:hover {
+          color: #3ebcfe;
+        }
+      }
+
+      #print-button,
+      #download_menu_button,
+      #versions_menu_button {
+        background-color: white;
+        color: #3ebcfe;
+        border: none;
+        -webkit-box-shadow: 1px 3px 6px 1px rgba(0, 0, 0, 0.2);
+        box-shadow: 1px 3px 6px 1px rgba(0, 0, 0, 0.2);
+      }
+      .dropdown-menu {
+        background-color: white;
+        border: none;
+        -webkit-box-shadow: 1px 3px 6px 1px rgba(0, 0, 0, 0.2);
+        box-shadow: 1px 3px 6px 1px rgba(0, 0, 0, 0.2);
+      }
+      .dropdown-menu > li {
+        padding: 0;
+      }
+      .dropdown-menu > li > a {
+        color: #3ebcfe;
+        // padding: 0 20px;
+      }
+      /* RJH added these, Sept 2019 */
+      .versions-dropdown > li > a,
+      .versions-dropdown > li > div {
+        padding: 5px 10px;
+        line-height: 1.4;
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        justify-content: space-between;
+      }
+      .versions-dropdown > li > a > img,
+      .versions-dropdown > li > div img {
+        margin-left: 6px;
+      }
     }
+  }
 }
 
 #sub-header {
-    margin: 0 0 12px 35px;
-    font-size: 16px;
+  margin: 0 0 12px 35px;
+  font-size: 16px;
 
-    #last-updated {
-        font-weight: 400;
-        font-style: italic;
+  #last-updated {
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  span {
+    margin-right: 30px;
+
+    &:last-child {
+      margin-right: 0;
     }
+  }
 
-    span {
-      margin-right: 30px;
-
-      &:last-child {
-        margin-right: 0;
-      }
-    }
-
-    #draft-notice {
-      font-style: italic;
-    }
+  #draft-notice {
+    font-style: italic;
+  }
 }
 
 .container {
@@ -123,7 +127,6 @@ nav {
 }
 
 #revisions {
-
   font-size: 14px;
 
   tr {
@@ -143,7 +146,7 @@ nav {
   border: 0 !important;
 }
 
- /**
+/**
  * Sidebar Nav
  */
 @media (min-width: 979px) {
@@ -183,7 +186,7 @@ nav {
     background-color: transparent;
 
     &:after {
-      font-family: 'Glyphicons Halflings';
+      font-family: "Glyphicons Halflings";
       font-size: 0.8em;
       content: "\e258";
       color: #000;
@@ -198,7 +201,12 @@ nav {
     padding-bottom: 4em;
     border-bottom: solid #ccc;
 
-    li, h1, h2, h3, h4, h5 h6 {
+    li,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 h6 {
       font-size: 28px !important;
     }
 
@@ -234,7 +242,9 @@ nav {
 /**
  * Style for Bible navigation
  */
-body.bible, body.tq, body.tn {
+body.bible,
+body.tq,
+body.tn {
   .content-nav {
     ul.chapters {
       li.chapter {
@@ -272,7 +282,7 @@ body.bible, body.tq, body.tn {
     .panel-heading {
       .accordion-toggle {
         &:after {
-          font-family: 'Glyphicons Halflings';
+          font-family: "Glyphicons Halflings";
           content: "\e259"; /* expanded */
           font-size: 0.8em;
           float: right;
@@ -291,8 +301,18 @@ body.bible, body.tq, body.tn {
  */
 body.ta {
   #content {
-    h1, h2, h3, h4, h5, h6,
-    .h1, .h2, .h3, .h4, .h5, .h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .h1,
+    .h2,
+    .h3,
+    .h4,
+    .h5,
+    .h6 {
       page-break-before: auto !important;
       page-break-after: avoid !important;
       break-after: avoid-page !important;
@@ -308,8 +328,18 @@ body.ta {
       font-weight: bold;
     }
 
-    h1 + *, h2 + *, h3 + *, h4 + *, h5 + *, h6 + *,
-    .h1 + *, .h2 + *, .h3 + *, .h4 + *, .h5 + *, .h6 + *,
+    h1 + *,
+    h2 + *,
+    h3 + *,
+    h4 + *,
+    h5 + *,
+    h6 + *,
+    .h1 + *,
+    .h2 + *,
+    .h3 + *,
+    .h4 + *,
+    .h5 + *,
+    .h6 + *,
     .section-header > p:first-child {
       page-break-before: avoid;
       page-break-after: auto;
@@ -384,27 +414,28 @@ body.ta {
           cursor: auto;
           background: #f9fafb;
           text-align: inherit;
-          color: rgba(0, 0, 0, .87);
-          padding: .92857143em .71428571em;
+          color: rgba(0, 0, 0, 0.87);
+          padding: 0.92857143em 0.71428571em;
           vertical-align: inherit;
           font-style: unset;
           font-weight: 700;
           text-transform: none;
-          border-bottom: 1px solid rgba(34, 36, 38, .1);
+          border-bottom: 1px solid rgba(34, 36, 38, 0.1);
           border-left: none;
         }
         tr > th:first-child {
           border-left: none;
         }
         tr:first-child > th:first-child {
-          border-radius: .28571429rem 0 0;
+          border-radius: 0.28571429rem 0 0;
         }
       }
-      th, td {
+      th,
+      td {
         padding: 6px 13px !important;
         border: 1px solid #ddd !important;
-        -webkit-transition: background .1s ease, color .1s ease;
-        transition: background .1s ease, color .1s ease;
+        -webkit-transition: background 0.1s ease, color 0.1s ease;
+        transition: background 0.1s ease, color 0.1s ease;
       }
       tr {
         background-color: #fff;
@@ -430,7 +461,7 @@ body.ta {
       color: #15c !important;
     }
     a.external {
-      color: #15F !important;
+      color: #15f !important;
     }
     img {
       max-width: 600px;
@@ -444,14 +475,16 @@ body.ta {
         }
       }
     }
-    div:not(.box) > ul > li:first-child, div:not(.box) ol > li > ul > li:first-child {
+    div:not(.box) > ul > li:first-child,
+    div:not(.box) ol > li > ul > li:first-child {
       margin-top: 1em;
     }
-    div:not(.box) > ul > li:last-child, div:not(.box) ol > li > ul > li:last-child {
+    div:not(.box) > ul > li:last-child,
+    div:not(.box) ol > li > ul > li:last-child {
       margin-bottom: 1em;
     }
     div:not(.box) ul li li:last-child {
-      margin-bottom: .5em;
+      margin-bottom: 0.5em;
     }
 
     .h1 {
@@ -546,7 +579,8 @@ body.ta {
   }
 }
 
-body.ta, body.tw {
+body.ta,
+body.tw {
   .content-nav {
     ul li {
       list-style-type: none;
@@ -569,7 +603,7 @@ body.ta, body.tw {
       margin-left: 15px !important;
       .content-nav-expand {
         &:after {
-          font-family: 'Glyphicons Halflings';
+          font-family: "Glyphicons Halflings";
           content: "\e259"; /* expanded */
           font-size: 0.8em;
           float: right;
@@ -636,9 +670,10 @@ body.ta, body.tw {
       #sub-header {
         position: fixed;
         right: 20px;
-        top: 80px
+        top: 80px;
       }
-      #header-title, #sub-header {
+      #header-title,
+      #sub-header {
         display: inline-block;
       }
       .container {
@@ -650,7 +685,7 @@ body.ta, body.tw {
 }
 
 // over-ride layout for rtl
-[dir=rtl] {
+[dir="rtl"] {
   #pinned-header.pin-to-top #sub-header {
     position: inherit;
     right: inherit;
@@ -690,8 +725,8 @@ body.ta, body.tw {
           width: 85px;
           height: 85px;
           background: #fff;
-          border: 5px solid #FF9900;
-          color: #FF9900;
+          border: 5px solid #ff9900;
+          color: #ff9900;
           text-align: center;
           font-size: 60px;
           margin: 0 auto;
@@ -713,7 +748,7 @@ body.ta, body.tw {
         text-align: center !important;
 
         .btn.raised {
-          border: 1px solid #AAAAAA;
+          border: 1px solid #aaaaaa;
           box-shadow: 5px 5px 3px #888888;
         }
 
@@ -740,4 +775,28 @@ body.ta, body.tw {
 .warning-button {
   cursor: pointer;
   box-shadow: 1px 3px 6px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* The Modal (background) */
+.download-modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+
+  /* Modal Content */
+  .modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+  }
 }
