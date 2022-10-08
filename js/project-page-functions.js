@@ -681,7 +681,11 @@ function userWantsPDF() {
             if (isPDFcurrent()) {
                 console.log("    and seems it's current.");
                 console.log("OPENING3", PDF_download_url);
-                showDownloadModal();
+                if (inSetIntervalLoop) {
+                    showDownloadModal();
+                } else {
+                    window.open(PDF_download_url);
+                }
                 return;
             } else
             console.log("    but seems it might not be current!");
