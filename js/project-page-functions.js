@@ -105,7 +105,7 @@ function onProjectPageLoaded() {
     <!-- Modal content -->
     <div class="modal-content">
       <p><a href="${PDF_download_url}">Click here</a> to download the PDF Zip file.</p>
-      <p>Click anywhere else to close this message</p>
+      <p>Click outside this box to close this message.</p>
     </div>
   </div>`);
 
