@@ -100,16 +100,16 @@ function onProjectPageLoaded() {
       $body.scrollspy('refresh');
   }
 
-  $body.append(`<!-- The Modal -->
-  <div id="pdf-download-modal" class="download-modal">
+  // Append modal
+  $body.append(`<div id="pdf-download-modal" class="download-modal" style="display:none">
     <!-- Modal content -->
     <div class="modal-content">
       <span class="modal-close">&times;</span>
-      <p><a href="${PDF_download_url}">Click here</a> to download the PDF</p>
+      <p><a href="${PDF_download_url}">Click here</a> to download the PDF Zip file</p>
     </div>
   </div>`);
 
-  downloadModal = document.getElementById("myModal");
+  downloadModal = document.getElementById("pdf-download-modal");
   hideDownloadModal();
   document.getElementsByClassName("modal-close")[0].onClick = function() {
     hideDownloadModal();
@@ -659,7 +659,7 @@ function getDownloadUrl(pageUrl) {
 function showDownloadModal() {
     if (downloadModal && downloadModal.style.display == "none") {
         downloadModal.style.display = "block";
-        document.title = "PDF IS AVAILABLE FOR DOWNLOAD";
+        document.title = "PDF ZIP FILE IS AVAILABLE FOR DOWNLOAD";
     }
 }
 
