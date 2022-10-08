@@ -645,12 +645,13 @@ function userWantsPDF() {
             PDF_already_existed = true;
             if (isPDFcurrent()) {
                 console.log("    and seems it's current.");
-                console.log("OPENING3", PDF_download_url);
                 if (PDF_wait_timer) {
                     showDownloadModal();
                 } else {
+                    console.log("OPENING3", PDF_download_url);
                     window.open(PDF_download_url);
                 }
+                resetPDFbuild();
                 return;
             } else
             console.log("    but seems it might not be current!");
@@ -694,14 +695,14 @@ function waitingForPDF() {
     if (doesPDFexist()
     && (!PDF_already_existed || isPDFcurrent())) {
         console.log("  Seems that the current PDF exists now after " + elapsedSeconds + " seconds.");
-        resetPDFbuild(); // Close everything cleanly
-        console.log("OPENING1", PDF_download_url);
         if (PDF_wait_timer) {
             // We can't do window.open() when setInterval() is going
             showDownloadModal();
         } else {
+            console.log("OPENING1", PDF_download_url);
             window.open(PDF_download_url);
         }
+        resetPDFbuild(); // Close everything cleanly
         return;
     }
 
@@ -740,7 +741,6 @@ function waitingForPDF() {
             var alert_msg = "There's a small chance that this PDF might be outdated";
             if (myCommitHash) alert_msg += " -- remember your hash is " + myCommitHash;
             alert("Warning: " + alert_msg + ". (Close this now and check the information at the bottom of the third page of the PDF.)");
-            console.log("OPENING2", PDF_download_url);
             showDownloadModal();
         } else {
             // console.log("No PDF appeared");
