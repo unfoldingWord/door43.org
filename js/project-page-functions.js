@@ -267,7 +267,6 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
     $lastUpdated.html("Updated " + timeSince(new Date(myLog.created_at)) + " ago");
 
     saveDownloadLinks(myLog);
-    setDownloadButtonState($downloadMenuButton);
     updateDownloadItems(myLog.input_format);
     updateConversionStatusOnPage($buildStatusIcon, myLog);
     PDF_download_url = `https://s3-us-west-2.amazonaws.com/${API_prefix}door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}/${myRepoName.toLowerCase()}_${myCommitId}.zip`;
@@ -522,7 +521,6 @@ function getCommid(commitID, pageUrl) {
     return commitID;
 }
 
-
 function updateDownloadItems(inputFormat) {
     // Update the download menu
     //  1/ Set the download (compressed) files option to show USFM or MARKDOWN
@@ -575,37 +573,6 @@ function getTextForSourceDownloadItem(inputFormat) {
 function getCheckDownloadsUrl(commitID, pageUrl) {
     // var prefix = getSiteFromPage(pageUrl);
     return 'https://' + API_prefix + 'api.door43.org/check_download?commit_id=' + commitID;
-}
-
-function setDownloadButtonState($button, commitID, pageUrl) {
-    if (pageUrl === undefined) {
-        pageUrl = window.location.href
-    }
-    var commitID_ = getCommid(commitID, pageUrl);
-    var url = getCheckDownloadsUrl(commitID_, pageUrl);
-
-    if ($button) {
-        $button.prop('disabled', true)
-    }
-    $.ajax({
-        url: url,
-        type: 'GET',
-        cache: "false",
-        dataType: 'jsonp',
-        success: function (data, status) {
-                if (data.download_exists) {
-                    if ($button) {
-                        $button.prop('disabled', false)
-                    }
-                }
-                return data;
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            const error = 'Error: ' + textStatus + '\n' + errorThrown;
-            console.log(error);
-            return error;
-        }
-    });
 }
 
 const DEFAULT_DOWNLOAD_FILES_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
