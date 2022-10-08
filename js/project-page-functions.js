@@ -7,6 +7,7 @@ var nav_height, header_height;
 var API_prefix = (window.location.hostname == 'dev.door43.org' || window.location.hostname == 'localhost' || window.location.hostname == '127.0.0.1') ? 'dev-' : '';
 var downloadModal = null;
 var title = document.title;
+var inSetIntervalLoop = false;
 
 var _StatHat = _StatHat || [];
 _StatHat.push(['_setUser', 'NzMzIAPKpWipEWR8_hWIhqlgmew~']);
@@ -697,9 +698,11 @@ function userWantsPDF() {
         loadPDFBuildInfo(); // See if there's a PDF build log yet
 
         // Start an interval function to check for results
-        if (PDF_wait_timer == null) // only ever start one timer
+        if (PDF_wait_timer == null) {
+             // only ever start one timer
+            inSetIntervalLoop = true;
             PDF_wait_timer = setInterval(waitingForPDF, 3000); // Check every three seconds
-
+        }
     } else { // we don't have a PDF_download_url
         // console.log("  Seems PDF_download_url empty with: " + PDF_download_url);
         alert("Sorry, seems we don't know about any PDF to download!");
@@ -722,10 +725,15 @@ function waitingForPDF() {
     // console.log("Check if PDF exists now (after requesting build)?");
     if (doesPDFexist()
     && (!PDF_already_existed || isPDFcurrent())) {
-        // console.log("  Seems that the current PDF exists now after " + elapsedSeconds + " seconds.");
+        console.log("  Seems that the current PDF exists now after " + elapsedSeconds + " seconds.");
         resetPDFbuild(); // Close everything cleanly
         console.log("OPENING1", PDF_download_url);
-        showDownloadModal();
+        if (inSetIntervalLoop) {
+            // We can't do window.open() when setInterval() is going
+            showDownloadModal();
+        } else {
+            window.open(PDF_download_url);
+        }
         return;
     }
 
@@ -765,7 +773,7 @@ function waitingForPDF() {
             if (myCommitHash) alert_msg += " -- remember your hash is " + myCommitHash;
             alert("Warning: " + alert_msg + ". (Close this now and check the information at the bottom of the third page of the PDF.)");
             console.log("OPENING2", PDF_download_url);
-            window.open(PDF_download_url, '_blank');
+            showDownloadModal();
         } else {
             // console.log("No PDF appeared");
             alert("Sorry, it seems that the PDF creation process failed!");
@@ -860,6 +868,7 @@ function resetPDFbuild() {
     // console.log("resetPDFbuild()")
     clearInterval(PDF_wait_timer);
     PDF_wait_timer = null;
+    inSetIntervalLoop = false;
     requested_PDF_build_time = null;
     $("body").css("cursor", "default");
     // NOTE: Could re-enable PDF button here
