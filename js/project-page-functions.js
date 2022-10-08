@@ -104,21 +104,18 @@ function onProjectPageLoaded() {
   $body.append(`<div id="pdf-download-modal" class="download-modal" style="display:none">
     <!-- Modal content -->
     <div class="modal-content">
-      <span class="modal-close">&times;</span>
-      <p><a href="${PDF_download_url}">Click here</a> to download the PDF Zip file</p>
+      <p><a href="${PDF_download_url}">Click here</a> to download the PDF Zip file.</p>
+      <p>Click anywhere else to close this message</p>
     </div>
   </div>`);
 
   downloadModal = document.getElementById("pdf-download-modal");
-  hideDownloadModal();
-  document.getElementsByClassName("modal-close")[0].onClick = function() {
-    hideDownloadModal();
-  };
   window.onclick = function(event) {
     if (event.target == downloadModal) {
       hideDownloadModal();
     }
   };
+  hideDownloadModal();
   setTimeout(showDownloadModal, 3000);
 
   /* smooth scrolling to sections with room for navbar */

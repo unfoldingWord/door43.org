@@ -799,19 +799,4 @@ body.tw {
     border: 1px solid #888;
     width: 80%;
   }
-
-  /* The Close Button */
-  .modal-close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-
-    :hover,
-    :focus {
-      color: #000;
-      text-decoration: none;
-      cursor: pointer;
-    }
-  }
 }
