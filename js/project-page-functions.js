@@ -579,7 +579,7 @@ function getCheckDownloadsUrl(commitID, pageUrl) {
 const DEFAULT_DOWNLOAD_FILES_LOCATION = "https://s3-us-west-2.amazonaws.com/tx-webhook-client/preconvert/";
 var source_download_url = null;
 
-var MAX_PDF_BUILD_SECONDS = 180; // Three minutes
+var MAX_PDF_BUILD_SECONDS = 1800; // Thirty minutes
 var PDF_download_url = null;
 var requested_PDF_build_time = null;
 var PDF_wait_timer = null;
