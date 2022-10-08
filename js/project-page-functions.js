@@ -7,7 +7,6 @@ var nav_height, header_height;
 var API_prefix = (window.location.hostname == 'dev.door43.org' || window.location.hostname == 'localhost' || window.location.hostname == '127.0.0.1') ? 'dev-' : '';
 var downloadModal = null;
 var title = document.title;
-var inSetIntervalLoop = false;
 
 var _StatHat = _StatHat || [];
 _StatHat.push(['_setUser', 'NzMzIAPKpWipEWR8_hWIhqlgmew~']);
@@ -117,7 +116,6 @@ function onProjectPageLoaded() {
     }
   };
   hideDownloadModal();
-  setTimeout(showDownloadModal, 3000);
 
   /* smooth scrolling to sections with room for navbar */
   $('#right-sidebar-nav').addClass('content-nav'); // ensure it has this class
@@ -681,7 +679,7 @@ function userWantsPDF() {
             if (isPDFcurrent()) {
                 console.log("    and seems it's current.");
                 console.log("OPENING3", PDF_download_url);
-                if (inSetIntervalLoop) {
+                if (PDF_wait_timer) {
                     showDownloadModal();
                 } else {
                     window.open(PDF_download_url);
@@ -704,7 +702,6 @@ function userWantsPDF() {
         // Start an interval function to check for results
         if (PDF_wait_timer == null) {
              // only ever start one timer
-            inSetIntervalLoop = true;
             PDF_wait_timer = setInterval(waitingForPDF, 3000); // Check every three seconds
         }
     } else { // we don't have a PDF_download_url
@@ -732,7 +729,7 @@ function waitingForPDF() {
         console.log("  Seems that the current PDF exists now after " + elapsedSeconds + " seconds.");
         resetPDFbuild(); // Close everything cleanly
         console.log("OPENING1", PDF_download_url);
-        if (inSetIntervalLoop) {
+        if (PDF_wait_timer) {
             // We can't do window.open() when setInterval() is going
             showDownloadModal();
         } else {
@@ -872,7 +869,6 @@ function resetPDFbuild() {
     // console.log("resetPDFbuild()")
     clearInterval(PDF_wait_timer);
     PDF_wait_timer = null;
-    inSetIntervalLoop = false;
     requested_PDF_build_time = null;
     $("body").css("cursor", "default");
     // NOTE: Could re-enable PDF button here
