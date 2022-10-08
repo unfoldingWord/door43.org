@@ -942,7 +942,9 @@ function saveDownloadFilesLink(myLog) {
 
 function wantDownloadPDFOption() {
     // console.log("wantDownloadPDFOption() for " + myResourceType);
-    if (myResourceType == 'Open_Bible_Stories'
+    if (myResourceType == 'Aligned_Bible'
+     || myResourceType == 'Bible'
+     || myResourceType == 'Open_Bible_Stories'
      || myResourceType == 'OBS_Study_Notes'
      || myResourceType == 'OBS_Study_Questions'
      || myResourceType == 'OBS_Translation_Notes'
@@ -953,6 +955,8 @@ function wantDownloadPDFOption() {
      || myResourceType == 'Translation_Notes'
      || myResourceType == 'Translation_Questions'
      || myResourceType == 'Translation_Words'
+     || myResourceType == 'TSV_Study_Notes'
+     || myResourceType == 'TSV_Study_Questions'
      || myResourceType == 'TSV_Translation_Notes'
      || myResourceType == 'TSV_Translation_Questions'
       ) {
