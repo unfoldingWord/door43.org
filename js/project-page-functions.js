@@ -251,7 +251,8 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
     myRepoOwner = myLog.repo_owner_username;
     if (myRepoOwner == null) // couldn't find it -- try something different
         myRepoOwner = myLog.repo_owner; // deprecated name still on older builds
-    myRepoName = myLog.repo_name;
+    myRepoName = myLog.repo_name
+    myRepoName = myRepoName.replace("https://https://", "https://"); // Found a bug where we were writing this URL wrong with two https://'s
     myResourceType = myLog.resource_type;
 
     myCommitId = myLog.commit_id; // tag name or branch name
