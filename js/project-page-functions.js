@@ -1,5 +1,3 @@
-import {initLanguageFonts} from './language-fonts.js';
-
 // console.log("project-page-functions.js version 10w"); // Helps identify if you have an older cached page or the latest
 var myProject = {};
 var projectPageLoaded = false;
@@ -1199,5 +1197,48 @@ function checkForConversionRequested($conversion_requested) {
         checkConversionStatus();
     }
 }
+
+function initLanguageFonts() {
+    let font_families = {};
+    let font_links = {};
+    const result = fetch('./font_families.json', { method: 'get' })
+    .then(response => response.json())
+    .then(json => {
+      font_families = json;
+      return fetch('./font_links.json');
+    })
+    .then(response => response.json())
+    .then(json => {
+        font_links = {};
+        setLanguageFontsHTML(font_families, font_links);
+    })
+    .catch(err => {
+      console.error('Request failed', err)
+    })
+}
+
+function setLanguageFontsHTML(font_families, font_links) {
+    lang = $('html').attr('lang');
+	if (!lang || !font_families.includes(lang)) {
+		return;
+	}
+    const fonts = font_families[lang];
+    const $head = $('head');
+    if (!fonts.includes('Noto Sans')) {
+        fonts.push('Noto Sans');
+    }
+    for (const font of fonts) {
+        if (font_links[font]) {
+            $head.append(`<link href="${lang_font_links[font]}" rel="stylesheet">`);
+        }
+    }
+    $head.append(`
+<style type="text/css">
+    ${selector} {
+    font-family: "${fonts.join(', ')}, sans-serif" !important;
+  };
+</style>`);
+}
+
 
 checkForConversionRequested($('h1.conversion-requested'));

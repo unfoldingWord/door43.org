@@ -2,6 +2,7 @@ _site
 .sass-cache
 .idea/
 *.pyc
+assets
 css/fonts/noto/*.ttf
 css/fonts/noto/*.otf
 *.lock
