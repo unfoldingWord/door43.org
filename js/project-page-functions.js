@@ -1201,11 +1201,11 @@ function checkForConversionRequested($conversion_requested) {
 function initLanguageFonts() {
     let font_families = {};
     let font_links = {};
-    const result = fetch('./font_families.json', { method: 'get' })
+    const result = fetch('/js/font_families.json', { method: 'get' })
     .then(response => response.json())
     .then(json => {
       font_families = json;
-      return fetch('./font_links.json');
+      return fetch('/js/font_links.json');
     })
     .then(response => response.json())
     .then(json => {
