@@ -1234,7 +1234,7 @@ function setLanguageFontsHTML(font_families, font_links) {
     }
     $head.append(`
 <style type="text/css">
-    ${selector} {
+    :root:lang(${lang}) {
     font-family: "${fonts.join(', ')}, sans-serif" !important;
   };
 </style>`);
