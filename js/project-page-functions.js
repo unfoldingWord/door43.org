@@ -1229,7 +1229,7 @@ function setLanguageFontsHTML(font_families, font_links) {
     }
     for (const font of fonts) {
         if (font_links[font]) {
-            $head.append(`<link href="${lang_font_links[font]}" rel="stylesheet">`);
+            $head.append(`<link href="${font_links[font]}" rel="stylesheet">`);
         }
     }
     $head.append(`
