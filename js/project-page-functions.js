@@ -1209,7 +1209,7 @@ function initLanguageFonts() {
     })
     .then(response => response.json())
     .then(json => {
-        font_links = {};
+        font_links = json;
         setLanguageFontsHTML(font_families, font_links);
     })
     .catch(err => {
@@ -1219,7 +1219,7 @@ function initLanguageFonts() {
 
 function setLanguageFontsHTML(font_families, font_links) {
     lang = $('html').attr('lang');
-	if (!lang || !font_families.includes(lang)) {
+	if (!lang || !font_families[lang]) {
 		return;
 	}
     const fonts = font_families[lang];
