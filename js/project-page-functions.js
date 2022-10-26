@@ -1,3 +1,5 @@
+import {initLanguageFonts} from './language-fonts.js';
+
 // console.log("project-page-functions.js version 10w"); // Helps identify if you have an older cached page or the latest
 var myProject = {};
 var projectPageLoaded = false;
@@ -19,6 +21,7 @@ _StatHat.push(['_setUser', 'NzMzIAPKpWipEWR8_hWIhqlgmew~']);
 })();
 
 $(document).ready(function(){
+    initLanguageFonts();
     onProjectPageLoaded();
 });
 

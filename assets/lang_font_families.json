@@ -1,0 +1,2132 @@
+{
+  "aa": [
+    "Noto Sans Ethiopic"
+  ],
+  "aae": [
+    "Noto Sans Cypriot"
+  ],
+  "aat": [
+    "Noto Sans Cypriot"
+  ],
+  "ab": [
+    "Noto Sans Georgian"
+  ],
+  "abh": [
+    "Noto Naskh Arabic"
+  ],
+  "abv": [
+    "Noto Naskh Arabic"
+  ],
+  "acm": [
+    "Noto Naskh Arabic"
+  ],
+  "acq": [
+    "Noto Naskh Arabic"
+  ],
+  "acw": [
+    "Noto Naskh Arabic"
+  ],
+  "acx": [
+    "Noto Naskh Arabic"
+  ],
+  "acy": [
+    "Noto Naskh Arabic"
+  ],
+  "adi": [
+    "Noto Sans Tibetan"
+  ],
+  "adx": [
+    "Noto Sans Tibetan"
+  ],
+  "aeb": [
+    "Noto Naskh Arabic"
+  ],
+  "aec": [
+    "Noto Naskh Arabic"
+  ],
+  "afb": [
+    "Noto Naskh Arabic"
+  ],
+  "agj": [
+    "Noto Sans Ethiopic"
+  ],
+  "ahg": [
+    "Noto Sans Ethiopic"
+  ],
+  "ahk": [
+    "Noto Sans Myanmar"
+  ],
+  "aij": [
+    "Noto Sans Hebrew"
+  ],
+  "aio": [
+    "Noto Sans Myanmar"
+  ],
+  "aiw": [
+    "Noto Sans Ethiopic"
+  ],
+  "ajp": [
+    "Noto Naskh Arabic"
+  ],
+  "ajt": [
+    "Noto Naskh Arabic"
+  ],
+  "aju": [
+    "Noto Sans Hebrew"
+  ],
+  "all": [
+    "Noto Sans Malayalam"
+  ],
+  "als": [
+    "Noto Sans Cypriot"
+  ],
+  "alt": [
+    "Noto Sans Mongolian"
+  ],
+  "alw": [
+    "Noto Sans Ethiopic"
+  ],
+  "am": [
+    "Noto Sans Ethiopic"
+  ],
+  "amf": [
+    "Noto Sans Ethiopic"
+  ],
+  "anr": [
+    "Noto Sans Devanagari"
+  ],
+  "anu": [
+    "Noto Sans Ethiopic"
+  ],
+  "apc": [
+    "Noto Naskh Arabic"
+  ],
+  "apd": [
+    "Noto Naskh Arabic"
+  ],
+  "aph": [
+    "Noto Sans Devanagari"
+  ],
+  "ar": [
+    "Noto Sans Syriac Eastern",
+    "Noto Sans Syriac Estrangela",
+    "Noto Sans Syriac Western"
+  ],
+  "arb": [
+    "Noto Naskh Arabic"
+  ],
+  "arc": [
+    "Noto Sans Syriac Eastern",
+    "Noto Sans Syriac Estrangela",
+    "Noto Sans Syriac Western"
+  ],
+  "arq": [
+    "Noto Naskh Arabic"
+  ],
+  "ars": [
+    "Noto Naskh Arabic"
+  ],
+  "ary": [
+    "Noto Naskh Arabic"
+  ],
+  "arz": [
+    "Noto Naskh Arabic"
+  ],
+  "as": [
+    "Noto Sans Bengali"
+  ],
+  "asr": [
+    "Noto Sans Devanagari"
+  ],
+  "atb": [
+    "Noto Sans Lisu"
+  ],
+  "atn": [
+    "Noto Naskh Arabic"
+  ],
+  "avl": [
+    "Noto Naskh Arabic"
+  ],
+  "awn": [
+    "Noto Sans Ethiopic"
+  ],
+  "ayl": [
+    "Noto Naskh Arabic"
+  ],
+  "ayn": [
+    "Noto Naskh Arabic"
+  ],
+  "ayp": [
+    "Noto Naskh Arabic"
+  ],
+  "azb": [
+    "Noto Naskh Arabic"
+  ],
+  "azj": [
+    "Noto Naskh Arabic"
+  ],
+  "ban": [
+    "Noto Sans Balinese",
+    "Noto Sans Javanese"
+  ],
+  "bap": [
+    "Noto Sans Devanagari"
+  ],
+  "bax": [
+    "Noto Sans Bamum"
+  ],
+  "bca": [
+    "Noto Sans TC"
+  ],
+  "bcc": [
+    "Noto Naskh Arabic"
+  ],
+  "bcq": [
+    "Noto Sans Ethiopic"
+  ],
+  "bea": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "bee": [
+    "Noto Sans Devanagari"
+  ],
+  "bfb": [
+    "Noto Sans Devanagari"
+  ],
+  "bfq": [
+    "Noto Sans Tamil"
+  ],
+  "bfs": [
+    "Noto Sans TC"
+  ],
+  "bft": [
+    "Noto Naskh Arabic"
+  ],
+  "bfu": [
+    "Noto Sans Tibetan"
+  ],
+  "bfy": [
+    "Noto Sans Devanagari"
+  ],
+  "bfz": [
+    "Noto Sans Devanagari"
+  ],
+  "bgc": [
+    "Noto Sans Devanagari"
+  ],
+  "bgd": [
+    "Noto Sans Devanagari"
+  ],
+  "bgn": [
+    "Noto Naskh Arabic"
+  ],
+  "bgp": [
+    "Noto Naskh Arabic"
+  ],
+  "bgq": [
+    "Noto Sans Devanagari"
+  ],
+  "bgw": [
+    "Noto Sans Devanagari"
+  ],
+  "bha": [
+    "Noto Sans Devanagari"
+  ],
+  "bhb": [
+    "Noto Sans Devanagari"
+  ],
+  "bhd": [
+    "Noto Naskh Arabic"
+  ],
+  "bhh": [
+    "Noto Sans Hebrew"
+  ],
+  "bhi": [
+    "Noto Sans Devanagari"
+  ],
+  "bhj": [
+    "Noto Sans Devanagari"
+  ],
+  "bhu": [
+    "Noto Sans Devanagari"
+  ],
+  "biy": [
+    "Noto Sans Devanagari"
+  ],
+  "bji": [
+    "Noto Sans Ethiopic"
+  ],
+  "bjj": [
+    "Noto Sans Devanagari"
+  ],
+  "bjn": [
+    "Noto Naskh Arabic"
+  ],
+  "bjt": [
+    "Noto Naskh Arabic"
+  ],
+  "bku": [
+    "Noto Sans Buhid"
+  ],
+  "bla": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "blr": [
+    "Noto Sans Tai Le"
+  ],
+  "blt": [
+    "Noto Sans Lao"
+  ],
+  "bm": [
+    "Noto Sans NKo"
+  ],
+  "bmj": [
+    "Noto Sans Devanagari"
+  ],
+  "bn": [
+    "Noto Sans Bengali"
+  ],
+  "bns": [
+    "Noto Sans Devanagari"
+  ],
+  "bo": [
+    "Noto Sans Tibetan"
+  ],
+  "boz": [
+    "Noto Naskh Arabic"
+  ],
+  "bpy": [
+    "Noto Sans Bengali"
+  ],
+  "brb": [
+    "Noto Sans Khmer"
+  ],
+  "brh": [
+    "Noto Naskh Arabic"
+  ],
+  "bru": [
+    "Noto Sans Lao"
+  ],
+  "brv": [
+    "Noto Sans Lao"
+  ],
+  "brx": [
+    "Noto Sans Bengali"
+  ],
+  "bsh": [
+    "Noto Naskh Arabic"
+  ],
+  "bsk": [
+    "Noto Naskh Arabic"
+  ],
+  "bsq": [
+    "Noto Sans Bassa Vah"
+  ],
+  "bst": [
+    "Noto Sans Ethiopic"
+  ],
+  "btv": [
+    "Noto Sans Devanagari"
+  ],
+  "bug": [
+    "Noto Sans Buginese"
+  ],
+  "bwe": [
+    "Noto Sans Myanmar"
+  ],
+  "bxm": [
+    "Noto Sans Mongolian"
+  ],
+  "bya": [
+    "Noto Sans Batak"
+  ],
+  "byh": [
+    "Noto Sans Devanagari"
+  ],
+  "byn": [
+    "Noto Sans Ethiopic"
+  ],
+  "byw": [
+    "Noto Sans Devanagari"
+  ],
+  "bze": [
+    "Noto Naskh Arabic"
+  ],
+  "bzi": [
+    "Noto Sans Thai"
+  ],
+  "caf": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "cbn": [
+    "Noto Sans Thai"
+  ],
+  "ccp": [
+    "Noto Sans Chakma"
+  ],
+  "cde": [
+    "Noto Sans Telugu"
+  ],
+  "cdf": [
+    "Noto Sans Bengali"
+  ],
+  "cdh": [
+    "Noto Sans Devanagari"
+  ],
+  "cdi": [
+    "Noto Sans Gujarati"
+  ],
+  "cdj": [
+    "Noto Sans Devanagari"
+  ],
+  "cdm": [
+    "Noto Sans Devanagari"
+  ],
+  "cdo": [
+    "Noto Sans TC"
+  ],
+  "cdz": [
+    "Noto Sans Bengali"
+  ],
+  "cfm": [
+    "Noto Sans Bengali"
+  ],
+  "chp": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "chr": [
+    "Noto Sans Cherokee"
+  ],
+  "chx": [
+    "Noto Sans Devanagari"
+  ],
+  "cih": [
+    "Noto Sans Devanagari"
+  ],
+  "ciw": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "cja": [
+    "Noto Naskh Arabic"
+  ],
+  "cjm": [
+    "Noto Naskh Arabic"
+  ],
+  "cjy": [
+    "Noto Sans TC"
+  ],
+  "ckb": [
+    "Noto Naskh Arabic"
+  ],
+  "clk": [
+    "Noto Sans Devanagari"
+  ],
+  "cmn": [
+    "Noto Sans TC"
+  ],
+  "cmo": [
+    "Noto Sans Khmer"
+  ],
+  "cna": [
+    "Noto Sans Tibetan"
+  ],
+  "cog": [
+    "Noto Sans Thai"
+  ],
+  "cop": [
+    "Noto Sans Coptic"
+  ],
+  "crj": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "crk": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "crl": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "crm": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "crx": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "csh": [
+    "Noto Sans Myanmar"
+  ],
+  "csw": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "ctg": [
+    "Noto Naskh Arabic"
+  ],
+  "ctn": [
+    "Noto Sans Devanagari"
+  ],
+  "cuu": [
+    "Noto Sans Tai Tham"
+  ],
+  "cwd": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "czh": [
+    "Noto Sans TC"
+  ],
+  "daq": [
+    "Noto Sans Devanagari"
+  ],
+  "dcc": [
+    "Noto Naskh Arabic"
+  ],
+  "def": [
+    "Noto Naskh Arabic"
+  ],
+  "der": [
+    "Noto Sans Bengali"
+  ],
+  "dgl": [
+    "Noto Naskh Arabic"
+  ],
+  "dgo": [
+    "Noto Naskh Arabic"
+  ],
+  "dhd": [
+    "Noto Sans Devanagari"
+  ],
+  "dhi": [
+    "Noto Sans Devanagari"
+  ],
+  "dhn": [
+    "Noto Sans Gujarati"
+  ],
+  "dho": [
+    "Noto Sans Devanagari"
+  ],
+  "dis": [
+    "Noto Sans Bengali"
+  ],
+  "dje": [
+    "Noto Naskh Arabic"
+  ],
+  "dml": [
+    "Noto Naskh Arabic"
+  ],
+  "dre": [
+    "Noto Sans Tibetan"
+  ],
+  "drs": [
+    "Noto Sans Ethiopic"
+  ],
+  "dry": [
+    "Noto Sans Devanagari"
+  ],
+  "dsq": [
+    "Noto Naskh Arabic"
+  ],
+  "dta": [
+    "Noto Sans SC"
+  ],
+  "dty": [
+    "Noto Sans Devanagari"
+  ],
+  "dub": [
+    "Noto Sans Gujarati"
+  ],
+  "duh": [
+    "Noto Sans Devanagari"
+  ],
+  "dus": [
+    "Noto Sans Devanagari"
+  ],
+  "dv": [
+    "Noto Sans Thaana"
+  ],
+  "dwr": [
+    "Noto Sans Ethiopic"
+  ],
+  "dyo": [
+    "Noto Naskh Arabic"
+  ],
+  "dyu": [
+    "Noto Sans NKo"
+  ],
+  "dz": [
+    "Noto Sans Tibetan"
+  ],
+  "eko": [
+    "Noto Naskh Arabic"
+  ],
+  "el": [
+    "Noto Sans Cypriot"
+  ],
+  "emg": [
+    "Noto Sans Devanagari"
+  ],
+  "emk": [
+    "Noto Naskh Arabic"
+  ],
+  "fa": [
+    "Noto Naskh Arabic"
+  ],
+  "fay": [
+    "Noto Naskh Arabic"
+  ],
+  "faz": [
+    "Noto Naskh Arabic"
+  ],
+  "ff": [
+    "Noto Sans Adlam"
+  ],
+  "ffm": [
+    "Noto Naskh Arabic"
+  ],
+  "fia": [
+    "Noto Naskh Arabic"
+  ],
+  "fub": [
+    "Noto Naskh Arabic"
+  ],
+  "fuc": [
+    "Noto Naskh Arabic"
+  ],
+  "fuf": [
+    "Noto Sans Adlam"
+  ],
+  "fuh": [
+    "Noto Naskh Arabic"
+  ],
+  "fuv": [
+    "Noto Naskh Arabic"
+  ],
+  "gag": [
+    "Noto Sans Cypriot"
+  ],
+  "gan": [
+    "Noto Sans TC"
+  ],
+  "gas": [
+    "Noto Sans Gujarati"
+  ],
+  "gau": [
+    "Noto Sans Telugu"
+  ],
+  "gax": [
+    "Noto Sans Ethiopic"
+  ],
+  "gaz": [
+    "Noto Sans Ethiopic"
+  ],
+  "gbk": [
+    "Noto Sans Devanagari"
+  ],
+  "gbl": [
+    "Noto Sans Devanagari"
+  ],
+  "gbm": [
+    "Noto Sans Devanagari"
+  ],
+  "gbz": [
+    "Noto Naskh Arabic"
+  ],
+  "gdb": [
+    "Noto Sans Telugu"
+  ],
+  "gdl": [
+    "Noto Sans Ethiopic"
+  ],
+  "gez": [
+    "Noto Sans Ethiopic"
+  ],
+  "ggg": [
+    "Noto Naskh Arabic"
+  ],
+  "ghe": [
+    "Noto Sans Devanagari"
+  ],
+  "gig": [
+    "Noto Naskh Arabic"
+  ],
+  "gjk": [
+    "Noto Naskh Arabic"
+  ],
+  "gju": [
+    "Noto Naskh Arabic"
+  ],
+  "glk": [
+    "Noto Naskh Arabic"
+  ],
+  "gmv": [
+    "Noto Sans Ethiopic"
+  ],
+  "gno": [
+    "Noto Sans Devanagari"
+  ],
+  "gof": [
+    "Noto Sans Ethiopic"
+  ],
+  "gok": [
+    "Noto Sans Devanagari"
+  ],
+  "gom": [
+    "Noto Sans Devanagari"
+  ],
+  "got": [
+    "Noto Sans Gothic"
+  ],
+  "gra": [
+    "Noto Sans Devanagari"
+  ],
+  "grc": [
+    "Noto Sans Cypriot"
+  ],
+  "grt": [
+    "Noto Sans Bengali"
+  ],
+  "gru": [
+    "Noto Sans Ethiopic"
+  ],
+  "gu": [
+    "Noto Sans Gujarati"
+  ],
+  "guk": [
+    "Noto Sans Ethiopic"
+  ],
+  "gvr": [
+    "Noto Sans Devanagari"
+  ],
+  "gwc": [
+    "Noto Naskh Arabic"
+  ],
+  "gwf": [
+    "Noto Naskh Arabic"
+  ],
+  "gzi": [
+    "Noto Naskh Arabic"
+  ],
+  "hac": [
+    "Noto Naskh Arabic"
+  ],
+  "haj": [
+    "Noto Sans Bengali"
+  ],
+  "hak": [
+    "Noto Sans TC"
+  ],
+  "har": [
+    "Noto Sans Ethiopic"
+  ],
+  "haz": [
+    "Noto Naskh Arabic"
+  ],
+  "hbo": [
+    "Noto Sans Hebrew"
+  ],
+  "hdy": [
+    "Noto Sans Ethiopic"
+  ],
+  "he": [
+    "Noto Sans Hebrew"
+  ],
+  "hi": [
+    "Noto Sans Devanagari"
+  ],
+  "hif": [
+    "Noto Sans Devanagari"
+  ],
+  "hlb": [
+    "Noto Sans Devanagari"
+  ],
+  "hnd": [
+    "Noto Naskh Arabic"
+  ],
+  "hne": [
+    "Noto Sans Devanagari"
+  ],
+  "hnj": [
+    "Noto Sans Thai"
+  ],
+  "hnn": [
+    "Noto Sans Hanunoo"
+  ],
+  "hno": [
+    "Noto Naskh Arabic"
+  ],
+  "hoc": [
+    "Noto Sans Devanagari"
+  ],
+  "hoj": [
+    "Noto Sans Devanagari"
+  ],
+  "how": [
+    "Noto Sans TC"
+  ],
+  "hrt": [
+    "Noto Sans Syriac Eastern"
+  ],
+  "hrz": [
+    "Noto Naskh Arabic"
+  ],
+  "hsn": [
+    "Noto Sans TC"
+  ],
+  "huy": [
+    "Noto Sans Hebrew"
+  ],
+  "hy": [
+    "Noto Sans Armenian"
+  ],
+  "ike": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "ikt": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "int": [
+    "Noto Sans Myanmar"
+  ],
+  "iru": [
+    "Noto Sans Malayalam"
+  ],
+  "itk": [
+    "Noto Sans Hebrew"
+  ],
+  "ium": [
+    "Noto Sans TC"
+  ],
+  "ja": [
+    "Noto Sans JP"
+  ],
+  "jad": [
+    "Noto Naskh Arabic"
+  ],
+  "jbe": [
+    "Noto Sans Hebrew"
+  ],
+  "jbn": [
+    "Noto Naskh Arabic"
+  ],
+  "jdg": [
+    "Noto Naskh Arabic"
+  ],
+  "jdt": [
+    "Noto Sans Hebrew"
+  ],
+  "jee": [
+    "Noto Sans Devanagari"
+  ],
+  "jeh": [
+    "Noto Sans Lao"
+  ],
+  "jje": [
+    "Noto Sans Hangul"
+  ],
+  "jml": [
+    "Noto Sans Devanagari"
+  ],
+  "jnl": [
+    "Noto Sans Devanagari"
+  ],
+  "jns": [
+    "Noto Sans Devanagari"
+  ],
+  "jpr": [
+    "Noto Sans Hebrew"
+  ],
+  "jra": [
+    "Noto Sans Khmer"
+  ],
+  "jrb": [
+    "Noto Sans Hebrew"
+  ],
+  "jul": [
+    "Noto Sans Devanagari"
+  ],
+  "jv": [
+    "Noto Sans Javanese"
+  ],
+  "jya": [
+    "Noto Sans Tibetan"
+  ],
+  "jye": [
+    "Noto Sans Hebrew"
+  ],
+  "ka": [
+    "Noto Sans Georgian"
+  ],
+  "kab": [
+    "Noto Sans Tifinagh"
+  ],
+  "kaw": [
+    "Noto Sans Balinese"
+  ],
+  "kbg": [
+    "Noto Sans Tibetan"
+  ],
+  "kbr": [
+    "Noto Sans Ethiopic"
+  ],
+  "kby": [
+    "Noto Naskh Arabic"
+  ],
+  "kdh": [
+    "Noto Naskh Arabic"
+  ],
+  "kdq": [
+    "Noto Sans Bengali"
+  ],
+  "kdt": [
+    "Noto Sans Khmer"
+  ],
+  "kex": [
+    "Noto Sans Devanagari"
+  ],
+  "key": [
+    "Noto Sans Telugu"
+  ],
+  "kfb": [
+    "Noto Sans Devanagari"
+  ],
+  "kfc": [
+    "Noto Sans Telugu"
+  ],
+  "kfe": [
+    "Noto Sans Tamil"
+  ],
+  "kff": [
+    "Noto Sans Devanagari"
+  ],
+  "kfg": [
+    "Noto Sans Malayalam"
+  ],
+  "kfh": [
+    "Noto Sans Malayalam"
+  ],
+  "kfk": [
+    "Noto Sans Devanagari"
+  ],
+  "kfm": [
+    "Noto Naskh Arabic"
+  ],
+  "kfp": [
+    "Noto Sans Devanagari"
+  ],
+  "kfq": [
+    "Noto Sans Devanagari"
+  ],
+  "kfs": [
+    "Noto Sans Devanagari"
+  ],
+  "kfx": [
+    "Noto Sans Devanagari"
+  ],
+  "kfy": [
+    "Noto Sans Devanagari"
+  ],
+  "kgd": [
+    "Noto Sans Lao"
+  ],
+  "kgj": [
+    "Noto Sans Devanagari"
+  ],
+  "khb": [
+    "New Tai Lue"
+  ],
+  "khf": [
+    "Noto Sans Thai"
+  ],
+  "khg": [
+    "Noto Sans Tibetan"
+  ],
+  "khk": [
+    "Noto Sans Mongolian"
+  ],
+  "khn": [
+    "Noto Sans Devanagari"
+  ],
+  "khr": [
+    "Noto Sans Devanagari"
+  ],
+  "kht": [
+    "Noto Sans Myanmar"
+  ],
+  "khw": [
+    "Noto Naskh Arabic"
+  ],
+  "kip": [
+    "Noto Sans Devanagari"
+  ],
+  "kjg": [
+    "Noto Sans Lao"
+  ],
+  "kjl": [
+    "Noto Sans Devanagari"
+  ],
+  "kjo": [
+    "Noto Sans Devanagari"
+  ],
+  "kjp": [
+    "Noto Sans Myanmar"
+  ],
+  "kjt": [
+    "Noto Sans Thai"
+  ],
+  "kjz": [
+    "Noto Sans Tibetan"
+  ],
+  "kkh": [
+    "Noto Sans Tai Tham"
+  ],
+  "kkt": [
+    "Noto Sans Devanagari"
+  ],
+  "kle": [
+    "Noto Sans Devanagari"
+  ],
+  "klr": [
+    "Noto Sans Devanagari"
+  ],
+  "kls": [
+    "Noto Naskh Arabic"
+  ],
+  "km": [
+    "Noto Sans Khmer"
+  ],
+  "kmc": [
+    "Noto Sans TC"
+  ],
+  "kmr": [
+    "Noto Naskh Arabic"
+  ],
+  "kmz": [
+    "Noto Naskh Arabic"
+  ],
+  "kn": [
+    "Noto Sans Kannada"
+  ],
+  "knc": [
+    "Noto Naskh Arabic"
+  ],
+  "knn": [
+    "Noto Sans Devanagari"
+  ],
+  "kns": [
+    "Noto Sans Thai"
+  ],
+  "kqd": [
+    "Noto Sans Syriac Eastern"
+  ],
+  "kqy": [
+    "Noto Sans Ethiopic"
+  ],
+  "kra": [
+    "Noto Sans Devanagari"
+  ],
+  "krv": [
+    "Noto Sans Khmer"
+  ],
+  "ksw": [
+    "Noto Sans Myanmar"
+  ],
+  "ksz": [
+    "Noto Sans Devanagari"
+  ],
+  "ktb": [
+    "Noto Sans Ethiopic"
+  ],
+  "ku": [
+    "Noto Sans Armenian"
+  ],
+  "kuf": [
+    "Noto Sans Lao"
+  ],
+  "kvq": [
+    "Noto Sans Myanmar"
+  ],
+  "kvx": [
+    "Noto Naskh Arabic"
+  ],
+  "kxc": [
+    "Noto Sans Ethiopic"
+  ],
+  "kxd": [
+    "Noto Naskh Arabic"
+  ],
+  "kxf": [
+    "Noto Sans Myanmar"
+  ],
+  "kxl": [
+    "Noto Sans Devanagari"
+  ],
+  "kxm": [
+    "Noto Sans Khmer"
+  ],
+  "kxp": [
+    "Noto Naskh Arabic"
+  ],
+  "kyu": [
+    "Noto Sans Myanmar"
+  ],
+  "kyw": [
+    "Noto Sans Bengali"
+  ],
+  "lad": [
+    "Noto Sans Hebrew"
+  ],
+  "lae": [
+    "Noto Sans Devanagari"
+  ],
+  "lax": [
+    "Noto Sans Bengali"
+  ],
+  "lbc": [
+    "Noto Sans Lisu"
+  ],
+  "lbf": [
+    "Noto Sans Devanagari"
+  ],
+  "lbj": [
+    "Noto Sans Tibetan"
+  ],
+  "lbn": [
+    "Noto Sans Lao"
+  ],
+  "lbr": [
+    "Noto Sans Devanagari"
+  ],
+  "lcp": [
+    "Noto Sans Thai"
+  ],
+  "lep": [
+    "Noto Sans Lepcha",
+    "Noto Sans Tibetan"
+  ],
+  "lhm": [
+    "Noto Sans Devanagari"
+  ],
+  "lif": [
+    "Noto Sans Limbu"
+  ],
+  "lis": [
+    "Noto Sans Lisu"
+  ],
+  "lki": [
+    "Noto Naskh Arabic"
+  ],
+  "lmk": [
+    "Noto Sans Myanmar"
+  ],
+  "lmn": [
+    "Noto Sans Devanagari"
+  ],
+  "lo": [
+    "Noto Sans Lao"
+  ],
+  "lpo": [
+    "Noto Sans Lisu"
+  ],
+  "lrc": [
+    "Noto Naskh Arabic"
+  ],
+  "lrl": [
+    "Noto Naskh Arabic"
+  ],
+  "lsa": [
+    "Noto Naskh Arabic"
+  ],
+  "lsd": [
+    "Noto Sans Hebrew"
+  ],
+  "luz": [
+    "Noto Naskh Arabic"
+  ],
+  "lwl": [
+    "Noto Sans Thai"
+  ],
+  "lwm": [
+    "Noto Sans Thai"
+  ],
+  "lzz": [
+    "Noto Sans Georgian"
+  ],
+  "mak": [
+    "Noto Sans Buginese"
+  ],
+  "man": [
+    "Noto Sans NKo"
+  ],
+  "mde": [
+    "Noto Naskh Arabic"
+  ],
+  "mdr": [
+    "Noto Sans Buginese"
+  ],
+  "mdx": [
+    "Noto Sans Ethiopic"
+  ],
+  "mdy": [
+    "Noto Sans Ethiopic"
+  ],
+  "mey": [
+    "Noto Naskh Arabic"
+  ],
+  "mfa": [
+    "Noto Naskh Arabic"
+  ],
+  "mfg": [
+    "Noto Naskh Arabic"
+  ],
+  "mgp": [
+    "Noto Sans Devanagari"
+  ],
+  "mid": [
+    "Noto Sans Mandaic"
+  ],
+  "mjl": [
+    "Noto Sans Devanagari"
+  ],
+  "mjt": [
+    "Noto Sans Bengali"
+  ],
+  "mju": [
+    "Noto Sans Telugu"
+  ],
+  "mjv": [
+    "Noto Sans Malayalam"
+  ],
+  "mjz": [
+    "Noto Sans Devanagari"
+  ],
+  "mkb": [
+    "Noto Sans Devanagari"
+  ],
+  "mke": [
+    "Noto Sans Devanagari"
+  ],
+  "mki": [
+    "Noto Naskh Arabic"
+  ],
+  "mkm": [
+    "Noto Sans Thai"
+  ],
+  "ml": [
+    "Noto Sans Malayalam"
+  ],
+  "mlf": [
+    "Noto Sans Thai"
+  ],
+  "mlq": [
+    "Noto Naskh Arabic"
+  ],
+  "mmd": [
+    "Noto Sans TC"
+  ],
+  "mn": [
+    "Noto Sans Mongolian"
+  ],
+  "mnc": [
+    "Noto Sans Mongolian"
+  ],
+  "mnh": [
+    "Noto Sans Mono"
+  ],
+  "mnj": [
+    "Noto Naskh Arabic"
+  ],
+  "mnk": [
+    "Noto Naskh Arabic"
+  ],
+  "mnr": [
+    "Noto Sans Mono"
+  ],
+  "mnw": [
+    "Noto Sans Myanmar"
+  ],
+  "mpe": [
+    "Noto Sans Ethiopic"
+  ],
+  "mpz": [
+    "Noto Sans Thai"
+  ],
+  "mra": [
+    "Noto Sans Thai"
+  ],
+  "mrd": [
+    "Noto Sans Devanagari"
+  ],
+  "mrg": [
+    "Noto Sans Bengali"
+  ],
+  "mrr": [
+    "Noto Sans Devanagari"
+  ],
+  "mru": [
+    "Noto Sans Mono"
+  ],
+  "mte": [
+    "Noto Sans Mono"
+  ],
+  "mtr": [
+    "Noto Sans Devanagari"
+  ],
+  "muk": [
+    "Noto Sans Tibetan"
+  ],
+  "mup": [
+    "Noto Sans Devanagari"
+  ],
+  "mut": [
+    "Noto Sans Devanagari"
+  ],
+  "muv": [
+    "Noto Sans Tamil"
+  ],
+  "muz": [
+    "Noto Sans Ethiopic"
+  ],
+  "mve": [
+    "Noto Naskh Arabic"
+  ],
+  "mvy": [
+    "Noto Naskh Arabic"
+  ],
+  "mwt": [
+    "Noto Sans Myanmar"
+  ],
+  "mww": [
+    "Noto Sans Lao"
+  ],
+  "my": [
+    "Noto Sans Myanmar"
+  ],
+  "mzb": [
+    "Noto Naskh Arabic"
+  ],
+  "mzn": [
+    "Noto Naskh Arabic"
+  ],
+  "nan": [
+    "Noto Sans SC"
+  ],
+  "nbt": [
+    "Noto Sans Devanagari"
+  ],
+  "ncb": [
+    "Noto Sans Devanagari"
+  ],
+  "ncd": [
+    "Noto Sans Devanagari"
+  ],
+  "nct": [
+    "Noto Sans Bengali"
+  ],
+  "ngt": [
+    "Noto Sans Lao"
+  ],
+  "nit": [
+    "Noto Sans Telugu"
+  ],
+  "njz": [
+    "Noto Sans Bengali"
+  ],
+  "nki": [
+    "Noto Sans Bengali"
+  ],
+  "nmo": [
+    "Noto Sans Bengali"
+  ],
+  "nng": [
+    "Noto Sans Bengali"
+  ],
+  "nnp": [
+    "Noto Sans Devanagari"
+  ],
+  "nod": [
+    "Noto Sans Tai Tham"
+  ],
+  "noe": [
+    "Noto Sans Devanagari"
+  ],
+  "noi": [
+    "Noto Sans Devanagari"
+  ],
+  "npi": [
+    "Noto Sans Devanagari"
+  ],
+  "nqo": [
+    "Noto Sans NKo"
+  ],
+  "nsk": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "ntz": [
+    "Noto Naskh Arabic"
+  ],
+  "nxq": [
+    "Noto Sans Lisu"
+  ],
+  "nyq": [
+    "Noto Naskh Arabic"
+  ],
+  "ojb": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "ojg": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "ojs": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "ojw": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "ola": [
+    "Noto Sans Tibetan"
+  ],
+  "om": [
+    "Noto Sans Ethiopic"
+  ],
+  "onp": [
+    "Noto Sans Devanagari"
+  ],
+  "or": [
+    "Noto Sans Oriya"
+  ],
+  "ort": [
+    "Noto Sans Telugu"
+  ],
+  "oru": [
+    "Noto Naskh Arabic"
+  ],
+  "ory": [
+    "Noto Sans Oriya"
+  ],
+  "os": [
+    "Noto Sans Georgian"
+  ],
+  "osa": [
+    "Noto Sans Osage"
+  ],
+  "osi": [
+    "Noto Sans Javanese"
+  ],
+  "otk": [
+    "Noto Sans Old Turkic"
+  ],
+  "oui": [
+    "Noto Sans Mongolian"
+  ],
+  "pa": [
+    "Noto Sans Gurmukhi"
+  ],
+  "pac": [
+    "Noto Sans Lao"
+  ],
+  "pal": [
+    "Noto Sans Inscriptional Pahlavi"
+  ],
+  "pbt": [
+    "Noto Naskh Arabic"
+  ],
+  "pbu": [
+    "Noto Naskh Arabic"
+  ],
+  "pcc": [
+    "Noto Sans TC"
+  ],
+  "pce": [
+    "Noto Sans Myanmar"
+  ],
+  "pcg": [
+    "Noto Sans Malayalam"
+  ],
+  "pci": [
+    "Noto Sans Devanagari"
+  ],
+  "pcj": [
+    "Noto Sans Telugu"
+  ],
+  "peo": [
+    "Noto Sans Old Persian"
+  ],
+  "pes": [
+    "Noto Naskh Arabic"
+  ],
+  "pgg": [
+    "Noto Sans Devanagari"
+  ],
+  "phk": [
+    "Noto Sans Myanmar"
+  ],
+  "phl": [
+    "Noto Naskh Arabic"
+  ],
+  "phn": [
+    "Noto Sans Phoenician"
+  ],
+  "pho": [
+    "Noto Sans Lao"
+  ],
+  "phr": [
+    "Noto Naskh Arabic"
+  ],
+  "pi": [
+    "Noto Sans Myanmar",
+    "Noto Sans Sinhala",
+    "Noto Sans Thai"
+  ],
+  "pkr": [
+    "Noto Sans Malayalam"
+  ],
+  "plk": [
+    "Noto Naskh Arabic"
+  ],
+  "pll": [
+    "Noto Sans Myanmar"
+  ],
+  "pnb": [
+    "Noto Naskh Arabic"
+  ],
+  "pnt": [
+    "Noto Sans Cypriot"
+  ],
+  "prd": [
+    "Noto Naskh Arabic"
+  ],
+  "prs": [
+    "Noto Naskh Arabic"
+  ],
+  "prx": [
+    "Noto Naskh Arabic"
+  ],
+  "psi": [
+    "Noto Naskh Arabic"
+  ],
+  "pst": [
+    "Noto Naskh Arabic"
+  ],
+  "pum": [
+    "Noto Sans Devanagari"
+  ],
+  "pwo": [
+    "Noto Sans Myanmar"
+  ],
+  "pww": [
+    "Noto Sans Thai"
+  ],
+  "pyu": [
+    "Noto Sans TC"
+  ],
+  "qxq": [
+    "Noto Naskh Arabic"
+  ],
+  "raa": [
+    "Noto Sans Devanagari"
+  ],
+  "rab": [
+    "Noto Sans Devanagari"
+  ],
+  "raf": [
+    "Noto Sans Devanagari"
+  ],
+  "rah": [
+    "Noto Sans Bengali"
+  ],
+  "rav": [
+    "Noto Sans Devanagari"
+  ],
+  "rbb": [
+    "Noto Sans Myanmar"
+  ],
+  "rdb": [
+    "Noto Naskh Arabic"
+  ],
+  "rej": [
+    "Noto Sans Rejang"
+  ],
+  "rhg": [
+    "Noto Naskh Arabic"
+  ],
+  "rif": [
+    "Noto Naskh Arabic"
+  ],
+  "rji": [
+    "Noto Sans Devanagari"
+  ],
+  "rjs": [
+    "Noto Sans Devanagari"
+  ],
+  "rki": [
+    "Noto Sans Myanmar"
+  ],
+  "rkt": [
+    "Noto Sans Bengali"
+  ],
+  "rmn": [
+    "Noto Sans Cypriot"
+  ],
+  "rmt": [
+    "Noto Naskh Arabic"
+  ],
+  "rmz": [
+    "Noto Sans Myanmar"
+  ],
+  "rup": [
+    "Noto Sans Cypriot"
+  ],
+  "rwr": [
+    "Noto Sans Devanagari"
+  ],
+  "ryu": [
+    "Noto Sans JP"
+  ],
+  "sa": [
+    "Noto Sans Myanmar",
+    "Noto Sans Sinhala"
+  ],
+  "sam": [
+    "Noto Sans Hebrew",
+    "Noto Sans Syriac Eastern",
+    "Noto Sans Syriac Estrangela",
+    "Noto Sans Syriac Western"
+  ],
+  "sas": [
+    "Noto Sans Balinese"
+  ],
+  "sav": [
+    "Noto Naskh Arabic"
+  ],
+  "saz": [
+    "Noto Sans Saurashtra"
+  ],
+  "sce": [
+    "Noto Naskh Arabic"
+  ],
+  "sck": [
+    "Noto Sans Bengali"
+  ],
+  "scl": [
+    "Noto Naskh Arabic"
+  ],
+  "scp": [
+    "Noto Sans Devanagari"
+  ],
+  "scs": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "sd": [
+    "Noto Sans Gurmukhi"
+  ],
+  "sdh": [
+    "Noto Naskh Arabic"
+  ],
+  "sdr": [
+    "Noto Sans Bengali"
+  ],
+  "sek": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "sgh": [
+    "Noto Naskh Arabic"
+  ],
+  "sgj": [
+    "Noto Sans Devanagari"
+  ],
+  "sgr": [
+    "Noto Naskh Arabic"
+  ],
+  "sgw": [
+    "Noto Sans Ethiopic"
+  ],
+  "shi": [
+    "Noto Naskh Arabic"
+  ],
+  "shm": [
+    "Noto Naskh Arabic"
+  ],
+  "shn": [
+    "Noto Sans Myanmar",
+    "Noto Sans Thai"
+  ],
+  "shu": [
+    "Noto Naskh Arabic"
+  ],
+  "shy": [
+    "Noto Naskh Arabic"
+  ],
+  "si": [
+    "Noto Sans Sinhala"
+  ],
+  "sid": [
+    "Noto Sans Ethiopic"
+  ],
+  "sip": [
+    "Noto Sans Tibetan"
+  ],
+  "sjo": [
+    "Noto Sans Mongolian"
+  ],
+  "sjp": [
+    "Noto Sans Devanagari"
+  ],
+  "skr": [
+    "Noto Naskh Arabic"
+  ],
+  "smp": [
+    "Noto Sans Samaritan"
+  ],
+  "smy": [
+    "Noto Naskh Arabic"
+  ],
+  "soa": [
+    "Noto Sans Tai Viet"
+  ],
+  "sog": [
+    "Noto Sans Syriac Eastern",
+    "Noto Sans Syriac Estrangela",
+    "Noto Sans Syriac Western"
+  ],
+  "sou": [
+    "Noto Sans Thai"
+  ],
+  "sqi": [
+    "Noto Sans Cypriot"
+  ],
+  "sqt": [
+    "Noto Naskh Arabic"
+  ],
+  "srb": [
+    "Noto Sans Telugu"
+  ],
+  "srx": [
+    "Noto Sans Devanagari"
+  ],
+  "sss": [
+    "Noto Sans Lao"
+  ],
+  "ssy": [
+    "Noto Sans Ethiopic"
+  ],
+  "su": [
+    "Noto Sans Javanese",
+    "Noto Sans Sundanese"
+  ],
+  "suq": [
+    "Noto Sans Ethiopic"
+  ],
+  "suv": [
+    "Noto Sans Bengali"
+  ],
+  "sva": [
+    "Noto Sans Georgian"
+  ],
+  "swb": [
+    "Noto Naskh Arabic"
+  ],
+  "swi": [
+    "Noto Sans TC"
+  ],
+  "swv": [
+    "Noto Sans Devanagari"
+  ],
+  "syc": [
+    "Noto Sans Syriac Eastern",
+    "Noto Sans Syriac Estrangela",
+    "Noto Sans Syriac Western"
+  ],
+  "syl": [
+    "Noto Sans Bengali"
+  ],
+  "syn": [
+    "Noto Sans Syriac Eastern"
+  ],
+  "syr": [
+    "Noto Sans Syriac Eastern",
+    "Noto Sans Syriac Estrangela",
+    "Noto Sans Syriac Western"
+  ],
+  "ta": [
+    "Noto Sans Tamil"
+  ],
+  "taj": [
+    "Noto Sans Devanagari"
+  ],
+  "taq": [
+    "Noto Sans Tifinagh"
+  ],
+  "tay": [
+    "Noto Sans TC"
+  ],
+  "tbw": [
+    "Noto Sans Tagbanwa"
+  ],
+  "tcx": [
+    "Noto Sans Tamil"
+  ],
+  "tda": [
+    "Noto Naskh Arabic"
+  ],
+  "tdb": [
+    "Noto Sans Bengali"
+  ],
+  "tdd": [
+    "Noto Sans Tai Le"
+  ],
+  "tdg": [
+    "Noto Sans Devanagari"
+  ],
+  "tdh": [
+    "Noto Sans Devanagari"
+  ],
+  "te": [
+    "Noto Sans Telugu"
+  ],
+  "tes": [
+    "Noto Sans Javanese"
+  ],
+  "tg": [
+    "Noto Sans Hebrew"
+  ],
+  "th": [
+    "Noto Sans Thai"
+  ],
+  "thf": [
+    "Noto Sans Devanagari"
+  ],
+  "thl": [
+    "Noto Sans Devanagari"
+  ],
+  "thq": [
+    "Noto Sans Devanagari"
+  ],
+  "thr": [
+    "Noto Sans Devanagari"
+  ],
+  "ths": [
+    "Noto Sans Devanagari"
+  ],
+  "thv": [
+    "Noto Naskh Arabic"
+  ],
+  "thz": [
+    "Noto Sans Tifinagh"
+  ],
+  "ti": [
+    "Noto Sans Ethiopic"
+  ],
+  "tig": [
+    "Noto Sans Ethiopic"
+  ],
+  "tij": [
+    "Noto Sans Devanagari"
+  ],
+  "tjl": [
+    "Noto Sans Myanmar"
+  ],
+  "tkb": [
+    "Noto Sans Devanagari"
+  ],
+  "tks": [
+    "Noto Naskh Arabic"
+  ],
+  "tkt": [
+    "Noto Sans Devanagari"
+  ],
+  "tl": [
+    "Noto Sans Tagalog"
+  ],
+  "tly": [
+    "Noto Naskh Arabic"
+  ],
+  "tmk": [
+    "Noto Sans Devanagari"
+  ],
+  "tpe": [
+    "Noto Sans Bengali"
+  ],
+  "tpu": [
+    "Noto Sans Khmer"
+  ],
+  "tr": [
+    "Noto Sans Cypriot"
+  ],
+  "trg": [
+    "Noto Sans Hebrew"
+  ],
+  "trp": [
+    "Noto Sans Bengali"
+  ],
+  "tru": [
+    "Noto Sans Syriac Eastern"
+  ],
+  "trw": [
+    "Noto Naskh Arabic"
+  ],
+  "tsd": [
+    "Noto Sans Cypriot"
+  ],
+  "tsg": [
+    "Noto Naskh Arabic"
+  ],
+  "tsj": [
+    "Noto Sans Tibetan"
+  ],
+  "tth": [
+    "Noto Sans Lao"
+  ],
+  "tto": [
+    "Noto Sans Lao"
+  ],
+  "ttq": [
+    "Noto Naskh Arabic"
+  ],
+  "tts": [
+    "Noto Sans Thai"
+  ],
+  "twh": [
+    "Noto Sans Tai Viet"
+  ],
+  "twm": [
+    "Noto Sans Devanagari"
+  ],
+  "txo": [
+    "Noto Sans Bengali"
+  ],
+  "tyr": [
+    "Noto Sans Tai Viet"
+  ],
+  "tzm": [
+    "Noto Naskh Arabic"
+  ],
+  "udg": [
+    "Noto Sans Malayalam"
+  ],
+  "uga": [
+    "Noto Sans Ugaritic"
+  ],
+  "unr": [
+    "Noto Sans Bengali"
+  ],
+  "unx": [
+    "Noto Sans Bengali"
+  ],
+  "ur": [
+    "Noto Nastaliq Urdu"
+  ],
+  "uum": [
+    "Noto Sans Cypriot"
+  ],
+  "uzn": [
+    "Noto Naskh Arabic"
+  ],
+  "uzs": [
+    "Noto Naskh Arabic"
+  ],
+  "vaa": [
+    "Noto Sans Tamil"
+  ],
+  "vaf": [
+    "Noto Naskh Arabic"
+  ],
+  "vah": [
+    "Noto Sans Devanagari"
+  ],
+  "vai": [
+    "Noto Sans Vai"
+  ],
+  "vas": [
+    "Noto Sans Devanagari"
+  ],
+  "vav": [
+    "Noto Sans Devanagari"
+  ],
+  "vkp": [
+    "Noto Sans Devanagari"
+  ],
+  "wal": [
+    "Noto Sans Ethiopic"
+  ],
+  "wbl": [
+    "Noto Naskh Arabic"
+  ],
+  "wbq": [
+    "Noto Sans Telugu"
+  ],
+  "wbr": [
+    "Noto Sans Devanagari"
+  ],
+  "wlo": [
+    "Noto Naskh Arabic"
+  ],
+  "wme": [
+    "Noto Sans Devanagari"
+  ],
+  "wmw": [
+    "Noto Naskh Arabic"
+  ],
+  "wni": [
+    "Noto Naskh Arabic"
+  ],
+  "wtm": [
+    "Noto Sans Devanagari"
+  ],
+  "wuu": [
+    "Noto Sans TC"
+  ],
+  "xal": [
+    "Noto Sans Mongolian"
+  ],
+  "xan": [
+    "Noto Sans Ethiopic"
+  ],
+  "xcr": [
+    "Noto Sans Carian"
+  ],
+  "xkf": [
+    "Noto Sans Tibetan"
+  ],
+  "xkj": [
+    "Noto Naskh Arabic"
+  ],
+  "xkz": [
+    "Noto Sans Tibetan"
+  ],
+  "xlc": [
+    "Noto Sans Lycian"
+  ],
+  "xld": [
+    "Noto Sans Lydian"
+  ],
+  "xmf": [
+    "Noto Sans Georgian"
+  ],
+  "xnr": [
+    "Noto Sans Devanagari"
+  ],
+  "xpg": [
+    "Noto Sans Cypriot"
+  ],
+  "xpr": [
+    "Noto Sans Inscriptional Parthian"
+  ],
+  "xsl": [
+    "Noto Sans Canadian Aboriginal"
+  ],
+  "xsr": [
+    "Noto Sans Devanagari"
+  ],
+  "xub": [
+    "Noto Sans Malayalam"
+  ],
+  "yal": [
+    "Noto Naskh Arabic"
+  ],
+  "ybi": [
+    "Noto Sans Devanagari"
+  ],
+  "ydd": [
+    "Noto Sans Hebrew"
+  ],
+  "ydg": [
+    "Noto Naskh Arabic"
+  ],
+  "yea": [
+    "Noto Sans Malayalam"
+  ],
+  "yeu": [
+    "Noto Sans Telugu"
+  ],
+  "yhd": [
+    "Noto Sans Hebrew"
+  ],
+  "yi": [
+    "Noto Sans Hebrew"
+  ],
+  "yih": [
+    "Noto Sans Hebrew"
+  ],
+  "yka": [
+    "Noto Naskh Arabic"
+  ],
+  "yud": [
+    "Noto Sans Hebrew"
+  ],
+  "yue": [
+    "Noto Sans TC"
+  ],
+  "zau": [
+    "Noto Sans Tibetan"
+  ],
+  "zay": [
+    "Noto Sans Ethiopic"
+  ],
+  "zch": [
+    "Noto Sans TC"
+  ],
+  "zdj": [
+    "Noto Naskh Arabic"
+  ],
+  "zeh": [
+    "Noto Sans TC"
+  ],
+  "zen": [
+    "Noto Sans Tifinagh"
+  ],
+  "zgb": [
+    "Noto Sans TC"
+  ],
+  "zgh": [
+    "Noto Sans Tifinagh"
+  ],
+  "zgm": [
+    "Noto Sans TC"
+  ],
+  "zgn": [
+    "Noto Sans TC"
+  ],
+  "zh": [
+    "Noto Sans TC",
+    "Noto Sans SC"
+  ],
+  "zhd": [
+    "Noto Sans TC"
+  ],
+  "zhn": [
+    "Noto Sans TC"
+  ],
+  "zlj": [
+    "Noto Sans TC"
+  ],
+  "zlm": [
+    "Noto Naskh Arabic"
+  ],
+  "zln": [
+    "Noto Sans TC"
+  ],
+  "zlq": [
+    "Noto Sans TC"
+  ],
+  "zqe": [
+    "Noto Sans TC"
+  ],
+  "zrg": [
+    "Noto Sans Telugu"
+  ],
+  "zsm": [
+    "Noto Naskh Arabic"
+  ],
+  "zyb": [
+    "Noto Sans TC"
+  ],
+  "zyg": [
+    "Noto Sans TC"
+  ],
+  "zyj": [
+    "Noto Sans TC"
+  ],
+  "zyn": [
+    "Noto Sans TC"
+  ],
+  "zzj": [
+    "Noto Sans TC"
+  ]
+}
