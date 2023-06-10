@@ -863,7 +863,7 @@ function requestPDFbuild() {
             "author" : {
                 "username": "guest",
             },
-            "url": myProject['repo_url'] + "/commit/" + myCommitHash,
+            "url": myProject['repo_url'] + "/commit/" + (myCommitHash ? myCommitHash : myCommitId),
             "message": "PDF request",
         }],
         "repository": {
