@@ -6,7 +6,7 @@
 # Example:
 # docker build -t door43-dev . && docker run --rm -d --name door43-dev -v ${PWD}:/source -v ${PWD}/_site:/var/www/html -p 8080:80 door43-dev
 
-FROM ruby:latest
+FROM ruby:2.7.8-bullseye
 
 RUN apt-get update -qq && apt-get install -y nginx vim
 
