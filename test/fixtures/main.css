@@ -2246,7 +2246,7 @@ p { margin: 0 0 30px; padding: 0; }
 hr { margin-top: 24px; margin-bottom: 24px; box-sizing: content-box; height: 0; border-bottom: 1px solid #000000; }
 
 blockquote { color: #999; margin: 40px; }
-blockquote::before { content: "\201C"; display: block; font-size: 30px; height: 0; left: -20px; position: relative; top: -10px; }
+blockquote::before { content: ""; display: block; font-size: 30px; height: 0; left: -20px; position: relative; top: -10px; }
 
 a { color: #44ace8; }
 a:hover, a:focus { color: #000000; text-decoration: none; }
