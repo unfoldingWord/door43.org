@@ -21,6 +21,8 @@ _StatHat.push(['_setUser', 'NzMzIAPKpWipEWR8_hWIhqlgmew~']);
 $(document).ready(function(){
     initLanguageFonts();
     onProjectPageLoaded();
+    checkForConversionRequested($('h1.conversion-requested'));
+    checkForGACode(); // for older projects
 });
 
 /**
@@ -1240,5 +1242,28 @@ function setLanguageFontsHTML(font_families, font_links) {
 </style>`);
 }
 
-
-checkForConversionRequested($('h1.conversion-requested'));
+// This is for old projects before there was a ga4.js file included in the template and a gtag function
+// Remove when no longer needed.
+function checkForGACode() {
+    if (typeof window.gtag === "undefined") {
+        window.dataLayer = window.dataLayer || [];
+        try {
+            let gaScriptEle = document.createElement("script");
+            gaScriptEle.setAttribute("src", "https://www.googletagmanager.com/gtag/js?id=G-KR9PN7JL65");
+            gaScriptEle.setAttribute("type", "text/javascript");
+            gaScriptEle.setAttribute("async", true);
+            document.body.appendChild(gaScriptEle);
+            gaScriptEle.addEventListener("load", () => {
+                console.log("GA Script file loaded")
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-KR9PN7JL65');
+            });
+            gaScriptEle.addEventListener("error", (ev) => {
+                console.log("Error on loading GA Script file:", ev);
+            });
+        } catch (error) {
+            console.log("Error in checkForGACode: ", ev);
+        }
+    }
+}

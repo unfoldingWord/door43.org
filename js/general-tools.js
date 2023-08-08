@@ -218,4 +218,3 @@ function getLanguagePageViewUrl(pageUrl) {
     var prefix = getSiteFromPage(pageUrl);
     return 'https://' + prefix + 'api.door43.org/language_view_count';
 }
-
