@@ -273,7 +273,7 @@ function processBuildLogJson(myLog, $downloadMenuButton, $buildStatusIcon, $last
     saveDownloadLinks(myLog);
     updateDownloadItems(myLog.input_format);
     updateConversionStatusOnPage($buildStatusIcon, myLog);
-    PDF_download_url = `https://s3-us-west-2.amazonaws.com/${API_prefix}door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}/${myRepoName.toLowerCase()}_${myCommitId}.zip`;
+    PDF_download_url = `https://s3-us-west-2.amazonaws.com/${API_prefix}door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}/${myRepoName}_${myCommitId}.zip`;
 
     if ($revisions.length) { // old template with Revisions in left-sidebar
         $revisions.empty();
