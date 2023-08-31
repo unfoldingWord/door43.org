@@ -55,7 +55,7 @@ function onProjectPageLoaded() {
   myCommitId = url_parts[url_parts.length - 2];
   myRepoName = url_parts[url_parts.length - 3];
   myRepoOwner = url_parts[url_parts.length - 4];
-  PDF_download_url = `https://s3-us-west-2.amazonaws.com/${API_prefix}door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}/${myRepoName.toLowerCase()}_${myCommitId}.zip`;
+  PDF_download_url = `https://s3-us-west-2.amazonaws.com/${API_prefix}door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}/${myRepoName}_${myCommitId}.zip`;
   // NOTE: left-sidebar doesn't exist for new template, RJH Sep2019
   $('#left-sidebar').find('#page-nav option[value="' + filename + '"]').attr('selected', 'selected');
 
