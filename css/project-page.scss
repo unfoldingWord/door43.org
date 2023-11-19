@@ -155,7 +155,7 @@ nav {
     bottom: 0;
     margin-bottom: 0;
     overflow-y: auto;
-    width: 24%;
+    width: 20%;
 
     &.pin-to-top {
       top: 130px !important;
@@ -235,7 +235,7 @@ nav {
 
 @media (max-width: 1199px) {
   #right-sidebar-nav.affix {
-    width: 24%;
+    width: 20%;
   }
 }
 
