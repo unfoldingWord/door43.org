@@ -89,8 +89,6 @@ function onProjectPageLoaded() {
 
     processBuildLogJson(myLog, $('#download_menu_button'), $('#build-status-icon'), $('#last-updated'));
 
-    $('#see-on-dcs-wrapper').after('<span><a href="https://preview.door43.org/u/'+myRepoOwner+'/'+myRepoName+'/'+myCommitId+'" target="_blank">See on new Door43</a></span>');
-
     let bannerHTML = `
 <div class="alert alert-warning show" role="alert" style="background-color: yellow;">
   <i class="fa fa-info-circle"></i>
