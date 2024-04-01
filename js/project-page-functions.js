@@ -90,7 +90,7 @@ function onProjectPageLoaded() {
     processBuildLogJson(myLog, $('#download_menu_button'), $('#build-status-icon'), $('#last-updated'));
 
     let bannerHTML = `
-<div class="alert alert-warning show" role="alert" style="background-color: yellow;">
+<div class="alert alert-warning show" role="alert" style="background-color: yellow; padding-top: 30px;">
   <i class="fa fa-info-circle"></i>
   <span style="color: red;">This site is being deprecated. Please use the 
     <a href="https://preview.door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}">new Door43 Preview</a> site.
