@@ -67,8 +67,21 @@ function onProjectPageLoaded() {
 
     processBuildLogJson(myLog, $('#download_menu_button'), $('#build-status-icon'), $('#last-updated'));
 
-    $('.see-on-dcs-wrapper').after('<span><a href="https://preview.door43.org/u/'+myRepoOwner+'/'+myRepoName+'/'+myCommitId+'" target="_blank">View on the new Door43 Preview</a></span>');
+    $('#see-on-dcs-wrapper').after('<span><a href="https://preview.door43.org/u/'+myRepoOwner+'/'+myRepoName+'/'+myCommitId+'" target="_blank">See on new Door43</a></span>');
 
+    let bannerHTML = `
+<div class="alert alert-warning alert-dismissible fade show" role="alert" style="background-color: yellow;">
+  <i class="fa fa-info-circle"></i>
+  <span style="color: red;">This site is being deprecated. Please use the 
+    <a href="https://preview.door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}" style="color: red;">new Door43 Preview site</a>.
+  </span>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+`;
+    $('body').prepend(bannerHTML);
+    
     $.getJSON("../project.json", function (project) {
         myProject = project;
         processProjectJson(); // Updates the revision list
