@@ -67,6 +67,8 @@ function onProjectPageLoaded() {
 
     processBuildLogJson(myLog, $('#download_menu_button'), $('#build-status-icon'), $('#last-updated'));
 
+    $('.see-on-dcs-wrapper').after('<span><a href="https://preview.door43.org/u/'+myRepoOwner+'/'+myRepoName+'/'+myCommitId+'" target="_blank">View on the new Door43 Preview</a></span>');
+
     $.getJSON("../project.json", function (project) {
         myProject = project;
         processProjectJson(); // Updates the revision list
@@ -448,23 +450,10 @@ function showTenMore(){
 */
 
 function printAll(){
-  // Called when the "Print" button is clicked on
-  _StatHat.push(["_trackCount", "5o8ZBSJ6yPfmZ28HhXZPaSBNYzRU", 1.0]);
-  var id = myRepoOwner+"/"+myRepoName+"/"+myCommitId;
-  var api_domain = "api.door43.org";
-  $.ajax({
-    url: "https://"+API_prefix+api_domain+"/tx/print?id="+id,
-    success: function(data) {
-      // response body is url to printed HTML
-      if (!data.startsWith('http')) {
-        // TODO(ethantkoenig): this is an ugly hack
-        data = 'https://' + data;
-      }
-      console.log("URL for printed HTML: " + data);
-      window.open(data, '_blank');
-    },
-    crossDomain: true
-  });
+    let confirmation = confirm("You are about to be redirected to the new Door43 Preview site where you can print your document. Do you want to continue?");
+    if (confirmation) {
+        window.location.href = `https://preview.door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}`;
+    }
 }
 
 /**
