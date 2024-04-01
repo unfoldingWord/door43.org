@@ -25,6 +25,28 @@ $(document).ready(function(){
     checkForGACode(); // for older projects
 });
 
+
+function createCookie(name, value, days) {
+    let expires = '';
+    if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = `; expires=${date.toGMTString()}`;
+    }
+    document.cookie = `${name}=${value}${expires}; path=/`;
+}
+
+function readCookie(name) {
+    const nameEQ = `${name}=`;
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
 /**
  * Called to initialize the project page
  */
@@ -70,10 +92,10 @@ function onProjectPageLoaded() {
     $('#see-on-dcs-wrapper').after('<span><a href="https://preview.door43.org/u/'+myRepoOwner+'/'+myRepoName+'/'+myCommitId+'" target="_blank">See on new Door43</a></span>');
 
     let bannerHTML = `
-<div class="alert alert-warning alert-dismissible fade show" role="alert" style="background-color: yellow;">
+<div class="alert alert-warning show" role="alert" style="background-color: yellow;">
   <i class="fa fa-info-circle"></i>
   <span style="color: red;">This site is being deprecated. Please use the 
-    <a href="https://preview.door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}" style="color: red;">new Door43 Preview site</a>.
+    <a href="https://preview.door43.org/u/${myRepoOwner}/${myRepoName}/${myCommitId}">new Door43 Preview</a> site.
   </span>
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
