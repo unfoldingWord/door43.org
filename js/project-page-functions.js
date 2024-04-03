@@ -552,7 +552,7 @@ function updateDownloadItems(inputFormat) {
     //  1/ Set the download (compressed) files option to show USFM or MARKDOWN
     //  2/ Add PDF for OBS repos
     setDownloadFilesMenuItem(inputFormat);
-    addOptionalPDFDownload();
+    // addOptionalPDFDownload();
 }
 
 function addOptionalPDFDownload() {
