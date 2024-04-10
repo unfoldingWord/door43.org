@@ -185,7 +185,7 @@ function getLanguageListItems($searchField, callback) {
         // var request = {type: 'GET', url: 'https://us.door43.org:9096/?q=' + encodeURIComponent(term)};
         var extra = API_prefix ? '-demo' : '';
         var request = {type: 'GET',
-                url: 'https://td' + extra + '.unfoldingword.org/ac/langnames/?q=' + encodeURIComponent(term)
+                url: 'https://td.unfoldingword.org/ac/langnames/?q=' + encodeURIComponent(term)
                 };
         console.log("GETting " + JSON.stringify(request));
         $.ajax(request).done(function (data, responseText, jqXHR) {
@@ -424,6 +424,8 @@ function SearchCriteria() {
      * @member {string} title - text to find in title (if not null)
      * @member {string} time - text to find in time (if not null)
      * @member {string} manifest - text to find in manifest (if not null)
+     * @member {string} sort
+     * @member {string} order
      * @member {number} minViews - Minimum number of views needed (if not 0 or null)
      * @member {number} daysForRecent - Number of days before today that a project's last update has to be to not require minViews
      * @member {string} returnedFields - comma delimited list of fields to return.  If null it will default to
@@ -503,6 +505,8 @@ function getSearchCriteriaFromUrl(searchUrl) {
     searchUrl = (typeof searchUrl === 'undefined') ? window.location.href : searchUrl;
 
     var criteria = new SearchCriteria();
+    criteria.order = "desc";
+    criteria.sort = "desc";
 
     if (!searchUrl)
         return criteria;
@@ -526,6 +530,8 @@ function getSearchCriteriaFromUrl(searchUrl) {
     criteria.time = getSingleItem(params, 'time');
     criteria.manifest = getSingleItem(params, 'manifest');
     criteria.languages = getArrayItem(params, 'lc');
+    criteria.sort = "updated";
+    criteria.order = "desc"
     return criteria;
 }
 
@@ -594,7 +600,7 @@ function getArrayItem(params, key) {
 function searchProjects(searchUrl) {
     var criteria = getSearchCriteriaFromUrl(searchUrl);
     const default_search = _.isEqual(criteria, new SearchCriteria());
-    criteria.returnedFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
+    // criteria.returnedFields = "repo_name, user_name, title, lang_code, manifest, last_updated, views";
     searchResults = {};
     $('#popular-div').find('.search-listing').html('<span class="loading-results">'+loadingText+'</span>');
     $('#recent-div').find('.search-listing').html('<span class="loading-results">'+loadingText+'</span>');
@@ -609,8 +615,9 @@ function searchProjects(searchUrl) {
 
     var criteria_popular = new SearchCriteria();
     criteria_popular.minViews = DEFAULT_PAGE_MINIMUM_VIEWS;
-    criteria_popular['sort_by_reversed'] = 'views';
-    criteria_popular.returnedFields = criteria.returnedFields;
+    criteria_popular['sort'] = 'updated';
+    criteria_popular['order'] = 'desc';
+    // criteria_popular.returnedFields = criteria.returnedFields;
     return searchManifestTable(criteria_popular, updatePopularResults, SECTION_TYPE_POPULAR);
 }
 
@@ -826,7 +833,7 @@ function showSearchResults(sectionToShow) {
             $popular_div.empty();
         }
         var popularResults = searchResults[SECTION_TYPE_POPULAR];
-        popularResults = _.sortBy(popularResults.reverse(), 'views').reverse(); // Reverse 1st time since we reverse again
+        popularResults = _.sortBy(popularResults.reverse(), 'num_stars').reverse(); // Reverse 1st time since we reverse again
         if (!popularResults.length) {
             $popular_div.html('<div class="no-results">'+noResultsText+'</div>');
         }
