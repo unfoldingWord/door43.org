@@ -158,33 +158,35 @@ function processPageViewSuccessResponse(data) {
 }
 
 function getAndUpdatePageViews(span, pageCountUrl, pageUrl, increment) {
-    var params = {
-        path: pageUrl,
-        increment: increment
-    };
+    // // THE BELOW WAS DISABLED BY richmahn ON 2024-04-10 - DEPRECATED
 
-    $.ajax({
-        url: pageCountUrl,
-        type: 'GET',
-        cache: "false",
-        data: params,
-        dataType: 'jsonp',
-        success: function (data, status) {
-            var response = processPageViewSuccessResponse(data);
-            if (span && response.hasOwnProperty('message')) {
-                span.html(response['message']);
-            }
-            if (response.hasOwnProperty('error')) {
-                console.log(response['error'], data);
-            }
-            return response;
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            const error = 'Error: ' + textStatus + '\n' + errorThrown;
-            console.log(error);
-            return error;
-        }
-    });
+    // var params = {
+    //     path: pageUrl,
+    //     increment: increment
+    // };
+
+    // $.ajax({
+    //     url: pageCountUrl,
+    //     type: 'GET',
+    //     cache: "false",
+    //     data: params,
+    //     dataType: 'jsonp',
+    //     success: function (data, status) {
+    //         var response = processPageViewSuccessResponse(data);
+    //         if (span && response.hasOwnProperty('message')) {
+    //             span.html(response['message']);
+    //         }
+    //         if (response.hasOwnProperty('error')) {
+    //             console.log(response['error'], data);
+    //         }
+    //         return response;
+    //     },
+    //     error: function (jqXHR, textStatus, errorThrown) {
+    //         const error = 'Error: ' + textStatus + '\n' + errorThrown;
+    //         console.log(error);
+    //         return error;
+    //     }
+    // });
     return false;
 }
 
