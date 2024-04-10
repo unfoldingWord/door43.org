@@ -505,8 +505,8 @@ function getSearchCriteriaFromUrl(searchUrl) {
     searchUrl = (typeof searchUrl === 'undefined') ? window.location.href : searchUrl;
 
     var criteria = new SearchCriteria();
+    criteria.sort = "updated";
     criteria.order = "desc";
-    criteria.sort = "desc";
 
     if (!searchUrl)
         return criteria;
