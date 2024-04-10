@@ -466,6 +466,33 @@ function getParamsToSend(criteria) {
     return params;
 }
 
+function getParamsToSendToDCS(criteria) {
+    var params = {};
+    var dcs_properties = {
+        full_text: 'q',
+        languages: 'lang',
+        repo_name: 'repo',
+        user_name: 'owner',
+    }
+    for (var property in criteria) {
+        if (criteria.hasOwnProperty(property)) {
+            var dcs_property = property;
+            if (property in dcs_properties) {
+                dcs_property = dcs_properties[property];
+            }
+            var value = criteria[property];
+            if(value) {
+                if(Array.isArray(value)) {
+                    params[dcs_property] = value.join(',');
+                } else {
+                    params[dcs_property] = value;
+                }
+            }
+        }
+    }
+    return params;
+}
+
 /**
  * Gets the search criteria from the URL and returns it in an object
  *
@@ -606,8 +633,8 @@ function getSearchPageViewUrl(pageUrl) {
  * @return {'url','params'} - true if search initiated, if false then search error
  */
 function searchManifestTable(criteria, callback, sectionToShow) {
-    var searchUrl = getSearchPageViewUrl(window.location.href);
-    var params = getParamsToSend(criteria);
+    var searchUrl = "https://git.door43.org/api/v1/repos/search"; // getSearchPageViewUrl(window.location.href);
+    var params = getParamsToSendToDCS(criteria);
     resetSearch(sectionToShow);
 
     $.ajax({
@@ -620,28 +647,28 @@ function searchManifestTable(criteria, callback, sectionToShow) {
             // We filter out unwanted results here, before the callback
             // Note that we still allow a specific search for 'STR'
             //  and 'tx-manager-test-data' (exact case) to work
-            var needToFilterSTR = true;
-            var needToFilterTXManagerTestData = true;
-            try { // full_text criteria is not always present
-                if (criteria.full_text.indexOf('STR') !== -1)
-                    needToFilterSTR = false;
-                if (criteria.full_text.indexOf('tx-manager-test-data') !== -1)
-                needToFilterTXManagerTestData = false;
-            } catch(e) { // TypeError: criteria.full_text is null
-                // console.log("Caught " + e);
-            }
-            if (needToFilterSTR) {
-                var filtered_data = data.filter(function(entry, index, arr){ return entry.user_name != 'STR';});
-                console.log( "Had " + data.length + " search results;  filtered for 'STR' now " + filtered_data.length);
-                data = filtered_data;
-            }
-            if (needToFilterTXManagerTestData) {
-                var filtered_data = data.filter(function(entry, index, arr){ return entry.user_name != 'tx-manager-test-data';});
-                console.log( "Had " + data.length + " search results;  filtered for `tx-manager-test-data` now " + filtered_data.length);
-                data = filtered_data;
-            }
-            callback(null, data); // null is for err
-            return data;
+            // var needToFilterSTR = true;
+            // var needToFilterTXManagerTestData = true;
+            // try { // full_text criteria is not always present
+            //     if (criteria.full_text.indexOf('STR') !== -1)
+            //         needToFilterSTR = false;
+            //     if (criteria.full_text.indexOf('tx-manager-test-data') !== -1)
+            //     needToFilterTXManagerTestData = false;
+            // } catch(e) { // TypeError: criteria.full_text is null
+            //     // console.log("Caught " + e);
+            // }
+            // if (needToFilterSTR) {
+            //     var filtered_data = data.filter(function(entry, index, arr){ return entry.user_name != 'STR';});
+            //     console.log( "Had " + data.length + " search results;  filtered for 'STR' now " + filtered_data.length);
+            //     data = filtered_data;
+            // }
+            // if (needToFilterTXManagerTestData) {
+            //     var filtered_data = data.filter(function(entry, index, arr){ return entry.user_name != 'tx-manager-test-data';});
+            //     console.log( "Had " + data.length + " search results;  filtered for `tx-manager-test-data` now " + filtered_data.length);
+            //     data = filtered_data;
+            // }
+            callback(null, data.data); // null is for err
+            return data.data;
         },
         error: function (jqXHR, textStatus, errorThrown) {
             const error = 'Error: ' + textStatus + '\n' + errorThrown;
@@ -889,16 +916,16 @@ function showThisItem(item, $div, template) {
     var title = getSubItem(item, ['title']);
     $template.find('.title-span').html(title);
     var authorFormat = l10n['author'];
-    var author = getSubItem(item, ['user_name']);
+    var author = getSubItem(item, ['owner']);
     $template.find('.author-div').html(simpleFormat(authorFormat, [author]));
     $template.find('.language-title-span').html(l10n['language']);
     var langAndCodeFormat = l10n['language_with_code'];
-    var langName = getSubItem(item, ['manifest', 'dublin_core', 'language', 'title']);
-    var langCode = getSubItem(item, ['lang_code']);
+    var langName = getSubItem(item, ['language_title']);
+    var langCode = getSubItem(item, ['language']);
     $template.find('.language-code-div').html(simpleFormat(langAndCodeFormat, [langName, langCode]));
-    var views = getSubItem(item, ['views']);
+    var views = getSubItem(item, ['star_count']);
     $template.find('.views-span').html(views);
-    var lastUpdated = getSubItem(item, ['last_updated'], '1970-01-01');
+    var lastUpdated = getSubItem(item, ['updated_at'], '1970-01-01');
     $template.find('.updated-span').html(getDateDiff(lastUpdated, today));
 
     var url = baseUrl + '/u/' + author + "/" + getSubItem(item, ['repo_name']);
