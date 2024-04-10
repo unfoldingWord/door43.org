@@ -674,6 +674,7 @@ function searchManifestTable(criteria, callback, sectionToShow) {
             //     console.log( "Had " + data.length + " search results;  filtered for `tx-manager-test-data` now " + filtered_data.length);
             //     data = filtered_data;
             // }
+            console.log(data.data);
             callback(null, data.data); // null is for err
             return data.data;
         },
