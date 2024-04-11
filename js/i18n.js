@@ -734,6 +734,9 @@ function updateRecentResults(err, entries) {
  */
 function updateSearchResults(searchType, err, entries) {
     if (!err) {
+        entries.forEach(entry => {
+            entry.views = entry.stars_count + entry.forks_count + entry.watchers_count;
+        });
         if(!searchType) {
             searchResults[SECTION_TYPE_RECENT] = entries.slice();
             searchResults[SECTION_TYPE_POPULAR] = entries;
@@ -834,7 +837,7 @@ function showSearchResults(sectionToShow) {
             $popular_div.empty();
         }
         var popularResults = searchResults[SECTION_TYPE_POPULAR];
-        popularResults = _.sortBy(popularResults.reverse(), 'num_stars').reverse(); // Reverse 1st time since we reverse again
+        popularResults = _.sortBy(popularResults.reverse(), 'views').reverse(); // Reverse 1st time since we reverse again
         if (!popularResults.length) {
             $popular_div.html('<div class="no-results">'+noResultsText+'</div>');
         }
@@ -931,7 +934,7 @@ function showThisItem(item, $div, template) {
     var langName = getSubItem(item, ['language_title']);
     var langCode = getSubItem(item, ['language']);
     $template.find('.language-code-div').html(simpleFormat(langAndCodeFormat, [langName, langCode]));
-    var views = parseInt(getSubItem(item, ['stars_count'])) + parseInt(getSubItem(item, ['watchers_count'])) + parseInt(getSubItem(item, ['forks_count']));
+    var views = getSubItem(item, ['views']);
     $template.find('.views-span').html(views);
     var lastUpdated = getSubItem(item, ['updated_at'], '1970-01-01');
     $template.find('.updated-span').html(getDateDiff(lastUpdated, today));
