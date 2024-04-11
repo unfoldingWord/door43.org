@@ -414,7 +414,7 @@ var errorShown = false;
  */
 function SearchCriteria() {
     /**
-     * @member {number} matchLimit
+     * @member {number} limit
      * @member {string[]} languages - array of language code strings or null for any language
      * @member {string} full_text - text to find in any field (if not null)
      * @member {string} user_name - text to find in user_name (if not null)
@@ -432,7 +432,7 @@ function SearchCriteria() {
      *                              all fields
      */
     this.languages = null;
-    this.matchLimit = MAX_NUMBER_OF_RESULTS_FROM_DB;
+    this.limit = MAX_NUMBER_OF_RESULTS_FROM_DB;
     this.full_text = null;
     this.repo_name = null;
     this.user_name = null;

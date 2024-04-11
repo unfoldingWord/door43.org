@@ -10,7 +10,7 @@ describe('Test Manifest Search', function () {
   var returned_docClient;
   var returned_params;
   var returned_retData;
-  var returned_matchLimit;
+  var returned_limit;
 
     it('updateResults: err should call alert', function () {
         //given
@@ -240,7 +240,7 @@ describe('Test Manifest Search', function () {
         var search_url = 'http://127.0.0.1:4000/en/?lc=en&lc=ceb&q=Bible&user=tx-manager-test-data';
         var expectedBaseUrl = 'http://127.0.0.1:4000';
         var expectedParams = {
-            matchLimit: MAX_NUMBER_OF_RESULTS_FROM_DB,
+            limit: MAX_NUMBER_OF_RESULTS_FROM_DB,
             minViews: 0,
             languages: [ 'en', 'ceb'],
             full_text: 'Bible',
@@ -259,7 +259,7 @@ describe('Test Manifest Search', function () {
         var search_url = 'http://127.0.0.1:4000/en/?lc=en&q=Bible&q=ceb&user=tx-manager-test-data';
         var expectedBaseUrl = 'http://127.0.0.1:4000';
         var expectedParams = {
-            matchLimit: MAX_NUMBER_OF_RESULTS_FROM_DB,
+            limit: MAX_NUMBER_OF_RESULTS_FROM_DB,
             minViews: 0,
             languages: [ 'en' ],
             full_text: 'Bible',
@@ -278,7 +278,7 @@ describe('Test Manifest Search', function () {
         var search_url = 'http://127.0.0.1:4000/en/?lc=es';
         var expectedBaseUrl = 'http://127.0.0.1:4000';
         var expectedParams = {
-            matchLimit: MAX_NUMBER_OF_RESULTS_FROM_DB,
+            limit_RESULTS_FROM_DB,
             minViews: 0,
             languages: [ 'es' ],
         };
@@ -295,7 +295,7 @@ describe('Test Manifest Search', function () {
         var search_url = 'http://127.0.0.1:4000/en/?lc=es&lc=ceb&user=dummy';
         var expectedBaseUrl = 'http://127.0.0.1:4000';
         var expectedParams = {
-            matchLimit: MAX_NUMBER_OF_RESULTS_FROM_DB,
+            limit: MAX_NUMBER_OF_RESULTS_FROM_DB,
             minViews: 0,
             languages: [ 'es', 'ceb'],
             user_name: 'dummy'
@@ -313,7 +313,7 @@ describe('Test Manifest Search', function () {
         var search_url = 'http://127.0.0.1:4000/en/?lc=es&repo=dummy_repo&resource=dummy_res';
         var expectedBaseUrl = 'http://127.0.0.1:4000';
         var expectedParams = {
-            matchLimit: MAX_NUMBER_OF_RESULTS_FROM_DB,
+            limit: MAX_NUMBER_OF_RESULTS_FROM_DB,
             minViews: 0,
             languages: [ 'es' ],
             repo_name: 'dummy_repo',
@@ -332,7 +332,7 @@ describe('Test Manifest Search', function () {
         var search_url = 'http://127.0.0.1:4000/en/?';
         var expectedBaseUrl = 'http://127.0.0.1:4000';
         var expectedParams = {
-            matchLimit: MAX_NUMBER_OF_RESULTS_FROM_DB,
+            limit: MAX_NUMBER_OF_RESULTS_FROM_DB,
             minViews: 0,
         };
 
@@ -348,7 +348,7 @@ describe('Test Manifest Search', function () {
         var search_url = 'http://127.0.0.1:4000/en';
         var expectedBaseUrl = 'http://127.0.0.1:4000';
         var expectedParams = {
-            matchLimit: MAX_NUMBER_OF_RESULTS_FROM_DB,
+            limit: MAX_NUMBER_OF_RESULTS_FROM_DB,
             minViews: 0,
         };
 
@@ -366,7 +366,7 @@ describe('Test Manifest Search', function () {
         setupDbQueryMocks();
         var criteria = new SearchCriteria();
         criteria.languages = ['es'];
-        criteria.matchLimit = 20;
+        criteria.limit = 20;
         expectedErr = null;
         expectedData = [{ 'object': "" }];
         var expectedSearchKeys = [ 'languages' ];
@@ -386,7 +386,7 @@ describe('Test Manifest Search', function () {
         var criteria = new SearchCriteria();
         criteria.languages = ['es', 'ceb'];
         criteria.user_name = "dummy";
-        criteria.matchLimit = 20;
+        criteria.limit = 20;
         expectedErr = null;
         expectedData = [];
         var expectedSearchKeys = [ 'languages', 'user_name' ];
@@ -407,7 +407,7 @@ describe('Test Manifest Search', function () {
         criteria.repo_name = "dummy_repo";
         criteria.resID = "dummy_res";
         criteria.returnedFields = "user_name, repo_name";
-        criteria.matchLimit = 20;
+        criteria.limit = 20;
         expectedErr = null;
         expectedData = [];
         var expectedSearchKeys = [ 'repo_name', 'resID' ];
@@ -428,7 +428,7 @@ describe('Test Manifest Search', function () {
         criteria.full_text = "dummy_text";
         criteria.resType = "dummy_type";
         criteria.returnedFields = "user_name, repo_name";
-        criteria.matchLimit = 20;
+        criteria.limit = 20;
         expectedErr = null;
         expectedData = [];
         var expectedSearchKeys = [ 'full_text', 'resType' ];
@@ -451,7 +451,7 @@ describe('Test Manifest Search', function () {
         criteria.time = "dummy_time";
         criteria.manifest = "dummy_manifest";
         criteria.returnedFields = "user_name, repo_name, views";
-        criteria.matchLimit = 20;
+        criteria.limit = 20;
         expectedErr = null;
         expectedData = [];
         var expectedSearchKeys = [ 'resType', 'title', 'time', 'manifest' ];
@@ -470,7 +470,7 @@ describe('Test Manifest Search', function () {
         setupDbQueryMocks();
         var criteria = new SearchCriteria();
         criteria.languages =  ['ceb'];
-        criteria.matchLimit = 2;
+        criteria.limit = 2;
         expectedErr = "search Failure";
         expectedData = [ { 'object': "" }];
         var expectedSearchKeys = [ 'languages' ];
@@ -680,7 +680,7 @@ describe('Test Manifest Search', function () {
         setupUpdateUrlMock();
         spyOn(window, 'updateResults').and.callFake(callback);
         spyOn(window, 'searchManifestTable').and.callFake(mockSearchManifestTest);
-        function mockSearchManifestTest(matchLimit, languages, user_name, repo_name, resID, resType, title, time, manifest, full_text, returnedFields, callback) { // mock the table scan operation
+        function mockSearchManifestTest(limit, languages, user_name, repo_name, resID, resType, title, time, manifest, full_text, returnedFields, callback) { // mock the table scan operation
             if(callback) {
                 callback(expectedErr, expectedData); // call onScan handler with mock data
             }
@@ -698,12 +698,12 @@ describe('Test Manifest Search', function () {
       returnedEntries = entries;
     }
 
-    function mockSearchContinue(docClient, params, retData, matchLimit, callback){
+    function mockSearchContinue(docClient, params, retData, limit, callback){
         returned_docClient = docClient;
         returned_params = params;
         returned_retData = retData;
-        returned_matchLimit = matchLimit;
+        returned_limit = limit;
 
-        originalSearchContinue(docClient, params, retData, matchLimit, callback);
+        originalSearchContinue(docClient, params, retData, limit, callback);
     }
 });
