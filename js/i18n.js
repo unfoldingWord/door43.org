@@ -189,8 +189,8 @@ function getLanguageListItems($searchField, callback) {
                 };
         console.log("GETting " + JSON.stringify(request));
         $.ajax(request).done(function (data, responseText, jqXHR) {
-            // console.log("Got returned headers=" + jqXHR.getAllResponseHeaders());
-            // console.log("Got returned data=" + JSON.stringify(data));
+            console.log("Got returned headers=" + jqXHR.getAllResponseHeaders());
+            console.log("Got returned data=" + JSON.stringify(data));
             if (!data) return;
             languageSearchResults[term] = data[0];
             processLanguages($searchField, data[0], callback);
