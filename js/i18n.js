@@ -642,7 +642,7 @@ function getSearchPageViewUrl(pageUrl) {
 function searchManifestTable(criteria, callback, sectionToShow) {
     var searchUrl = "https://git.door43.org/api/v1/repos/search"; // getSearchPageViewUrl(window.location.href);
     var params = getParamsToSendToDCS(criteria);
-    params["metadata_type"] = "rc,ts,tc";
+    params["metadataType"] = "rc,ts,tc";
     resetSearch(sectionToShow);
 
     $.ajax({
