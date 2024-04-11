@@ -185,7 +185,7 @@ function getLanguageListItems($searchField, callback) {
         // var request = {type: 'GET', url: 'https://us.door43.org:9096/?q=' + encodeURIComponent(term)};
         var extra = API_prefix ? '-demo' : '';
         var request = {type: 'GET',
-                url: 'https://td.unfoldingword.org/ac/langnames/?q=' + encodeURIComponent(term)
+                url: 'https://git.door43.org/api/v1/languages/langnames.json?lc=' + encodeURIComponent(term)
                 };
         console.log("GETting " + JSON.stringify(request));
         $.ajax(request).done(function (data, responseText, jqXHR) {
