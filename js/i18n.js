@@ -185,15 +185,15 @@ function getLanguageListItems($searchField, callback) {
         // var request = {type: 'GET', url: 'https://us.door43.org:9096/?q=' + encodeURIComponent(term)};
         var extra = API_prefix ? '-demo' : '';
         var request = {type: 'GET',
-                url: 'https://git.door43.org/api/v1/languages/langnames.json?lc=' + encodeURIComponent(term)
+                url: 'https://td.unfoldingword.org/ac/langnames/?q=' + encodeURIComponent(term)
                 };
         console.log("GETting " + JSON.stringify(request));
         $.ajax(request).done(function (data, responseText, jqXHR) {
-            console.log("Got returned headers=" + jqXHR.getAllResponseHeaders());
-            console.log("Got returned data=" + JSON.stringify(data));
-            if (!data) return;
-            languageSearchResults[term] = data[0];
-            processLanguages($searchField, data[0], callback);
+            // console.log("Got returned headers=" + jqXHR.getAllResponseHeaders());
+            // console.log("Got returned data=" + JSON.stringify(data));
+            if (!data.results) return;
+            languageSearchResults[term] = data.results;
+            processLanguages($searchField, data.results, callback);
         });
     }
 }
@@ -414,7 +414,7 @@ var errorShown = false;
  */
 function SearchCriteria() {
     /**
-     * @member {number} limit
+     * @member {number} matchLimit
      * @member {string[]} languages - array of language code strings or null for any language
      * @member {string} full_text - text to find in any field (if not null)
      * @member {string} user_name - text to find in user_name (if not null)
@@ -432,7 +432,7 @@ function SearchCriteria() {
      *                              all fields
      */
     this.languages = null;
-    this.limit = MAX_NUMBER_OF_RESULTS_FROM_DB;
+    this.matchLimit = MAX_NUMBER_OF_RESULTS_FROM_DB;
     this.full_text = null;
     this.repo_name = null;
     this.user_name = null;
