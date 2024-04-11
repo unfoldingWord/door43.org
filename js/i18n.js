@@ -649,7 +649,7 @@ function searchManifestTable(criteria, callback, sectionToShow) {
         type: 'GET',
         cache: "false",
         data: params,
-        dataType: 'jsonp',
+        dataType: 'json',
         success: function (data, status) {
             // We filter out unwanted results here, before the callback
             // Note that we still allow a specific search for 'STR'
