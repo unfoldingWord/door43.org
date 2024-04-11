@@ -192,8 +192,8 @@ function getLanguageListItems($searchField, callback) {
             // console.log("Got returned headers=" + jqXHR.getAllResponseHeaders());
             // console.log("Got returned data=" + JSON.stringify(data));
             if (!data.results) return;
-            languageSearchResults[term] = data.results;
-            processLanguages($searchField, data.results, callback);
+            languageSearchResults[term] = data.results[0];
+            processLanguages($searchField, data.results[0], callback);
         });
     }
 }
