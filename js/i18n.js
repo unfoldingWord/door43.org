@@ -939,7 +939,7 @@ function showThisItem(item, $div, template) {
     var lastUpdated = getSubItem(item, ['updated_at'], '1970-01-01');
     $template.find('.updated-span').html(getDateDiff(lastUpdated, today));
 
-    var url = baseUrl + '/u/' + author + "/" + getSubItem(item, ['repo_name']);
+    var url = baseUrl + '/u/' + author.username + "/" + getSubItem(item, ['repo']);
     $template.find('a').attr('href', url);
 
     $div.append($template);
