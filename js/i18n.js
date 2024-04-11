@@ -925,13 +925,13 @@ function showThisItem(item, $div, template) {
     $template.find('.title-span').html(title);
     var authorFormat = l10n['author'];
     var author = getSubItem(item, ['owner']);
-    $template.find('.author-div').html(simpleFormat(authorFormat, [author]));
+    $template.find('.author-div').html(simpleFormat(authorFormat, [author.username]));
     $template.find('.language-title-span').html(l10n['language']);
     var langAndCodeFormat = l10n['language_with_code'];
     var langName = getSubItem(item, ['language_title']);
     var langCode = getSubItem(item, ['language']);
     $template.find('.language-code-div').html(simpleFormat(langAndCodeFormat, [langName, langCode]));
-    var views = getSubItem(item, ['star_count']);
+    var views = parseInt(getSubItem(item, ['stars_count'])) + parseInt(getSubItem(item, ['watchers_count'])) + parseInt(getSubItem(item, ['forks_count']));
     $template.find('.views-span').html(views);
     var lastUpdated = getSubItem(item, ['updated_at'], '1970-01-01');
     $template.find('.updated-span').html(getDateDiff(lastUpdated, today));
